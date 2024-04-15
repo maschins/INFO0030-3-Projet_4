@@ -1,0 +1,4 @@
+#ifndef __MODAL_MASTERMIND__
+#define __MODAL_MASTERMIND__
+
+#endif //__MODAL_MASTERMIND__
