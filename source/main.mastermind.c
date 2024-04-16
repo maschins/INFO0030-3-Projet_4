@@ -12,7 +12,7 @@
 static GtkWidget *create_window(void);
 
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv){
    GtkWidget *pWindow;
 
    gtk_init(&argc, &argv);
