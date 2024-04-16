@@ -13,7 +13,7 @@ TAR_NAME=mastermind_10.tar.gz
 #Files
 EXEC=mastermind
 OBJECTS=source/main.mastermind.o source/controller.mastermind.o source/modal.mastermind.o source/view.mastermind.o
-FILES=Doxyfile Makefile
+FILES=Doxyfile Makefile Images
 
 #Rules
 all: $(EXEC)
@@ -28,7 +28,7 @@ doc:
 	doxygen $(DOXYGEN_CONFIG_FILE)
 
 clean:
-	rm -rf *.o $(EXEC) $(DOC_DIR) $(TAR_NAME)
+	rm -rf */*.o $(EXEC) $(DOC_DIR) $(TAR_NAME)
 
 archive:
-	tar -czf $(TAR_NAME) *.c *.h $(FILES) img
+	tar -czf $(TAR_NAME) *.c *.h $(FILES)
