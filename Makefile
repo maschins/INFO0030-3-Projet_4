@@ -24,6 +24,9 @@ $(EXEC): $(OBJECTS)
 %.o: %.c
 	$(CC) -c $< -o $@ $(CFLAGS) $(GTKFLAGS)
 
+run: $(EXEC)
+	./$(EXEC)
+
 doc:
 	doxygen $(DOXYGEN_CONFIG_FILE)
 

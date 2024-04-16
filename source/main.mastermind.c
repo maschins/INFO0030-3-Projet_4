@@ -1,5 +1,9 @@
 /**
  * \file main.mastermind.c
+ * \brief The main file containing the main() function
+ *
+ * \authors Thomas Fraiponts (s2301865) and Martin Schins (s220635)
+ * \date 16/04/2024
  */
 
 #include <stdlib.h>
@@ -9,6 +13,13 @@
 #define WINDOW_HEIGHT 500
 #define WINDOW_WIDTH 500
 
+/**
+ * \fn static GtkWidget *create_window(void)
+ * \brief Creates a window with a quit function
+ *
+ * \return A pointer on the window if success
+ *         NULL if error
+ */
 static GtkWidget *create_window(void);
 
 
