@@ -30,6 +30,9 @@ run: $(EXEC)
 doc:
 	doxygen $(DOXYGEN_CONFIG_FILE)
 
+rapport: rapport/rapport.tex
+	pdflatex rapport/rapport.tex
+
 clean:
 	rm -rf */*.o $(EXEC) $(DOC_DIR) $(TAR_NAME)
 
