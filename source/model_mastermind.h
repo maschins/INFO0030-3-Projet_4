@@ -1,79 +1,32 @@
+#include <stdbool.h>
+
 #ifndef __MODEL_MASTERMIND__
 #define __MODEL_MASTERMIND__
 
-#define PSEUDO_LENGTH 50
+#define MAX_PSEUDO_LENGTH 50
+#define MIN_PSEUDO_LENGTH 5
 
-/**
- * \brief Defines the different pawn types.
-*/
-typedef enum{
-   /** Start of the editable part.
-    *  Keep the colors in the same order as the main paths.
-    */
-   PAWN_BLUE,     /*!< Blue color pawn */
-   PAWN_CYAN,     /*!< Cyan color pawn */
-   PAWN_GREEN,    /*!< Green color pawn */
-   PAWN_ORANGE,   /*!< Orange color pawn */
-   PAWN_PURPLE,   /*!< Purple color pawn */
-   PAWN_RED,      /*!< Red color pawn */
-   PAWN_YELLOW,   /*!< Yellow color pawn */
+#define MIN_NB_PAWNS 4
+#define MAX_NB_PAWNS 8
+#define DEFAULT_NB_PAWNS 4
 
-   // End of the editable part. Don't edit from here.
-   PAWN_DEFAULT,                  /*!< Default pawn */
-   NB_PAWN_COLORS /*!< Number of colors */
-}PAWN_COLOR;
-
+#define NB_COMBINATIONS 10
 
 typedef enum{
-   FB_BLACK,    /*!< Black feedback pawn color */
-   FB_WHITE,    /*!< White feedback pawn color  */
-   FB_DEFAULT,  /*!< No feedback pawn */
-   NB_FB_COLORS /*!< Number of feedback colors */ 
-}FEEDBACK_COLOR;
-
+   GUESSER,
+   PROPOSER
+}ROLE;
 
 /**
- * Declare the Combination opaque type.
+ * Declare the ModelMainMenu opaque type.
  * */
-typedef struct combination_t Combination;
+typedef struct model_main_menu_t ModelMainMenu;
 
-/**
- * Declare the History opaque type.
- * */
-typedef struct history_t History;
+ModelMainMenu *create_model_main_menu();
+void destroy_model_main_menu(ModelMainMenu *mmm);
 
-/**
- * Declare the Game opaque type.
- * */
-typedef struct game_t Game;
-
-/**
- * Declare the Settings opaque type.
- * */
-typedef struct settings_t Settings;
-
-/**
- * Declare the ModelMastermind opaque type. 
- * */
-typedef struct model_t ModelMastermind;
-
-
-ModelMastermind *create_model_mastermind(unsigned int nbPawns, unsigned int nbAttempts);
-void destroy_model_mastermind(ModelMastermind *mm);
-
-Settings *create_settings(unsigned int nbPawns, unsigned int nbAttempts);
-void destroy_settings(Settings *settings);
-
-Game *create_game(unsigned int nbPawns, unsigned int nbCombinations);
-void destroy_game(Game *game);
-
-History *create_history(unsigned int nbPawns, unsigned int nbCombinations);
-void destroy_history(History *history);
-
-Combination *create_combination(unsigned int nbPawns);
-void destroy_combination(Combination *combination);
-
-char *get_pseudo(ModelMastermind *mm);
-void set_pseudo(ModelMastermind *mm, char *pseudo);
+void set_role(ModelMainMenu *mmm, ROLE role);
+void set_pseudo(ModelMainMenu *mmm, char *pseudo);
+void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns);
 
 #endif //__MODEL_MASTERMIND__

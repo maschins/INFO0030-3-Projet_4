@@ -5,23 +5,24 @@
 #include "model_mastermind.h"
 #include "view_mastermind.h"
 
-typedef enum{
-   MAIN_MENU_SAVE_BUTTON,
-   MAIN_MENU_PLAY_GUESSER_BUTTON,
-   MAIN_MENU_PLAY_PROPOSER_BUTTON,
-   MAIN_MENU_SETTINGS_BUTTON,
-   MAIN_MENU_QUIT_BUTTON,
-   MAIN_MENU_NB_BUTTONS
-}MainMenuButton;
+#define GUESSER_BUTTON_LABEL "Guesser"
+#define PROPOSER_BUTTON_LABEL "Proposer"
+#define SAVE_BUTTON_LABEL "Save"
+#define PLAY_BUTTON_LABEL "Play"
+#define QUIT_BUTTON_LABEL "Quit"
 
 typedef struct controller_main_menu_t ControllerMainMenu;
 
-typedef struct controller_mastermind_t ControllerMastermind;
-
-ControllerMainMenu *create_controller_main_menu(ModelMastermind *mm, ViewMainMenu *vm);
+ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vm);
 void destroy_controller_main_menu(ControllerMainMenu *cmm);
 
-GtkWidget *get_pseudo_entry(ControllerMainMenu *cmm);
-GtkWidget *get_button(ControllerMainMenu *cmm, MainMenuButton button);
+void init_main_menu(ControllerMainMenu *cmm);
+
+void on_save_button_clicked(GtkWidget *button, gpointer data);
+void on_nb_pawns_slider_changed(GtkWidget *slider, gpointer data);
+void on_guesser_choosed(GtkWidget *radioButton, ControllerMainMenu *cmm);
+void on_proposer_choosed(GtkWidget *radioButton, ControllerMainMenu *cmm);
+void on_play_clicked(GtkWidget *button, gpointer data);
+void on_quit_clicked(GtkWidget *button, gpointer data);
 
 #endif /* CONTROLLER_MASTERMIND_H */
