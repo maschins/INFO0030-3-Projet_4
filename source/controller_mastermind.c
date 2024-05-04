@@ -16,13 +16,14 @@ struct controller_main_menu_t{
 };
 
 
-struct controller_menu_bar_t{
-   GtkWidget *menuBar;
+struct menu_bar_t{
+   GtkWidget *bar;
    GtkWidget *menuGame;
    GtkWidget *menuHelp;
    GtkWidget *itemGame;
-   GtkWidget *itemNewGame;
+   GtkWidget *itemHelp;
    GtkWidget *itemMainMenu;
+   GtkWidget *itemNewGame;
    GtkWidget *itemScore;
    GtkWidget *itemQuit;
    GtkWidget *itemAbouts;
@@ -32,6 +33,7 @@ struct controller_menu_bar_t{
 struct controller_mastermind_t{
    ModelMastermind *mm;
    ViewMastermind *vm;
+   MenuBar *menuBar;
    GtkWidget *applyButton;
    GtkWidget *resetButton;
    GtkWidget **colorSelectionButtons;
@@ -129,9 +131,16 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
    cm->mm = mm;
    cm->vm = vm;
 
+   cm->menuBar = create_menu_bar();
+   if(cm->menuBar == NULL){
+      free(cm);
+      return NULL;
+   }
+
    const char *APPLY_BUTTON_LABEL = "Apply";
    cm->applyButton = gtk_button_new_with_label(APPLY_BUTTON_LABEL);
    if(cm->applyButton == NULL){
+      free(cm->menuBar);
       free(cm);
       return NULL;
    }
@@ -139,12 +148,14 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
    const char *RESET_BUTTON_LABEL = "Reset";
    cm->resetButton = gtk_button_new_with_label(RESET_BUTTON_LABEL);
    if(cm->resetButton == NULL){
+      free(cm->menuBar);
       free(cm);
       return NULL;
    }
 
    cm->colorSelectionButtons = malloc((NB_PAWN_COLORS - 1) * sizeof(GtkWidget *)); // -1 because default color is not selectable. 
    if(cm->colorSelectionButtons == NULL){
+      free(cm->menuBar);
       free(cm);
       return NULL;
    }
@@ -153,6 +164,7 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
       cm->colorSelectionButtons[i] = create_button_with_pixbuf(get_color_image_pixbuf(vm, i), get_mastermind_color_button_size(vm));
       if(cm->colorSelectionButtons[i] == NULL){
          free(cm->colorSelectionButtons);
+         free(cm->menuBar);
          free(cm);
          return NULL;
       }
@@ -161,6 +173,7 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
    cm->propositionButtons = malloc(get_nb_pawns(mm) * sizeof(GtkWidget *));
    if(cm->propositionButtons == NULL){
       free(cm->colorSelectionButtons);
+      free(cm->menuBar);
       free(cm);
       return NULL;
    }
@@ -170,6 +183,7 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
       if(cm->propositionButtons[i] == NULL){
          free(cm->colorSelectionButtons);
          free(cm->propositionButtons);
+         free(cm->menuBar);
          free(cm);
          return NULL;
       }
@@ -181,6 +195,9 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
 
 void destroy_controller_mastermind(ControllerMastermind *cm){
    if(cm != NULL){
+      if(cm->menuBar != NULL)
+         free(cm->menuBar);
+
       if(cm->colorSelectionButtons != NULL)
          free(cm->colorSelectionButtons);
 
@@ -189,6 +206,88 @@ void destroy_controller_mastermind(ControllerMastermind *cm){
 
       free(cm);
    }
+}
+
+
+MenuBar *create_menu_bar() {
+   MenuBar *menuBar = malloc(sizeof(MenuBar));
+   if(menuBar == NULL)
+      return NULL;
+
+   menuBar->bar = gtk_menu_bar_new();
+   if(menuBar->bar == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->menuGame = gtk_menu_new();
+   if(menuBar->menuGame == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->menuHelp = gtk_menu_new();
+   if(menuBar->menuHelp == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->itemGame = gtk_menu_item_new_with_label(BAR_GAME_ITEM_LABEL);
+   if(menuBar->itemGame == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->itemHelp = gtk_menu_item_new_with_label(BAR_HELP_ITEM_LABEL);
+   if(menuBar->itemHelp == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->itemMainMenu = gtk_menu_item_new_with_label(MENU_GAME_MAIN_MENU_ITEM_LABEL);
+   if(menuBar->itemMainMenu == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->itemNewGame = gtk_menu_item_new_with_label(MENU_GAME_NEW_GAME_ITEM_LABEL);
+   if(menuBar->itemNewGame == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->itemScore = gtk_menu_item_new_with_label(MENU_GAME_SCORE_ITEM_LABEL);
+   if(menuBar->itemScore == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->itemQuit = gtk_menu_item_new_with_label(MENU_GAME_QUIT_ITEM_LABEL);
+   if(menuBar->itemQuit == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   menuBar->itemAbouts = gtk_menu_item_new_with_label(MENU_HELP_ABOUTS_ITEM_LABEL);
+   if(menuBar->itemAbouts == NULL){
+      free(menuBar);
+      return NULL;
+   }
+
+   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuBar->itemGame), menuBar->menuGame);
+   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuBar->itemHelp), menuBar->menuHelp);
+
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->bar), menuBar->itemGame);
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->bar), menuBar->itemHelp);
+   
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemMainMenu);
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemNewGame);
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemScore);
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemQuit);
+   
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuHelp), menuBar->itemAbouts);
+
+   return menuBar;
 }
 
 

@@ -12,9 +12,17 @@
 #define GUESSER_BUTTON_LABEL "Guesser"
 #define PROPOSER_BUTTON_LABEL "Proposer"
 
+#define BAR_GAME_ITEM_LABEL "Game"
+#define BAR_HELP_ITEM_LABEL "Help"
+#define MENU_GAME_MAIN_MENU_ITEM_LABEL "Main menu"
+#define MENU_GAME_NEW_GAME_ITEM_LABEL "New game"
+#define MENU_GAME_SCORE_ITEM_LABEL "Score"
+#define MENU_GAME_QUIT_ITEM_LABEL "Quit"
+#define MENU_HELP_ABOUTS_ITEM_LABEL "Abouts"
+
 typedef struct controller_main_menu_t ControllerMainMenu;
 
-typedef struct controller_menu_bar_t ControllerMenuBar;
+typedef struct menu_bar_t MenuBar;
 
 typedef struct controller_mastermind_t ControllerMastermind;
 
@@ -23,6 +31,8 @@ void destroy_controller_main_menu(ControllerMainMenu *cmm);
 
 ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm);
 void destroy_controller_mastermind(ControllerMastermind *cm);
+
+MenuBar *create_menu_bar();
 
 void init_main_menu(ControllerMainMenu *cmm);
 void init_mastermind(ControllerMastermind *cm);
