@@ -14,6 +14,8 @@
 
 typedef struct controller_main_menu_t ControllerMainMenu;
 
+typedef struct controller_menu_bar_t ControllerMenuBar;
+
 typedef struct controller_mastermind_t ControllerMastermind;
 
 ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vm);

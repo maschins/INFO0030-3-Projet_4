@@ -35,8 +35,6 @@ int main(int argc, char **argv) {
    
    gtk_main();
 
-   fprintf(stderr, "coucou\n");
-
    //destroy_controller_main_menu(cmm);
    //destroy_view_main_menu(vmm);
    //destroy_model_mastermind(mm);

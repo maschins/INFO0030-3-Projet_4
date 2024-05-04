@@ -16,6 +16,19 @@ struct controller_main_menu_t{
 };
 
 
+struct controller_menu_bar_t{
+   GtkWidget *menuBar;
+   GtkWidget *menuGame;
+   GtkWidget *menuHelp;
+   GtkWidget *itemGame;
+   GtkWidget *itemNewGame;
+   GtkWidget *itemMainMenu;
+   GtkWidget *itemScore;
+   GtkWidget *itemQuit;
+   GtkWidget *itemAbouts;
+};
+
+
 struct controller_mastermind_t{
    ModelMastermind *mm;
    ViewMastermind *vm;
