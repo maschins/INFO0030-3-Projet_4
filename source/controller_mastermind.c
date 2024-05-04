@@ -33,6 +33,7 @@ struct menu_bar_t{
 struct controller_mastermind_t{
    ModelMastermind *mm;
    ViewMastermind *vm;
+   GtkWidget *aboutsOkayButton;
    MenuBar *menuBar;
    GtkWidget *applyButton;
    GtkWidget *resetButton;
@@ -123,6 +124,13 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
 
    cm->mm = mm;
    cm->vm = vm;
+
+   const char *OKAY_BUTTON_LABEL = "Okay";
+   cm->aboutsOkayButton = gtk_button_new_with_label(OKAY_BUTTON_LABEL);
+   if(cm->aboutsOkayButton == NULL){
+      free(cm);
+      return NULL;
+   }
 
    cm->menuBar = create_menu_bar();
    if(cm->menuBar == NULL){
@@ -327,6 +335,9 @@ void init_main_menu(ControllerMainMenu *cmm) {
 void init_mastermind(ControllerMastermind *cm) {
    assert(cm != NULL);
 
+   GtkWidget *aboutsWindow = get_mastermind_abouts_window(cm->vm);
+   GtkWidget *aboutsMainVBox = get_abouts_main_vbox(cm->vm);
+
    GtkWidget *window = get_mastermind_window(cm->vm);
    GtkWidget *mainVBox = get_mastermind_main_vbox(cm->vm);
    GtkWidget *historyTable = get_mastermind_history_table(cm->vm);
@@ -334,6 +345,9 @@ void init_mastermind(ControllerMastermind *cm) {
    GtkWidget *propositionControlHBox = get_mastermind_proposition_control_hbox(cm->vm);
    GtkWidget *colorSelectionHBox = get_mastermind_color_selection_hbox(cm->vm);
    GtkWidget *scoreHBox = get_mastermind_score_hbox(cm->vm);
+
+   gtk_box_pack_start(GTK_BOX(aboutsMainVBox), get_mastermind_abouts_label(cm->vm), TRUE, TRUE, 10);
+   gtk_box_pack_start(GTK_BOX(aboutsMainVBox), cm->aboutsOkayButton, FALSE, FALSE, 10);
 
    unsigned int nbCombi = get_nb_combinations(cm->mm);
    unsigned int nbPawns = get_nb_pawns(cm->mm);
@@ -361,6 +375,7 @@ void init_mastermind(ControllerMastermind *cm) {
    //GtkWidget *scoreAlignment = gtk_alignment_new(0.5, 0.5, 0, 0);
    //gtk_box_pack_start(GTK_BOX(scoreHBox), scoreAlignment, TRUE, TRUE, 0);
    //gtk_container_add(GTK_CONTAINER(scoreAlignment), get_mastermind_score_label(cm->vm));
+   gtk_container_add(GTK_CONTAINER(aboutsWindow), aboutsMainVBox);
 
    gtk_container_add(GTK_CONTAINER(mainVBox), cm->menuBar->bar);
    gtk_container_add(GTK_CONTAINER(mainVBox), historyTable);
@@ -371,12 +386,33 @@ void init_mastermind(ControllerMastermind *cm) {
    gtk_container_add(GTK_CONTAINER(window), mainVBox);
 
    // Connect signals
+   g_signal_connect(G_OBJECT(cm->aboutsOkayButton), "clicked", G_CALLBACK(hide_window), aboutsWindow);
+
    g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate", G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemAbouts), "activate", G_CALLBACK(show_window), aboutsWindow);
    g_signal_connect(G_OBJECT(cm->applyButton), "clicked", G_CALLBACK(on_apply_clicked), cm);
    g_signal_connect(G_OBJECT(cm->resetButton), "clicked", G_CALLBACK(on_reset_clicked), cm);
    g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
    gtk_widget_show_all(window);
+}
+
+
+void show_window(GtkWidget *button, gpointer data) {
+   assert(button != NULL && data != NULL);
+
+   GtkWidget *window = (GtkWidget *)data;
+
+   gtk_widget_show_all(window);
+}
+
+
+void hide_window(GtkWidget *button, gpointer data) {
+   assert(button != NULL && data != NULL);
+
+   GtkWidget *window = (GtkWidget *)data;
+
+   gtk_widget_hide(window);
 }
 
 

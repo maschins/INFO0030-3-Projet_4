@@ -36,6 +36,8 @@ MenuBar *create_menu_bar(void);
 
 void init_main_menu(ControllerMainMenu *cmm);
 void init_mastermind(ControllerMastermind *cm);
+void show_window(GtkWidget *button, gpointer data);
+void hide_window(GtkWidget *button, gpointer data);
 
 void on_nb_pawns_slider_changed(GtkWidget *slider, gpointer data);
 void on_guesser_choosed(GtkWidget *radioButton, ControllerMainMenu *cmm);

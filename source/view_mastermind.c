@@ -23,6 +23,9 @@ struct view_mastermind_t{
    unsigned int bigButtonSize;
    unsigned int colorButtonSize;
    unsigned int propositionButtonSize;
+   GtkWidget *windowAbouts;
+   GtkWidget *aboutsMainVBox;
+   GtkWidget *aboutsLabel;
    GtkWidget *window;
    GtkWidget *mainVBox;
    GtkWidget *historyTable;
@@ -92,7 +95,7 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
    }
 
    // Create error label.
-   vmm->errorLabel = gtk_label_new(NULL);
+   vmm->errorLabel = gtk_label_new("Current pseudo : Guest");
    if(vmm->errorLabel == NULL){
       free(vmm);
       return NULL;
@@ -132,6 +135,25 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
    vm->smallButtonSize = MASTERMIND_WINDOW_SIZE * 30;
    vm->colorButtonSize = nbPawns * (vm->bigButtonSize + vm->smallButtonSize) / (NB_PAWN_COLORS-1);
    vm->propositionButtonSize = vm->bigButtonSize + vm->smallButtonSize;
+
+   vm->windowAbouts = create_window(ABOUTS_WINDOW_LABEL, -1, -1);
+   if(vm->windowAbouts == NULL){
+      free(vm);
+      return NULL;
+   }
+
+   vm->aboutsMainVBox = gtk_vbox_new(FALSE, 0);
+   if(vm->aboutsMainVBox == NULL){
+      free(vm);
+      return NULL;
+   }
+
+   const char *ABOUTS_LABEL = "INFO0030 Projet 4\n\nAuthors :\n\tFraiponts Thomas\n\tSchins Martin\n\nApril 2024";
+   vm->aboutsLabel = gtk_label_new(ABOUTS_LABEL);
+   if(vm->aboutsLabel == NULL){
+      free(vm);
+      return NULL;
+   }
 
    vm->window = create_window(MASTERMIND_WINDOW_LABEL, -1, -1);
    if(vm->window == NULL){
@@ -175,7 +197,8 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
       return NULL;
    }
 
-   vm->scoreLabel = gtk_label_new("Score: ");
+   const char *SCORE_LABEL = "Score :";
+   vm->scoreLabel = gtk_label_new(SCORE_LABEL);
    if(vm->scoreLabel == NULL){
       free(vm);
       return NULL;
@@ -510,6 +533,24 @@ unsigned int get_mastermind_proposition_button_size(ViewMastermind *vm) {
 unsigned int get_mastermind_color_button_size(ViewMastermind *vm) {
    assert(vm != NULL);
    return vm->colorButtonSize;
+}
+
+
+GtkWidget *get_mastermind_abouts_window(ViewMastermind *vm) {
+   assert(vm != NULL);
+   return vm->windowAbouts;
+}
+
+
+GtkWidget *get_abouts_main_vbox(ViewMastermind *vm) {
+   assert(vm != NULL);
+   return vm->aboutsMainVBox;
+}
+
+
+GtkWidget *get_mastermind_abouts_label(ViewMastermind *vm) {
+   assert(vm != NULL);
+   return vm->aboutsLabel;
 }
 
 

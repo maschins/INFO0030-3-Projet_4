@@ -10,6 +10,8 @@
 #define MASTERMIND_WINDOW_LABEL "Mastermind"
 #define MASTERMIND_WINDOW_SIZE 0.8
 
+#define ABOUTS_WINDOW_LABEL "Abouts"
+
 #define LOGO_PATH "./images/title.png"
 #define LOGO_WIDTH MAIN_MENU_WINDOW_WIDTH
 #define LOGO_HEIGHT (0.2 * MAIN_MENU_WINDOW_HEIGHT)
@@ -48,6 +50,9 @@ unsigned int get_mastermind_small_button_size(ViewMastermind *vm);
 unsigned int get_mastermind_proposition_button_size(ViewMastermind *vm);
 unsigned int get_mastermind_color_button_size(ViewMastermind *vm);
 unsigned int get_mastermind_big_button_size(ViewMastermind *vm);
+GtkWidget *get_mastermind_abouts_window(ViewMastermind *vm);
+GtkWidget *get_abouts_main_vbox(ViewMastermind *vm);
+GtkWidget *get_mastermind_abouts_label(ViewMastermind *vm);
 GtkWidget *get_mastermind_window(ViewMastermind *vm);
 GtkWidget *get_mastermind_main_vbox(ViewMastermind *vm);
 GtkWidget *get_mastermind_history_table(ViewMastermind *vm);
