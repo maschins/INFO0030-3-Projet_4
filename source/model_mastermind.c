@@ -425,6 +425,10 @@ get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
    return mm->history->combinations[mm->history->currentIndex]->pawns[pawnIndex];
 }
 
+PAWN_COLOR **get_configs(ModelMastermind *mm) {
+   assert(mm != NULL);
+   return mm->configs;
+}
 
 void set_proposition_in_history(ModelMastermind *mm) {
    assert(mm != NULL);
@@ -506,3 +510,5 @@ static PAWN_COLOR **create_configs(unsigned int nbPawns) {
 
    return configs;
 }
+
+

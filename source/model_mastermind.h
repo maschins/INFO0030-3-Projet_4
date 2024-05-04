@@ -131,6 +131,7 @@ int get_current_index(ModelMastermind *mm);
 unsigned int get_nb_correct_last_combination(ModelMastermind *mm);
 unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
 PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
+PAWN_COLOR **get_configs(ModelMastermind *mm);
 
 void set_proposition_in_history(ModelMastermind *mm);
 void set_role(ModelMainMenu *mmm, ROLE role);
