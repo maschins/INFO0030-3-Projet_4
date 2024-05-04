@@ -85,10 +85,29 @@
  */
 #define MENU_HELP_ABOUTS_ITEM_LABEL "Abouts"
 
+/**
+ * \struct ControllerMainMenu
+ * \brief Data structure containing evey element in the main menu
+ *
+ * Declaration of the ControllerMainMenu opaque type
+ */
 typedef struct controller_main_menu_t ControllerMainMenu;
 
+/**
+ * \struct MenuBar
+ * \brief Data structure containing evey element in the menu bar on the top of
+ * the window
+ *
+ * Declaration of the MenuBar opaque type
+ */
 typedef struct menu_bar_t MenuBar;
 
+/**
+ * \struct ControllerMastermind
+ * \brief Data structure containing evey element managed by the controller
+ *
+ * Declaration of the ControllerMastermind opaque type
+ */
 typedef struct controller_mastermind_t ControllerMastermind;
 
 ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vm);
