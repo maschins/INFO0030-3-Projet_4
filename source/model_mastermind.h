@@ -18,12 +18,12 @@
 /**
  * \brief Max pseudo length.
  * */
-#define MAX_PSEUDO_LENGTH 50
+#define MAX_PSEUDO_LENGTH 51
 
 /**
  * \brief Min pseudo length.
  * */
-#define MIN_PSEUDO_LENGTH 5
+#define MIN_PSEUDO_LENGTH 6
 
 /**
  * \brief Minimum number of pawns.

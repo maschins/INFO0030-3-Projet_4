@@ -104,13 +104,6 @@ ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu
       return NULL;
    }
 
-   // Connect signals to buttons.
-   g_signal_connect(G_OBJECT(cmm->nbPawnsSlider), "value-changed", G_CALLBACK(on_nb_pawns_slider_changed), cmm);
-   g_signal_connect(G_OBJECT(cmm->playButton), "clicked", G_CALLBACK(on_play_clicked), cmm);
-   g_signal_connect(G_OBJECT(cmm->guesserButton), "clicked", G_CALLBACK(on_guesser_choosed), cmm);
-   g_signal_connect(G_OBJECT(cmm->proposerButton), "clicked", G_CALLBACK(on_proposer_choosed), cmm);
-   g_signal_connect(G_OBJECT(cmm->saveButton), "clicked", G_CALLBACK(on_save_button_clicked), cmm);
-
    return cmm;
 }
 
@@ -319,6 +312,12 @@ void init_main_menu(ControllerMainMenu *cmm) {
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->quitButton, TRUE, TRUE, 0);
 
    // Connect signals.
+   g_signal_connect(G_OBJECT(cmm->nbPawnsSlider), "value-changed", G_CALLBACK(on_nb_pawns_slider_changed), cmm);
+   g_signal_connect(G_OBJECT(cmm->playButton), "clicked", G_CALLBACK(on_play_clicked), cmm);
+   g_signal_connect(G_OBJECT(cmm->guesserButton), "clicked", G_CALLBACK(on_guesser_choosed), cmm);
+   g_signal_connect(G_OBJECT(cmm->proposerButton), "clicked", G_CALLBACK(on_proposer_choosed), cmm);
+   g_signal_connect(G_OBJECT(cmm->saveButton), "clicked", G_CALLBACK(on_save_button_clicked), cmm);
+   g_signal_connect(G_OBJECT(cmm->quitButton), "clicked", G_CALLBACK(gtk_main_quit), NULL);
    g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
    gtk_widget_show_all(window);
@@ -371,6 +370,8 @@ void init_mastermind(ControllerMastermind *cm) {
    gtk_container_add(GTK_CONTAINER(mainVBox), scoreHBox);
    gtk_container_add(GTK_CONTAINER(window), mainVBox);
 
+   // Connect signals
+   g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate", G_CALLBACK(gtk_main_quit), NULL);
    g_signal_connect(G_OBJECT(cm->applyButton), "clicked", G_CALLBACK(on_apply_clicked), cm);
    g_signal_connect(G_OBJECT(cm->resetButton), "clicked", G_CALLBACK(on_reset_clicked), cm);
    g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -439,6 +440,8 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
    ControllerMastermind *cm = create_controller_mastermind(mm, vm);
    if(cm == NULL)
       gtk_main_quit();
+
+   gtk_widget_hide(get_main_menu_window(cmm->vmm));
 
    init_mastermind(cm);
 }
