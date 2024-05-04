@@ -209,7 +209,7 @@ void destroy_controller_mastermind(ControllerMastermind *cm){
 }
 
 
-MenuBar *create_menu_bar() {
+MenuBar *create_menu_bar(void) {
    MenuBar *menuBar = malloc(sizeof(MenuBar));
    if(menuBar == NULL)
       return NULL;
@@ -339,14 +339,14 @@ void init_mastermind(ControllerMastermind *cm) {
    unsigned int nbCombi = get_nb_combinations(cm->mm);
    unsigned int nbPawns = get_nb_pawns(cm->mm);
 
-   for(int i = 0; i < nbCombi; i++){
-      for(int j = 0; j < nbPawns; j++){
+   for(unsigned int i = 0; i < nbCombi; i++){
+      for(unsigned int j = 0; j < nbPawns; j++){
          gtk_table_attach_defaults(GTK_TABLE(historyTable), get_mastermind_history_combination_button(cm->vm, i, j), j, j + 1, i, i + 1);
          gtk_table_attach(GTK_TABLE(historyTable), get_mastermind_history_feedback_button(cm->vm, i, j), nbPawns + j, nbPawns + j + 1, i, i + 1, 0, 0, 0, 0);
       }
    }
 
-   for(int i = 0; i < nbPawns; i++){
+   for(unsigned int i = 0; i < nbPawns; i++){
       gtk_box_pack_start(GTK_BOX(propositionHBox), cm->propositionButtons[i], TRUE, TRUE, 0);
       g_signal_connect(G_OBJECT(cm->propositionButtons[i]), "clicked", G_CALLBACK(on_proposition_button_clicked), cm);
    }
@@ -354,7 +354,7 @@ void init_mastermind(ControllerMastermind *cm) {
    gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->applyButton, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->resetButton, TRUE, TRUE, 0);
 
-   for(int i = 0; i < NB_PAWN_COLORS - 1; i++) {
+   for(unsigned int i = 0; i < NB_PAWN_COLORS - 1; i++) {
       g_signal_connect(G_OBJECT(cm->colorSelectionButtons[i]), "clicked", G_CALLBACK(on_color_picked), cm);
       gtk_box_pack_start(GTK_BOX(colorSelectionHBox), cm->colorSelectionButtons[i], TRUE, TRUE, 0);
    }

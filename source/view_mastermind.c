@@ -319,7 +319,6 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
 void destroy_view_mastermind(ViewMastermind *vm) {
    if(vm != NULL){
       unsigned int nbCombi = get_nb_combinations(vm->mm);
-      unsigned int nbPawns = get_nb_pawns(vm->mm);
 
       if(vm->historyCombinations != NULL){
          for(unsigned int i = 0; i < nbCombi; i++)

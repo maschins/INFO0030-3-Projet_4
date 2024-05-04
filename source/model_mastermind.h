@@ -77,7 +77,7 @@ typedef struct model_mastermind_t ModelMastermind;
  * */
 typedef struct model_main_menu_t ModelMainMenu;
 
-ModelMainMenu *create_model_main_menu();
+ModelMainMenu *create_model_main_menu(void);
 void destroy_model_main_menu(ModelMainMenu *mmm);
 
 void set_role(ModelMainMenu *mmm, ROLE role);

@@ -41,7 +41,7 @@ struct model_main_menu_t{
 };
 
 
-ModelMainMenu *create_model_main_menu() {
+ModelMainMenu *create_model_main_menu(void) {
    ModelMainMenu *mmm = malloc(sizeof(ModelMainMenu));
 
    mmm->validPseudo = false;

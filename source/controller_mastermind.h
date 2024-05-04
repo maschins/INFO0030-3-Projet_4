@@ -32,7 +32,7 @@ void destroy_controller_main_menu(ControllerMainMenu *cmm);
 ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm);
 void destroy_controller_mastermind(ControllerMastermind *cm);
 
-MenuBar *create_menu_bar();
+MenuBar *create_menu_bar(void);
 
 void init_main_menu(ControllerMainMenu *cmm);
 void init_mastermind(ControllerMastermind *cm);
