@@ -101,6 +101,15 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
       return NULL;
    }
 
+   // Edit error label font size
+   const int newFontSize = 9;
+   PangoFontDescription *font_desc = pango_font_description_new();
+   pango_font_description_set_family(font_desc, "sans");
+   pango_font_description_set_size(font_desc, newFontSize * PANGO_SCALE);
+   gtk_widget_modify_font(vmm->errorLabel, font_desc);
+   pango_font_description_free(font_desc);
+
+
    // Create number of pawns label.
    const char *NB_PAWNS_LABEL = "Number\nof pawns :";
    vmm->nbPawnsLabel = gtk_label_new(NB_PAWNS_LABEL);

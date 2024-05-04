@@ -186,6 +186,7 @@ ModelMainMenu *create_model_main_menu(void) {
    if(mmm == NULL)
       return NULL;
 
+   strcpy(mmm->pseudo, "Guest");
    mmm->validPseudo = false;
    mmm->role = GUESSER;
    mmm->nbPawns = DEFAULT_NB_PAWNS;
