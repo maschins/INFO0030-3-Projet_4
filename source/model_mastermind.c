@@ -428,3 +428,10 @@ void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i) {
    assert(mm != NULL && i < mm->history->nbPawns);
    mm->proposition[i] = mm->selectedColor;
 }
+
+void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition){
+   assert(mm != NULL && proposition != NULL);
+   for (unsigned i = 0; i < mm->history->nbPawns; i++) {
+      mm->proposition[i] = proposition[i];
+   }
+}
