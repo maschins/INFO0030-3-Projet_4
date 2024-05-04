@@ -363,6 +363,7 @@ void init_mastermind(ControllerMastermind *cm) {
    //gtk_box_pack_start(GTK_BOX(scoreHBox), scoreAlignment, TRUE, TRUE, 0);
    //gtk_container_add(GTK_CONTAINER(scoreAlignment), get_mastermind_score_label(cm->vm));
 
+   gtk_container_add(GTK_CONTAINER(mainVBox), cm->menuBar->bar);
    gtk_container_add(GTK_CONTAINER(mainVBox), historyTable);
    gtk_container_add(GTK_CONTAINER(mainVBox), propositionControlHBox);
    gtk_container_add(GTK_CONTAINER(mainVBox), propositionHBox);
