@@ -1,3 +1,15 @@
+/**
+ * \file model_mastermind.h
+ * \brief Controller header of mastermind game
+ * \authors Fraiponts Thomas, Schins Martin
+ * \version 0.1
+ * \date 05/05/2024
+ *
+ * INFO0030 : Projet de programmation 4, Mastermind.
+ * MVC pattern controller header for the mastermind game.
+ *
+ * */
+
 #ifndef CONTROLLER_MASTERMIND_H
 #define CONTROLLER_MASTERMIND_H
 
@@ -5,19 +17,72 @@
 #include "model_mastermind.h"
 #include "view_mastermind.h"
 
+/**
+ * \brief Label on the save button
+ */
 #define SAVE_BUTTON_LABEL "Save"
+
+/**
+ * \brief Label on the play button
+ */
 #define PLAY_BUTTON_LABEL "Play"
+
+/**
+ * \brief Label on the settings button
+ */
 #define SETTINGS_BUTTON_LABEL "Settings"
+
+/**
+ * \brief Label on the quit button
+ */
 #define QUIT_BUTTON_LABEL "Quit"
+
+/**
+ * \brief Label on the guesser selector
+ */
 #define GUESSER_BUTTON_LABEL "Guesser"
+
+/**
+ * \brief Label on the proposer selector
+ */
 #define PROPOSER_BUTTON_LABEL "Proposer"
 
+
+/**
+ * \brief Label on the bar for the game subwindow
+ */
 #define BAR_GAME_ITEM_LABEL "Game"
+
+/**
+ * \brief Label on the bar for the help subwindow containing abouts
+ */
 #define BAR_HELP_ITEM_LABEL "Help"
+
+/**
+ * \brief Label on the bar for the main menu button
+ */
 #define MENU_GAME_MAIN_MENU_ITEM_LABEL "Main menu"
+
+/**
+ * \brief Label on the bar to start a new game
+ */
 #define MENU_GAME_NEW_GAME_ITEM_LABEL "New game"
+
+/**
+ * \brief Label on the button in the Game item allowing to display the stored
+ * scores
+ */
 #define MENU_GAME_SCORE_ITEM_LABEL "Score"
+
+/**
+ * \brief Label on the button in the Game item allowing to quit the game
+ */
 #define MENU_GAME_QUIT_ITEM_LABEL "Quit"
+
+/**
+ * \brief Label on the button in the Help item allowing to display the about
+ * window
+ */
 #define MENU_HELP_ABOUTS_ITEM_LABEL "Abouts"
 
 typedef struct controller_main_menu_t ControllerMainMenu;

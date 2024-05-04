@@ -1,6 +1,6 @@
 /**
  * \file model_mastermind.h
- * \brief Mdoel header of matsermind game
+ * \brief Model header of mastermind game
  * \authors Fraiponts Thomas, Schins Martin
  * \version 0.1
  * \date 04/05/2024
