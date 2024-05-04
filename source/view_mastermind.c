@@ -182,20 +182,20 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
    }
 
    const char *COLOR_IMAGE_FILENAMES[] = {
-      "../images/blue.png",
-      "../images/cyan.png",
-      "../images/green.png",
-      "../images/orange.png",
-      "../images/purple.png",
-      "../images/red.png",
-      "../images/yellow.png",
-      "../images/default.png",
+      "./images/blue.png",
+      "./images/cyan.png",
+      "./images/green.png",
+      "./images/orange.png",
+      "./images/purple.png",
+      "./images/red.png",
+      "./images/yellow.png",
+      "./images/default.png",
    };
 
    const char *FEEDBACK_IMAGE_FILENAMES[] = {
-      "../images/black.png",
-      "../images/white.png",
-      "../images/no_feedback.png"
+      "./images/black.png",
+      "./images/white.png",
+      "./images/no_feedback.png"
    };
 
    vm->colorImagePixbufs = malloc(NB_PAWN_COLORS * sizeof(GdkPixbuf *));

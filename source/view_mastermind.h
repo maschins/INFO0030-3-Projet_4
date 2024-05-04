@@ -10,7 +10,7 @@
 #define MASTERMIND_WINDOW_LABEL "Mastermind"
 #define MASTERMIND_WINDOW_SIZE 0.8
 
-#define LOGO_PATH "../images/title.png"
+#define LOGO_PATH "./images/title.png"
 #define LOGO_WIDTH MAIN_MENU_WINDOW_WIDTH
 #define LOGO_HEIGHT (0.2 * MAIN_MENU_WINDOW_HEIGHT)
 
