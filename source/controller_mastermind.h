@@ -110,6 +110,20 @@ typedef struct menu_bar_t MenuBar;
  */
 typedef struct controller_mastermind_t ControllerMastermind;
 
+/**
+ * \fn ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm,
+ * ViewMainMenu *vm)
+ * \brief Allocates space and initialize the ControllerMainMenu structure
+ *
+ * \param mmm Pointer on the ModelMainMenu structure
+ * \param vm Pointer of the ViewMainMenu structure
+ *
+ * \pre mmm != NULL, vm != NULL
+ * \post the structure of the controller main menu is generated
+ *
+ * \return A pointer on the created structure
+ *         NULL if an error happened
+ */
 ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vm);
 void destroy_controller_main_menu(ControllerMainMenu *cmm);
 
