@@ -25,40 +25,80 @@ struct history_t{
 struct model_mastermind_t{
    ROLE role;
    char savedPseudo[MAX_PSEUDO_LENGTH]; /*!< Player pseudo */ 
-   bool inGame;                     /*!< State of the game */
-   PAWN_COLOR selectedColor;        /*!< Selected color */
-   PAWN_COLOR *proposition;         /*!< Guesser proposition */
-   PAWN_COLOR *solution;            /*!< Proposer combination */
-   History *history;                /*!< Combinations settings and history */
+   bool inGame;                         /*!< State of the game */
+   PAWN_COLOR selectedColor;            /*!< Selected color */
+   PAWN_COLOR *proposition;             /*!< Guesser proposition */
+   PAWN_COLOR *solution;                /*!< Proposer combination */
+   History *history;                    /*!< Combinations settings and history */
 };
 
 
 struct model_main_menu_t{
-   char pseudo[MAX_PSEUDO_LENGTH];
-   bool validPseudo;
-   ROLE role;
-   unsigned int nbPawns;
+   char pseudo[MAX_PSEUDO_LENGTH];  /*!< Saved player pseudo */
+   bool validPseudo;                /*!< State of pseudo validity */
+   ROLE role;                       /*!< Player role */
+   unsigned int nbPawns;            /*!< Number of pawns selected */
 };
 
 
-ModelMainMenu *create_model_main_menu(void) {
-   ModelMainMenu *mmm = malloc(sizeof(ModelMainMenu));
-
-   mmm->validPseudo = false;
-   mmm->role = GUESSER;
-   mmm->nbPawns = DEFAULT_NB_PAWNS;
-
-   return mmm;
-}
-
-
-void destroy_model_main_menu(ModelMainMenu *mmm) {
-   if(mmm != NULL)
-      free(mmm);
-}
+/**
+ * \fn static Combination *create_combination(unsigned int nbPawns)
+ * \brief Allocates memory for Combination structure and returns a pointer to Combination.
+ * 
+ * \param nbPawns Number of pawns of a combination. 
+ * 
+ * @post The memory for a Combination structure is allocated.
+ * 
+ * \return combination a pointer to Combination,
+ *         NULL in case of error.
+ * 
+ * */
+static Combination *create_combination(unsigned int nbPawns);
 
 
-Combination *create_combination(unsigned int nbPawns) {
+/**
+ * \fn static void destroy_combination(Combination *combination)
+ * \brief Free the memory allocated to a Combination structure.
+ * 
+ * \param combination a valid pointer to Combination.
+ * 
+ * @pre combination != NULL.
+ * @post The memory for the Combination structure is freed.
+ * 
+ * */
+static void destroy_combination(Combination *combination);
+
+
+/**
+ * \fn static History *create_history(unsigned int nbPawns, unsigned int nbCombinations)
+ * \brief Allocates memory for History structure and returns a pointer to History.
+ * 
+ * \param nbPawns Number of pawns of a combination.
+ * \param nbCombinations Number of combinations that the player can propose during the game. 
+ * 
+ * @post The memory for a History structure is allocated.
+ * 
+ * \return history a pointer to History,
+ *         NULL in case of error.
+ * 
+ * */
+static History *create_history(unsigned int nbPawns, unsigned int nbCombinations);
+
+
+/**
+ * \fn static void destroy_history(History *history)
+ * \brief Free the memory allocated to a History structure.
+ * 
+ * \param history a valid pointer to History.
+ * 
+ * @pre history != NULL.
+ * @post The memory for the History structure is freed.
+ * 
+ * */
+static void destroy_history(History *history);
+
+
+static Combination *create_combination(unsigned int nbPawns) {
    Combination *combination = malloc(sizeof(Combination));
    if(combination == NULL)
       return NULL;
@@ -79,7 +119,7 @@ Combination *create_combination(unsigned int nbPawns) {
 }
 
 
-void destroy_combination(Combination *combination) {
+static void destroy_combination(Combination *combination) {
    if(combination != NULL){
       if(combination->pawns != NULL)
          free(combination->pawns);
@@ -88,7 +128,7 @@ void destroy_combination(Combination *combination) {
 }
 
 
-History *create_history(unsigned int nbPawns, unsigned int nbCombinations) {
+static History *create_history(unsigned int nbPawns, unsigned int nbCombinations) {
    History *history = malloc(sizeof(History));
    if(history == NULL)
       return NULL;
@@ -98,14 +138,14 @@ History *create_history(unsigned int nbPawns, unsigned int nbCombinations) {
    history->currentIndex = nbCombinations - 1;
 
    history->combinations = malloc(nbCombinations * sizeof(Combination *));
-   if(history->combinations == NULL) {
+   if(history->combinations == NULL){
       free(history);
       return NULL;
    }
 
-   for(unsigned int i = 0; i < nbCombinations; i++) {
+   for(unsigned int i = 0; i < nbCombinations; i++){
       history->combinations[i] = create_combination(nbPawns);
-      if(history->combinations[i] == NULL) {
+      if(history->combinations[i] == NULL){
          destroy_history(history);
          return NULL;
       }
@@ -115,17 +155,36 @@ History *create_history(unsigned int nbPawns, unsigned int nbCombinations) {
 }
 
 
-void destroy_history(History *history) {
+static void destroy_history(History *history) {
    if(history != NULL){
       if(history->combinations != NULL){
-         for(unsigned int i = 0; i < history->nbCombinations; i++){
+         for(unsigned int i = 0; i < history->nbCombinations; i++)
             if(history->combinations[i] != NULL)
                destroy_combination(history->combinations[i]);
-         }
+         
          free(history->combinations);
       }
       free(history);
    }
+}
+
+
+ModelMainMenu *create_model_main_menu(void) {
+   ModelMainMenu *mmm = malloc(sizeof(ModelMainMenu));
+   if(mmm == NULL)
+      return NULL;
+
+   mmm->validPseudo = false;
+   mmm->role = GUESSER;
+   mmm->nbPawns = DEFAULT_NB_PAWNS;
+
+   return mmm;
+}
+
+
+void destroy_model_main_menu(ModelMainMenu *mmm) {
+   if(mmm != NULL)
+      free(mmm);
 }
 
 
@@ -134,6 +193,7 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
    if(mm == NULL)
       return NULL;
 
+   // Copy main menu settings in game model.
    mm->role = mmm->role;
    strcpy(mm->savedPseudo, mmm->pseudo);
    mm->inGame = true;
@@ -145,14 +205,16 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
       return NULL;
    }
 
-   for(unsigned int i = 0; i < mmm->nbPawns; i++)
-      mm->proposition[i] = PAWN_DEFAULT;
-
    mm->solution = malloc(mmm->nbPawns * sizeof(FEEDBACK_COLOR));
    if(mm->solution == NULL){
       free(mm->proposition);
       free(mm);
       return NULL;
+   }
+
+   for(unsigned int i = 0; i < mmm->nbPawns; i++){
+      mm->proposition[i] = PAWN_DEFAULT;
+      mm->solution[i] = PAWN_DEFAULT;
    }
 
    mm->history = create_history(mmm->nbPawns, NB_COMBINATIONS);
@@ -162,9 +224,6 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
       free(mm);
       return NULL;
    }
-
-   if(mm->role == GUESSER)
-      generate_random_solution(mm);
 
    return mm;
 }
@@ -193,14 +252,6 @@ void generate_random_solution(ModelMastermind *mm) {
 }
 
 
-void reset_proposition(ModelMastermind *mm) {
-   assert(mm != NULL);
-
-   for(unsigned int i = 0; i < mm->history->nbPawns; i++)
-      mm->proposition[i] = PAWN_DEFAULT;
-}
-
-
 bool verify_proposition(ModelMastermind *mm) {
    assert(mm != NULL);
 
@@ -212,11 +263,11 @@ bool verify_proposition(ModelMastermind *mm) {
 }
 
 
-void set_proposition_in_history(ModelMastermind *mm) {
+void reset_proposition(ModelMastermind *mm) {
    assert(mm != NULL);
 
    for(unsigned int i = 0; i < mm->history->nbPawns; i++)
-      mm->history->combinations[mm->history->currentIndex]->pawns[i] = mm->proposition[i];
+      mm->proposition[i] = PAWN_DEFAULT;
 }
 
 
@@ -264,15 +315,11 @@ void update_current_combination_index(ModelMastermind *mm) {
 }
 
 
-void set_role(ModelMainMenu *mmm, ROLE role) {
-   assert(mmm != NULL);
-   mmm->role = role;
-}
+void verify_end_game(ModelMastermind *mm) {
+   assert(mm != NULL);
 
-
-void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns) {
-   assert(mmm != NULL);
-   mmm->nbPawns = nbPawns;
+   if(mm->history->combinations[mm->history->currentIndex]->nbCorrect == mm->history->nbPawns || mm->history->currentIndex <= 0)
+      mm->inGame = false;
 }
 
 
@@ -288,12 +335,6 @@ char *get_pseudo(ModelMastermind *mm) {
 }
 
 
-void set_pseudo(ModelMainMenu *mmm, char *pseudo) {
-   assert(mmm != NULL && strlen(pseudo) <= MAX_PSEUDO_LENGTH);
-   strcpy(mmm->pseudo, pseudo);
-}
-
-
 unsigned int get_nb_pawns(ModelMastermind *mm) {
    assert(mm != NULL);
    return mm->history->nbPawns;
@@ -303,18 +344,6 @@ unsigned int get_nb_pawns(ModelMastermind *mm) {
 unsigned int get_nb_combinations(ModelMastermind *mm) {
    assert(mm != NULL);
    return mm->history->nbCombinations;
-}
-
-
-void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor) {
-   assert(mm != NULL);
-   mm->selectedColor = newColor;
-}
-
-
-void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i) {
-   assert(mm != NULL && i < mm->history->nbPawns);
-   mm->proposition[i] = mm->selectedColor;
 }
 
 
@@ -351,9 +380,39 @@ PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex
 }
 
 
-void verify_end_game(ModelMastermind *mm) {
+void set_proposition_in_history(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   if(mm->history->combinations[mm->history->currentIndex]->nbCorrect == mm->history->nbPawns || mm->history->currentIndex <= 0)
-      mm->inGame = false;
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++)
+      mm->history->combinations[mm->history->currentIndex]->pawns[i] = mm->proposition[i];
+}
+
+
+void set_role(ModelMainMenu *mmm, ROLE role) {
+   assert(mmm != NULL);
+   mmm->role = role;
+}
+
+
+void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns) {
+   assert(mmm != NULL);
+   mmm->nbPawns = nbPawns;
+}
+
+
+void set_pseudo(ModelMainMenu *mmm, char *pseudo) {
+   assert(mmm != NULL && strlen(pseudo) <= MAX_PSEUDO_LENGTH);
+   strcpy(mmm->pseudo, pseudo);
+}
+
+
+void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor) {
+   assert(mm != NULL);
+   mm->selectedColor = newColor;
+}
+
+
+void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i) {
+   assert(mm != NULL && i < mm->history->nbPawns);
+   mm->proposition[i] = mm->selectedColor;
 }
