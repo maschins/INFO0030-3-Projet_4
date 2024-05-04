@@ -131,8 +131,9 @@ int get_current_index(ModelMastermind *mm);
 unsigned int get_nb_correct_last_combination(ModelMastermind *mm);
 unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
 PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
-
 void set_proposition_in_history(ModelMastermind *mm);
+
+char *get_main_menu_pseudo(ModelMainMenu *mmm);
 void set_role(ModelMainMenu *mmm, ROLE role);
 void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns);
 void set_pseudo(ModelMainMenu *mmm, char *pseudo);

@@ -29,7 +29,7 @@ typedef struct controller_mastermind_t ControllerMastermind;
 ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vm);
 void destroy_controller_main_menu(ControllerMainMenu *cmm);
 
-ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm);
+ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm, ControllerMainMenu *cmm);
 void destroy_controller_mastermind(ControllerMastermind *cm);
 
 MenuBar *create_menu_bar(void);
@@ -43,6 +43,7 @@ void on_nb_pawns_slider_changed(GtkWidget *slider, gpointer data);
 void on_guesser_choosed(GtkWidget *radioButton, ControllerMainMenu *cmm);
 void on_proposer_choosed(GtkWidget *radioButton, ControllerMainMenu *cmm);
 void on_play_clicked(GtkWidget *button, gpointer data);
+void on_main_menu_clicked(GtkWidget *button, gpointer data);
 void on_color_picked(GtkWidget *button, gpointer data);
 void on_save_button_clicked(GtkWidget *button, gpointer data);
 void on_proposition_button_clicked(GtkWidget *button, gpointer data);

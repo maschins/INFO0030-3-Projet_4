@@ -9,8 +9,11 @@ struct view_main_menu_t{
    GtkWidget *window;
    GtkWidget *mainVBox;
    GtkWidget *pseudoHBox;
+   GtkWidget *welcomeHBox;
    GtkWidget *nbPawnsHBox;
    GtkWidget *logo;
+   GtkWidget *welcomeLabel;
+   GtkWidget *currentPseudoLabel;
    GtkWidget *pseudoLabel;
    GtkWidget *errorLabel;
    GtkWidget *nbPawnsLabel;
@@ -72,6 +75,12 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
       return NULL;
    }
 
+   vmm->welcomeHBox = gtk_hbox_new(FALSE, 0);
+   if(vmm->welcomeHBox == NULL){
+      free(vmm);
+      return NULL;
+   }
+
    // Create horizontal box for number of pawns stuff.
    vmm->nbPawnsHBox = gtk_hbox_new(FALSE, 0);
    if(vmm->nbPawnsHBox == NULL){
@@ -86,6 +95,19 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
       return NULL;
    }
 
+   const char *WELCOME_LABEL = "Welcome ";
+   vmm->welcomeLabel = gtk_label_new(WELCOME_LABEL);
+   if(vmm->welcomeLabel == NULL){
+      free(vmm);
+      return NULL;
+   }
+
+   vmm->currentPseudoLabel = gtk_label_new(get_main_menu_pseudo(mmm));
+   if(vmm->currentPseudoLabel == NULL){
+      free(vmm);
+      return NULL;
+   }
+
    // Create pseudo label.
    const char *PSEUDO_LABEL = "Pseudo : ";
    vmm->pseudoLabel = gtk_label_new(PSEUDO_LABEL);
@@ -95,20 +117,11 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
    }
 
    // Create error label.
-   vmm->errorLabel = gtk_label_new("Current pseudo : Guest");
+   vmm->errorLabel = gtk_label_new(NULL);
    if(vmm->errorLabel == NULL){
       free(vmm);
       return NULL;
    }
-
-   // Edit error label font size
-   const int newFontSize = 9;
-   PangoFontDescription *font_desc = pango_font_description_new();
-   pango_font_description_set_family(font_desc, "sans");
-   pango_font_description_set_size(font_desc, newFontSize * PANGO_SCALE);
-   gtk_widget_modify_font(vmm->errorLabel, font_desc);
-   pango_font_description_free(font_desc);
-
 
    // Create number of pawns label.
    const char *NB_PAWNS_LABEL = "Number\nof pawns :";
@@ -491,6 +504,12 @@ GtkWidget *get_main_menu_pseudo_hbox(ViewMainMenu *vmm) {
 }
 
 
+GtkWidget *get_main_menu_welcome_hbox(ViewMainMenu *vmm) {
+   assert(vmm != NULL);
+   return vmm->welcomeHBox;
+}
+
+
 GtkWidget *get_main_menu_nb_pawns_hbox(ViewMainMenu *vmm) {
    assert(vmm != NULL);
    return vmm->nbPawnsHBox;
@@ -512,6 +531,18 @@ GtkWidget *get_main_menu_pseudo_label(ViewMainMenu *vmm) {
 GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm) {
    assert(vmm != NULL);
    return vmm->nbPawnsLabel;
+}
+
+
+GtkWidget *get_main_menu_welcome_label(ViewMainMenu *vmm) {
+   assert(vmm != NULL);
+   return vmm->welcomeLabel;
+}
+
+
+GtkWidget *get_main_menu_current_pseudo_label(ViewMainMenu *vmm) {
+   assert(vmm != NULL);
+   return vmm->currentPseudoLabel;
 }
 
 

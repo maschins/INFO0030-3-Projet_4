@@ -401,6 +401,12 @@ void set_proposition_in_history(ModelMastermind *mm) {
 }
 
 
+char *get_main_menu_pseudo(ModelMainMenu *mmm) {
+   assert(mmm != NULL);
+   return mmm->pseudo;
+}
+
+
 void set_role(ModelMainMenu *mmm, ROLE role) {
    assert(mmm != NULL);
    mmm->role = role;

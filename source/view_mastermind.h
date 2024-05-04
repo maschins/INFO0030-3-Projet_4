@@ -4,15 +4,15 @@
 #include "model_mastermind.h"
 
 #define MAIN_MENU_WINDOW_LABEL "Main menu"
-#define MAIN_MENU_WINDOW_WIDTH 300
-#define MAIN_MENU_WINDOW_HEIGHT 600
+#define MAIN_MENU_WINDOW_WIDTH 400
+#define MAIN_MENU_WINDOW_HEIGHT 800
 
 #define MASTERMIND_WINDOW_LABEL "Mastermind"
 #define MASTERMIND_WINDOW_SIZE 0.8
 
 #define ABOUTS_WINDOW_LABEL "Abouts"
 
-#define LOGO_PATH "./images/title.png"
+#define LOGO_PATH "./images/title.png" 
 #define LOGO_WIDTH MAIN_MENU_WINDOW_WIDTH
 #define LOGO_HEIGHT (0.2 * MAIN_MENU_WINDOW_HEIGHT)
 
@@ -40,10 +40,13 @@ GdkPixbuf *get_feedback_image_pixbuf(ViewMastermind *vm, FEEDBACK_COLOR color);
 GtkWidget *get_main_menu_window(ViewMainMenu *vmm);
 GtkWidget *get_main_menu_main_vbox(ViewMainMenu *vmm);
 GtkWidget *get_main_menu_pseudo_hbox(ViewMainMenu *vmm);
+GtkWidget *get_main_menu_welcome_hbox(ViewMainMenu *vmm);
 GtkWidget *get_main_menu_nb_pawns_hbox(ViewMainMenu *vmm);
 GtkWidget *get_main_menu_logo(ViewMainMenu *vmm);
 GtkWidget *get_main_menu_pseudo_label(ViewMainMenu *vmm);
 GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm);
+GtkWidget *get_main_menu_welcome_label(ViewMainMenu *vmm);
+GtkWidget *get_main_menu_current_pseudo_label(ViewMainMenu *vmm);
 GtkWidget *get_main_menu_error_label(ViewMainMenu *vmm);
 
 unsigned int get_mastermind_small_button_size(ViewMastermind *vm);

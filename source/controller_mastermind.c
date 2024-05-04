@@ -31,6 +31,7 @@ struct menu_bar_t{
 
 
 struct controller_mastermind_t{
+   ControllerMainMenu *cmm;
    ModelMastermind *mm;
    ViewMastermind *vm;
    GtkWidget *aboutsOkayButton;
@@ -115,13 +116,14 @@ void destroy_controller_main_menu(ControllerMainMenu *cmm) {
 }
 
 
-ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm){
+ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm, ControllerMainMenu *cmm){
    assert(vm != NULL && mm != NULL);
 
    ControllerMastermind *cm = malloc(sizeof(ControllerMastermind));
    if(cm == NULL)
       return NULL;
 
+   cm->cmm = cmm;
    cm->mm = mm;
    cm->vm = vm;
 
@@ -298,6 +300,7 @@ void init_main_menu(ControllerMainMenu *cmm) {
    GtkWidget *window = get_main_menu_window(cmm->vmm);
    GtkWidget *mainVBox = get_main_menu_main_vbox(cmm->vmm);
    GtkWidget *pseudoHBox = get_main_menu_pseudo_hbox(cmm->vmm);
+   GtkWidget *welcomeHBox = get_main_menu_welcome_hbox(cmm->vmm);
    GtkWidget *nbPawnsHBox = get_main_menu_nb_pawns_hbox(cmm->vmm);
 
    gtk_container_add(GTK_CONTAINER(window), mainVBox);
@@ -307,13 +310,34 @@ void init_main_menu(ControllerMainMenu *cmm) {
    gtk_box_pack_start(GTK_BOX(nbPawnsHBox), get_main_menu_nb_pawns_label(cmm->vmm), FALSE, FALSE, 10);
    gtk_box_pack_start(GTK_BOX(nbPawnsHBox), cmm->nbPawnsSlider, TRUE, TRUE, 0);
 
+   // Add free space between slider and welcome message.
+   GtkWidget *topMargin = gtk_alignment_new(0, 0, 0, 0);
+   gtk_widget_set_size_request(topMargin, -1, 20);
+   gtk_container_add(GTK_CONTAINER(mainVBox), topMargin);
+
+   const int smallFontSize = 9;
+   PangoFontDescription *font_desc = pango_font_description_new();
+   pango_font_description_set_family(font_desc, "sans");
+
+   gtk_container_add(GTK_CONTAINER(mainVBox), welcomeHBox);
+   gtk_box_pack_start(GTK_BOX(welcomeHBox), get_main_menu_welcome_label(cmm->vmm), FALSE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(welcomeHBox), get_main_menu_current_pseudo_label(cmm->vmm), FALSE, FALSE, 0);
+
    gtk_container_add(GTK_CONTAINER(mainVBox), pseudoHBox);
    gtk_box_pack_start(GTK_BOX(pseudoHBox), get_main_menu_pseudo_label(cmm->vmm), TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(pseudoHBox), cmm->pseudoEntry, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(pseudoHBox), cmm->saveButton, TRUE, TRUE, 0);
    
    gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_error_label(cmm->vmm), TRUE, TRUE, 0);
-   gtk_misc_set_alignment(GTK_MISC(get_main_menu_error_label(cmm->vmm)), 0, 0);
+   // Small font for error message.
+   pango_font_description_set_size(font_desc, smallFontSize * PANGO_SCALE);
+   gtk_widget_modify_font(get_main_menu_error_label(cmm->vmm), font_desc);
+   pango_font_description_free(font_desc);
+   gtk_misc_set_alignment(GTK_MISC(get_main_menu_error_label(cmm->vmm)), 0.5, 0.5);
+
+   // Add free space.
+   gtk_container_add(GTK_CONTAINER(mainVBox), topMargin);
+
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->guesserButton, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->proposerButton, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->playButton, TRUE, TRUE, 0);
@@ -388,6 +412,7 @@ void init_mastermind(ControllerMastermind *cm) {
    // Connect signals
    g_signal_connect(G_OBJECT(cm->aboutsOkayButton), "clicked", G_CALLBACK(hide_window), aboutsWindow);
 
+   g_signal_connect(G_OBJECT(cm->menuBar->itemMainMenu), "activate", G_CALLBACK(on_main_menu_clicked), cm);
    g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate", G_CALLBACK(gtk_main_quit), NULL);
    g_signal_connect(G_OBJECT(cm->menuBar->itemAbouts), "activate", G_CALLBACK(show_window), aboutsWindow);
    g_signal_connect(G_OBJECT(cm->applyButton), "clicked", G_CALLBACK(on_apply_clicked), cm);
@@ -453,6 +478,7 @@ void on_save_button_clicked(GtkWidget *button, gpointer data) {
       gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_TOO_SHORT_ERROR);
    }
    else{
+      gtk_label_set_text(GTK_LABEL(get_main_menu_current_pseudo_label(cmm->vmm)), pseudo);
       const char *PSEUDO_GOOD = "Pseudo saved !";
       gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_GOOD);
       set_pseudo(cmm->mmm, (char *)pseudo);
@@ -473,13 +499,30 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
    if(vm == NULL)
       gtk_main_quit();
 
-   ControllerMastermind *cm = create_controller_mastermind(mm, vm);
+   ControllerMastermind *cm = create_controller_mastermind(mm, vm, cmm);
    if(cm == NULL)
       gtk_main_quit();
 
    gtk_widget_hide(get_main_menu_window(cmm->vmm));
 
    init_mastermind(cm);
+}
+
+
+void on_main_menu_clicked(GtkWidget *button, gpointer data) {
+   assert(button != NULL && data != NULL);
+
+   ControllerMastermind *cm = (ControllerMastermind *)data;
+
+   hide_window(button, get_mastermind_window(cm->vm));
+   show_window(button, get_main_menu_window(cm->cmm->vmm));
+
+   ModelMastermind *mm = cm->mm;
+   ViewMastermind *vm = cm->vm;
+
+   destroy_controller_mastermind(cm); 
+   destroy_view_mastermind(vm);
+   destroy_model_mastermind(mm);
 }
 
 
