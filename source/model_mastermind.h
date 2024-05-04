@@ -1,3 +1,15 @@
+/**
+ * \file model_mastermind.h
+ * \brief Mdoel header of matsermind game
+ * \authors Fraiponts Thomas, Schins Martin
+ * \version 0.1
+ * \date 04/05/2024
+ * 
+ * INFO0030 : Projet de programmation 4, Mastermind.
+ * MVC pattern model header for the mastermind game.
+ * 
+ * */
+
 #include <stdbool.h>
 
 #ifndef __MODEL_MASTERMIND__
