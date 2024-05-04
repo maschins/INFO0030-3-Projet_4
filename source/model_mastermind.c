@@ -16,6 +16,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 
 #include "model_mastermind.h"
 
@@ -42,6 +43,7 @@ struct model_mastermind_t{
    PAWN_COLOR *proposition;             /*!< Guesser proposition */
    PAWN_COLOR *solution;                /*!< Proposer combination */
    History *history;                    /*!< Combinations settings and history */
+   Combination **configs;       /*!< All the possible configurations */
 };
 
 
@@ -235,6 +237,11 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
       free(mm->proposition);
       free(mm);
       return NULL;
+   }
+
+   mm->configs = malloc(pow(7, mmm->nbPawns) * sizeof (Combination *));
+   for (unsigned i = 0; i < pow(7, mmm->nbPawns); i++) {
+      mm->configs[i] = create_combination(mmm->nbPawns);
    }
 
    return mm;
