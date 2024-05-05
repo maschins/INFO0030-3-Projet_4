@@ -618,9 +618,6 @@ SavedScores *load_scores(const char *filePath) {
    if(save == NULL)
       return NULL;
 
-
-   save->length = 1;
-
    if(access(filePath, F_OK) == 0){
       printf("Previous save found\n");
       FILE *pFile = fopen(filePath, "r");
@@ -628,7 +625,7 @@ SavedScores *load_scores(const char *filePath) {
          return NULL; // File name is ill-formed
       }
 
-      if(!fscanf(pFile, "%u \n", &save->length)){
+      if(!fscanf(pFile, "%u\n", &save->length)){
          free(save);
          fclose(pFile);
          return NULL;//File content ill-formed
@@ -641,7 +638,7 @@ SavedScores *load_scores(const char *filePath) {
          return NULL;
       }
 
-      for(unsigned i = 0; save->length + 1 > i; i++){
+      for(unsigned i = 0; save->length > i; i++){
          save->savedScores[i] = malloc(sizeof(Score));
          if(save->savedScores[i] == NULL){
             for(unsigned j = 0; j < i; j++){
@@ -652,7 +649,7 @@ SavedScores *load_scores(const char *filePath) {
             fclose(pFile);
             return NULL;
          }
-         if(!fscanf(pFile, "%s %u \n", save->savedScores[i]->pseudo,
+         if(!fscanf(pFile, "%s %u\n", save->savedScores[i]->pseudo,
                     &save->savedScores[i]->score)){
             for(unsigned j = 0; j < i; j++){
                free(save->savedScores[j]);
@@ -661,19 +658,12 @@ SavedScores *load_scores(const char *filePath) {
             fclose(pFile);
             return NULL;
          }
-         printf("Name: %s, Score: %u", save->savedScores[i]->pseudo,
-                save->savedScores[i]->score);
       }
    } else{
+      save->length = 0;
       printf("No previous save\n");
-      save->savedScores = malloc(save->length * sizeof(Score *));
+      save->savedScores = malloc(sizeof(Score *));
       if(save->savedScores == NULL){
-         free(save);
-         return NULL;
-      }
-      save->savedScores[0] = malloc(sizeof(Score));
-      if(save->savedScores[0] == NULL){
-         free(save->savedScores);
          free(save);
          return NULL;
       }
@@ -690,9 +680,12 @@ int write_scores(SavedScores *scores, const char *filePath) {
       return -1; // File name is ill-formed
    }
 
-   fprintf(pFile, "%u \n", scores->length);
+   fprintf(pFile, "%u\n", scores->length);
+
    for(unsigned i = 0; i < scores->length; i++){
-      fprintf(pFile, "%s %u \n", scores->savedScores[i]->pseudo,
+      printf("%s %u\n", scores->savedScores[i]->pseudo,
+             scores->savedScores[i]->score);
+      fprintf(pFile, "%s %u\n", scores->savedScores[i]->pseudo,
               scores->savedScores[i]->score);
    }
 
@@ -776,13 +769,43 @@ static void update_score(ModelMastermind *mm) {
 
    for(unsigned i = 0; i < mm->save->length && !alreadySavedPlayer; i++){
       if(!strcmp(mm->save->savedScores[i]->pseudo, mm->savedPseudo)){
-         mm->save->savedScores[i] += get_current_index(mm);
+         printf("Player found in save, pseudo: %s score: %u index: %u\n",mm->save->savedScores[i]->pseudo,
+                mm->save->savedScores[i]->score, i);
+         mm->save->savedScores[i]->score += 1;
+         printf("Player found in save, pseudo: %s score: %u index: %u\n",
+                mm->save->savedScores[i]->pseudo,
+                mm->save->savedScores[i]->score, i);
          alreadySavedPlayer = true;
       }
    }
 
-   if(alreadySavedPlayer == false) {
-      strcpy(mm->save->savedScores[mm->save->length]->pseudo, mm->savedPseudo);
-      mm->save->savedScores[mm->save->length]->score = get_current_index(mm);
+   if(alreadySavedPlayer == false){
+      mm->save->length += 1;
+      Score **tmp = realloc(mm->save->savedScores,
+                            mm->save->length * sizeof(Score *));
+      if(tmp == NULL){
+         for(unsigned j = 0; j < mm->save->length-1; j++){
+            free(mm->save->savedScores[j]);
+         }
+         free(mm->save->savedScores);
+         free(mm->save);
+      }
+
+      else{
+         mm->save->savedScores = tmp;
+         mm->save->savedScores[mm->save->length-1] = malloc(sizeof (Score));
+         if(mm->save->savedScores[mm->save->length-1] == NULL) {
+            for(unsigned j = 0; j < mm->save->length-2; j++){
+               free(mm->save->savedScores[j]);
+            }
+            free(mm->save->savedScores);
+            free(mm->save);
+         }
+         else{
+            strcpy(mm->save->savedScores[mm->save->length - 1]->pseudo,
+                   mm->savedPseudo);
+            mm->save->savedScores[mm->save->length - 1]->score = 1;
+         }
+      }
    }
 }

@@ -609,6 +609,8 @@ void on_main_menu_clicked(GtkWidget *button, gpointer data) {
 
    ControllerMastermind *cm = (ControllerMastermind *) data;
 
+   write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
+
    hide_window(button, get_mastermind_window(cm->vm));
    show_window(button, get_main_menu_window(cm->cmm->vmm));
 
