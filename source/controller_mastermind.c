@@ -23,7 +23,6 @@ struct menu_bar_t{
    GtkWidget *itemGame;
    GtkWidget *itemHelp;
    GtkWidget *itemMainMenu;
-   GtkWidget *itemNewGame;
    GtkWidget *itemScore;
    GtkWidget *itemQuit;
    GtkWidget *itemAbouts;
@@ -273,12 +272,6 @@ MenuBar *create_menu_bar(void) {
       return NULL;
    }
 
-   menuBar->itemNewGame = gtk_menu_item_new_with_label(MENU_GAME_NEW_GAME_ITEM_LABEL);
-   if(menuBar->itemNewGame == NULL){
-      free(menuBar);
-      return NULL;
-   }
-
    menuBar->itemScore = gtk_menu_item_new_with_label(MENU_GAME_SCORE_ITEM_LABEL);
    if(menuBar->itemScore == NULL){
       free(menuBar);
@@ -304,7 +297,6 @@ MenuBar *create_menu_bar(void) {
    gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->bar), menuBar->itemHelp);
    
    gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemMainMenu);
-   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemNewGame);
    gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemScore);
    gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemQuit);
    
