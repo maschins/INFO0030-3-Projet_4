@@ -59,6 +59,7 @@ GtkWidget *get_mastermind_abouts_label(ViewMastermind *vm);
 GtkWidget *get_mastermind_window(ViewMastermind *vm);
 GtkWidget *get_mastermind_main_vbox(ViewMastermind *vm);
 GtkWidget *get_mastermind_history_table(ViewMastermind *vm);
+GtkWidget *get_mastermind_feedback_zone_hbox(ViewMastermind *vm);
 GtkWidget *get_mastermind_proposition_hbox(ViewMastermind *vm);
 GtkWidget *get_mastermind_proposition_control_hbox(ViewMastermind *vm);
 GtkWidget *get_mastermind_color_selection_hbox(ViewMastermind *vm);

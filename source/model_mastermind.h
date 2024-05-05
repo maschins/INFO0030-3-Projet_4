@@ -133,19 +133,26 @@ void destroy_model_mastermind(ModelMastermind *mm);
 void generate_random_solution(ModelMastermind *mm);
 bool verify_proposition(ModelMastermind *mm);
 void reset_proposition(ModelMastermind *mm);
+void reset_feedback(ModelMastermind *mm);
 
-void determine_feedback_last_combination(ModelMastermind *mm);
+void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution);
 void update_current_combination_index(ModelMastermind *mm);
 void verify_end_game(ModelMastermind *mm);
 
 PAWN_COLOR get_selected_color(ModelMastermind *mm);
+ROLE get_role(ModelMastermind *mm);
+Combination *get_proposition(ModelMastermind *mm);
+FEEDBACK_COLOR get_feedback_pawn(ModelMastermind *mm, unsigned int index);
 char *get_pseudo(ModelMastermind *mm);
 unsigned int get_nb_pawns(ModelMastermind *mm);
 unsigned int get_nb_combinations(ModelMastermind *mm);
 bool get_in_game(ModelMastermind *mm);
+PAWN_COLOR *get_solution(ModelMastermind *mm);
+bool get_valid_solution(ModelMastermind *mm);
 int get_current_index(ModelMastermind *mm);
 unsigned int get_nb_correct_last_combination(ModelMastermind *mm);
 unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
+Combination *get_last_combination(ModelMastermind *mm);
 PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
 PAWN_COLOR **get_configs(ModelMastermind *mm);
 
@@ -157,7 +164,12 @@ void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns);
 void set_pseudo(ModelMainMenu *mmm, char *pseudo);
 void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor);
 void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
+void set_feedback_pawn(ModelMastermind *mm, unsigned int index);
+void set_proposition_as_solution(ModelMastermind *mm);
+void update_last_combination_feedback(ModelMastermind *mm);
+void set_valid_solution_true(ModelMastermind *mm);
 
+PAWN_COLOR *find_next_combination(ModelMastermind *mm);
 /**
  * \fn void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition)
  * \brief set the current proposition to a given one

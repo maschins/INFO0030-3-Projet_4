@@ -40,10 +40,9 @@ struct controller_mastermind_t{
    GtkWidget *resetButton;
    GtkWidget **colorSelectionButtons;
    GtkWidget **propositionButtons;
+   GtkWidget **feedbackButtons;
 };
 
-static bool verify_combination(ControllerMastermind *cm, const PAWN_COLOR
-*combination);
 
 ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
    assert(mmm != NULL && vmm != NULL);
@@ -136,16 +135,9 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
       return NULL;
    }
 
-   cm->menuBar = create_menu_bar();
-   if(cm->menuBar == NULL){
-      free(cm);
-      return NULL;
-   }
-
    const char *APPLY_BUTTON_LABEL = "Apply";
    cm->applyButton = gtk_button_new_with_label(APPLY_BUTTON_LABEL);
    if(cm->applyButton == NULL){
-      free(cm->menuBar);
       free(cm);
       return NULL;
    }
@@ -153,7 +145,13 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
    const char *RESET_BUTTON_LABEL = "Reset";
    cm->resetButton = gtk_button_new_with_label(RESET_BUTTON_LABEL);
    if(cm->resetButton == NULL){
-      free(cm->menuBar);
+      free(cm);
+      return NULL;
+   }
+
+
+   cm->menuBar = create_menu_bar();
+   if(cm->menuBar == NULL){
       free(cm);
       return NULL;
    }
@@ -186,8 +184,28 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
    for(unsigned int i = 0; i < get_nb_pawns(mm); i++){
       cm->propositionButtons[i] = create_button_with_pixbuf(get_color_image_pixbuf(vm, PAWN_DEFAULT), get_mastermind_proposition_button_size(vm));
       if(cm->propositionButtons[i] == NULL){
+         free(cm->propositionButtons);
+         free(cm->colorSelectionButtons);
+         free(cm->menuBar);
+         free(cm);
+         return NULL;
+      }
+   }
+
+   cm->feedbackButtons = malloc(get_nb_pawns(mm) * sizeof(GtkWidget *));
+   if(cm->feedbackButtons == NULL){
          free(cm->colorSelectionButtons);
          free(cm->propositionButtons);
+         free(cm->menuBar);
+         free(cm);
+   }
+
+   for(unsigned int i = 0; i < get_nb_pawns(mm); i++){
+      cm->feedbackButtons[i] = create_button_with_pixbuf(get_feedback_image_pixbuf(vm, FB_DEFAULT), get_mastermind_proposition_button_size(vm));
+      if(cm->feedbackButtons[i] == NULL){
+         free(cm->feedbackButtons);
+         free(cm->propositionButtons);
+         free(cm->colorSelectionButtons);
          free(cm->menuBar);
          free(cm);
          return NULL;
@@ -312,11 +330,6 @@ void init_main_menu(ControllerMainMenu *cmm) {
    gtk_box_pack_start(GTK_BOX(nbPawnsHBox), get_main_menu_nb_pawns_label(cmm->vmm), FALSE, FALSE, 10);
    gtk_box_pack_start(GTK_BOX(nbPawnsHBox), cmm->nbPawnsSlider, TRUE, TRUE, 0);
 
-   // Add free space between slider and welcome message.
-   GtkWidget *topMargin = gtk_alignment_new(0, 0, 0, 0);
-   gtk_widget_set_size_request(topMargin, -1, 20);
-   gtk_container_add(GTK_CONTAINER(mainVBox), topMargin);
-
    const int smallFontSize = 9;
    PangoFontDescription *font_desc = pango_font_description_new();
    pango_font_description_set_family(font_desc, "sans");
@@ -336,9 +349,6 @@ void init_main_menu(ControllerMainMenu *cmm) {
    gtk_widget_modify_font(get_main_menu_error_label(cmm->vmm), font_desc);
    pango_font_description_free(font_desc);
    gtk_misc_set_alignment(GTK_MISC(get_main_menu_error_label(cmm->vmm)), 0.5, 0.5);
-
-   // Add free space.
-   gtk_container_add(GTK_CONTAINER(mainVBox), topMargin);
 
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->guesserButton, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->proposerButton, TRUE, TRUE, 0);
@@ -405,8 +415,8 @@ void init_mastermind(ControllerMastermind *cm) {
 
    gtk_container_add(GTK_CONTAINER(mainVBox), cm->menuBar->bar);
    gtk_container_add(GTK_CONTAINER(mainVBox), historyTable);
-   gtk_container_add(GTK_CONTAINER(mainVBox), propositionControlHBox);
    gtk_container_add(GTK_CONTAINER(mainVBox), propositionHBox);
+   gtk_container_add(GTK_CONTAINER(mainVBox), propositionControlHBox);
    gtk_container_add(GTK_CONTAINER(mainVBox), colorSelectionHBox);
    gtk_container_add(GTK_CONTAINER(mainVBox), scoreHBox);
    gtk_container_add(GTK_CONTAINER(window), mainVBox);
@@ -422,6 +432,24 @@ void init_mastermind(ControllerMastermind *cm) {
    g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
    gtk_widget_show_all(window);
+}
+
+
+void init_feedback_zone_mastermind(ControllerMastermind *cm) {
+   assert(cm != NULL);
+
+   GtkWidget *mainVBox = get_mastermind_main_vbox(cm->vm);
+   GtkWidget *hbox = get_mastermind_feedback_zone_hbox(cm->vm);
+
+   gtk_container_remove(GTK_CONTAINER(mainVBox), get_mastermind_color_selection_hbox(cm->vm));
+   gtk_container_add(GTK_CONTAINER(mainVBox), hbox);
+
+   for(unsigned int i = 0; i < get_nb_pawns(cm->mm); i++){
+      gtk_box_pack_start(GTK_BOX(hbox), cm->feedbackButtons[i], TRUE, TRUE, 0);
+      g_signal_connect(G_OBJECT(cm->feedbackButtons[i]), "clicked", G_CALLBACK(on_feedback_button_clicked), cm);
+   }
+
+   gtk_widget_show_all(get_mastermind_window(cm->vm));
 }
 
 
@@ -507,6 +535,8 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
 
    gtk_widget_hide(get_main_menu_window(cmm->vmm));
 
+   generate_random_solution(mm);
+
    init_mastermind(cm);
 }
 
@@ -548,15 +578,17 @@ void on_proposition_button_clicked(GtkWidget *button, gpointer data) {
 
    ControllerMastermind *cm = (ControllerMastermind *)data;
    
-   int pawnIndex = -1;
-   for(unsigned int i = 0; pawnIndex == -1 && i < get_nb_pawns(cm->mm); i++) {
-      if(cm->propositionButtons[i] == button)
-         pawnIndex = i;
-   }
-   
-   if(pawnIndex != -1){
-      set_proposition_pawn_selected_color(cm->mm, pawnIndex);
-      apply_pixbufs_to_button(button, get_color_image_pixbuf(cm->vm, get_selected_color(cm->mm)), get_mastermind_proposition_button_size(cm->vm));
+   if(get_role(cm->mm) == GUESSER || (get_role(cm->mm) == PROPOSER && !get_valid_solution(cm->mm))){
+      int pawnIndex = -1;
+      for(unsigned int i = 0; pawnIndex == -1 && i < get_nb_pawns(cm->mm); i++) {
+         if(cm->propositionButtons[i] == button)
+            pawnIndex = i;
+      }
+      
+      if(pawnIndex != -1){
+         set_proposition_pawn_selected_color(cm->mm, pawnIndex);
+         apply_pixbufs_to_button(button, get_color_image_pixbuf(cm->vm, get_selected_color(cm->mm)), get_mastermind_proposition_button_size(cm->vm));
+      }
    }
 }
 
@@ -566,15 +598,29 @@ void on_reset_clicked(GtkWidget *button, gpointer data) {
 
    ControllerMastermind *cm = (ControllerMastermind *)data;
 
-   reset_proposition(cm->mm);
-   reset_proposition_buttons(cm);
+   if(!get_valid_solution(cm->mm)){
+      reset_proposition(cm->mm);
+      reset_proposition_buttons(cm);
+   }
+
+   else if(get_role(cm->mm) == PROPOSER){
+      reset_feedback(cm->mm);
+      reset_feedback_buttons(cm);
+   }
 }
 
 
 void reset_proposition_buttons(ControllerMastermind *cm) {
-   if(cm != NULL && cm->mm != NULL && cm->vm != NULL)
+   if(cm != NULL)
       for(unsigned int i = 0; i < get_nb_pawns(cm->mm); ++i)
          apply_pixbufs_to_button(cm->propositionButtons[i], get_color_image_pixbuf(cm->vm, PAWN_DEFAULT), get_mastermind_proposition_button_size(cm->vm));
+}
+
+
+void reset_feedback_buttons(ControllerMastermind *cm) {
+   if(cm != NULL)
+      for(unsigned int i = 0; i < get_nb_pawns(cm->mm); ++i)
+         apply_pixbufs_to_button(cm->feedbackButtons[i], get_feedback_image_pixbuf(cm->vm, FB_DEFAULT), get_mastermind_proposition_button_size(cm->vm));
 }
 
 
@@ -583,46 +629,59 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
 
    ControllerMastermind *cm = (ControllerMastermind *)data;
 
+   
    if(get_in_game(cm->mm)){
-      if(verify_proposition(cm->mm)){
-         set_proposition_in_history(cm->mm);
-         determine_feedback_last_combination(cm->mm);
-         verify_end_game(cm->mm);
+      if(get_role(cm->mm) == GUESSER){
+         if(verify_proposition(cm->mm)){
+            
+            determine_feedback_proposition(cm->mm, get_proposition(cm->mm), get_solution(cm->mm));
+            set_proposition_in_history(cm->mm);
+            verify_end_game(cm->mm);
 
-         update_last_combination_images(cm->vm, cm->mm);
-         udpate_last_feedback_images(cm->vm, cm->mm);
+            update_last_combination_images(cm->vm, cm->mm);
+            udpate_last_feedback_images(cm->vm, cm->mm);
 
-         update_current_combination_index(cm->mm);
+            update_current_combination_index(cm->mm);
 
-         reset_proposition(cm->mm);
-         reset_proposition_buttons(cm);
+            reset_proposition(cm->mm);
+            reset_proposition_buttons(cm);
+         }
       }
+      else{
+         if(!get_valid_solution(cm->mm)){
+            if(verify_proposition(cm->mm)){
+               set_proposition_as_solution(cm->mm);
+               init_feedback_zone_mastermind(cm);
+               set_valid_solution_true(cm->mm);
+            }
+         }
+         else{
+            update_last_combination_feedback(cm->mm);
+            udpate_last_feedback_images(cm->vm, cm->mm);
+            verify_end_game(cm->mm);
+            update_current_combination_index(cm->mm);
+            reset_feedback(cm->mm);
+            reset_feedback_buttons(cm);
+         }
+      }
+
    }
 }
 
-void on_feedback_given(GtkWidget *button, gpointer data) {
+
+void on_feedback_button_clicked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
    ControllerMastermind *cm = (ControllerMastermind *)data;
 
-   if(get_in_game(cm->mm)){
-      if(get_current_index(cm->mm) == 9){
-         set_propositions(cm->mm, get_configs(cm->mm)[0]);
-         set_proposition_in_history(cm->mm);
-         update_last_combination_images(cm->vm, cm->mm);
-      }
-
-      else {
-         if(get_nb_correct_last_combination(cm->mm)) {
-
-         }
-      }
+   int pawnIndex = -1;
+   for(unsigned int i = 0; pawnIndex == -1 && i < get_nb_pawns(cm->mm); i++) {
+      if(cm->feedbackButtons[i] == button)
+         pawnIndex = i;
    }
-}
-
-static bool verify_combination(ControllerMastermind *cm, const PAWN_COLOR
-*combination){
-   assert(cm != NULL && combination != NULL);
-
-   return 0;
+   
+   if(pawnIndex != -1){
+      set_feedback_pawn(cm->mm, pawnIndex);
+      apply_pixbufs_to_button(button, get_feedback_image_pixbuf(cm->vm, get_feedback_pawn(cm->mm, pawnIndex)), get_mastermind_proposition_button_size(cm->vm));
+   }
 }

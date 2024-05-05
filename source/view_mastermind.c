@@ -32,6 +32,7 @@ struct view_mastermind_t{
    GtkWidget *window;
    GtkWidget *mainVBox;
    GtkWidget *historyTable;
+   GtkWidget *feedbackZoneHBox;
    GtkWidget *propositionHBox;
    GtkWidget *propositionControlHBox;
    GtkWidget *colorSelectionHBox;
@@ -191,6 +192,12 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
 
    vm->historyTable = gtk_table_new(nbCombi, 2 * nbPawns, FALSE);
    if(vm->historyTable == NULL){
+      free(vm);
+      return NULL;
+   }
+
+   vm->feedbackZoneHBox = gtk_hbox_new(FALSE, 0);
+   if(vm->feedbackZoneHBox == NULL){
       free(vm);
       return NULL;
    }
@@ -460,13 +467,11 @@ void udpate_last_feedback_images(ViewMastermind *vm, ModelMastermind *mm) {
    unsigned int nbPawns = get_nb_pawns(mm);
    unsigned int nbCorrect = get_nb_correct_last_combination(mm);
    unsigned int nbMisplaced = get_nb_misplaced_last_combination(mm);
-   
-   fprintf(stderr, "%d, %d, %d, %d", index, nbPawns, nbCorrect, nbMisplaced);
 
    for(unsigned int i = 0; i < nbCorrect; i++)
       apply_pixbufs_to_button(vm->historyFeedbacks[index][i], vm->feedbackImagePixbufs[FB_BLACK], vm->smallButtonSize); 
 
-   for(unsigned int i = nbCorrect; i < nbPawns - nbMisplaced; i++)
+   for(unsigned int i = nbCorrect; i < nbCorrect + nbMisplaced; i++)
       apply_pixbufs_to_button(vm->historyFeedbacks[index][i], vm->feedbackImagePixbufs[FB_WHITE], vm->smallButtonSize);
 
    for(unsigned int i = nbCorrect + nbMisplaced; i < nbPawns; i++)
@@ -609,6 +614,12 @@ GtkWidget *get_mastermind_main_vbox(ViewMastermind *vm) {
 GtkWidget *get_mastermind_history_table(ViewMastermind *vm) {
    assert(vm != NULL);
    return vm->historyTable;
+}
+
+
+GtkWidget *get_mastermind_feedback_zone_hbox(ViewMastermind *vm) {
+   assert(vm != NULL);
+   return vm->feedbackZoneHBox;
 }
 
 

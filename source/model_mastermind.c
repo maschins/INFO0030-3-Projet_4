@@ -21,47 +21,51 @@
 #include "model_mastermind.h"
 
 struct combination_t {
-    unsigned int nbCorrect;   /*!< Number of correctly placed pawns with correct color in the combination */
-    unsigned int nbMisplaced; /*!< Number of wrongly placed pawns with correct color in the combination */
-    PAWN_COLOR *pawns;        /*!< Combination of pawns */
+   unsigned int nbCorrect;   /*!< Number of correctly placed pawns with correct color in the combination */
+   unsigned int nbMisplaced; /*!< Number of wrongly placed pawns with correct color in the combination */
+   PAWN_COLOR *pawns;        /*!< Combination of pawns */
 };
 
 
 struct history_t {
-    unsigned int nbPawns;         /*!< Number of pawns of a combination */
-    unsigned int nbCombinations;  /*!< Number of combinations in the histroy */
-    int currentIndex;             /*!< Index of the last combination in the history */
-    Combination **combinations;   /*!< History of combinations proposed by the guesser */
+   unsigned int nbPawns;         /*!< Number of pawns of a combination */
+   unsigned int nbCombinations;  /*!< Number of combinations in the histroy */
+   int currentIndex;             /*!< Index of the last combination in the history */
+   Combination **combinations;   /*!< History of combinations proposed by the guesser */
 };
 
 
 struct model_mastermind_t {
-    ROLE role;
-    char savedPseudo[MAX_PSEUDO_LENGTH]; /*!< Player pseudo */
-    bool inGame;                         /*!< State of the game */
-    PAWN_COLOR selectedColor;            /*!< Selected color */
-    PAWN_COLOR *proposition;             /*!< Guesser proposition */
-    PAWN_COLOR *solution;                /*!< Proposer combination */
-    History *history;                    /*!< Combinations settings and history */
-    PAWN_COLOR **configs;       /*!< All the possible configurations */
+   ROLE role;
+   char savedPseudo[MAX_PSEUDO_LENGTH]; /*!< Player pseudo */
+   bool inGame;                         /*!< State of the game */
+   PAWN_COLOR selectedColor;            /*!< Selected color */
+   Combination *proposition;             /*!< Guesser proposition */
+   bool validSolution;
+   PAWN_COLOR *solution;                /*!< Proposer combination */
+   History *history;                    /*!< Combinations settings and history */
+   FEEDBACK_COLOR *feedback;
+   unsigned int nbConfigs;
+   unsigned int lastConfigIndex;
+   Combination **configs;       /*!< All the possible configurations */
 };
 
 
 struct model_main_menu_t {
-    char pseudo[MAX_PSEUDO_LENGTH];  /*!< Saved player pseudo */
-    bool validPseudo;                /*!< State of pseudo validity */
-    ROLE role;                       /*!< Player role */
-    unsigned int nbPawns;            /*!< Number of pawns selected */
+   char pseudo[MAX_PSEUDO_LENGTH];  /*!< Saved player pseudo */
+   bool validPseudo;                /*!< State of pseudo validity */
+   ROLE role;                       /*!< Player role */
+   unsigned int nbPawns;            /*!< Number of pawns selected */
 };
 
 struct score_t{
-    char pseudo[MAX_PSEUDO_LENGTH]; /*!< Saved player pseudo */
-    unsigned score;                 /*!< Score of saved player */
+   char pseudo[MAX_PSEUDO_LENGTH]; /*!< Saved player pseudo */
+   unsigned score;                 /*!< Score of saved player */
 };
 
 struct saved_scores_t{
-    unsigned length;                /*!< Number of scores saved */
-    Score **savedScores;             /*!< Saved score from players */
+   unsigned length;                /*!< Number of scores saved */
+   Score **savedScores;             /*!< Saved score from players */
 };
 
 
@@ -110,8 +114,7 @@ static void destroy_combination(Combination *combination);
  *         NULL in case of error.
  * 
  * */
-static History *
-create_history(unsigned int nbPawns, unsigned int nbCombinations);
+static History *create_history(unsigned int nbPawns, unsigned int nbCombinations);
 
 
 /**
@@ -139,7 +142,7 @@ static void destroy_history(History *history);
  * \return A 2D array with every possible combination
  *         NULL in case of error
  */
-static PAWN_COLOR **create_configs(unsigned int nbPawns);
+static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns);
 
 
 static Combination *create_combination(unsigned int nbPawns) {
@@ -244,38 +247,52 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
    strcpy(mm->savedPseudo, mmm->pseudo);
    mm->inGame = true;
    mm->selectedColor = PAWN_BLUE;
+   mm->validSolution = false;
 
-   mm->proposition = malloc(mmm->nbPawns * sizeof(PAWN_COLOR));
-   if (mm->proposition == NULL) {
+   mm->proposition = create_combination(mmm->nbPawns);
+   if(mm->proposition == NULL){
       free(mm);
       return NULL;
    }
 
-   mm->solution = malloc(mmm->nbPawns * sizeof(FEEDBACK_COLOR));
-   if (mm->solution == NULL) {
-      free(mm->proposition);
+   mm->solution = malloc(mmm->nbPawns * sizeof(PAWN_COLOR));
+   if(mm->solution == NULL){
+      destroy_combination(mm->proposition);
       free(mm);
       return NULL;
    }
 
-   for (unsigned int i = 0; i < mmm->nbPawns; i++) {
-      mm->proposition[i] = PAWN_DEFAULT;
+   mm->feedback = malloc(mmm->nbPawns * sizeof(FEEDBACK_COLOR));
+   if(mm->feedback == NULL){
+      free(mm->solution);
+      destroy_combination(mm->proposition);
+      free(mm);
+      return NULL;
+   }
+
+   for(unsigned int i = 0; i < mmm->nbPawns; i++){
       mm->solution[i] = PAWN_DEFAULT;
-   }
+      mm->feedback[i] = FB_DEFAULT;
+   }  
 
    mm->history = create_history(mmm->nbPawns, NB_COMBINATIONS);
-   if (mm->history == NULL) {
+   if(mm->history == NULL){
+      free(mm->feedback);
       free(mm->solution);
-      free(mm->proposition);
+      destroy_combination(mm->proposition);
       free(mm);
       return NULL;
    }
 
-   mm->configs = create_configs(mmm->nbPawns);
-   if (mm->configs == NULL) {
-      free(mm->solution);
-      free(mm->proposition);
+   mm->nbConfigs = pow(NB_PAWN_COLORS, mm->history->nbPawns);
+   mm->lastConfigIndex = 0;
+
+   mm->configs = create_configs(mm->nbConfigs, mm->history);
+   if(mm->configs == NULL){
       destroy_history(mm->history);
+      free(mm->feedback);
+      free(mm->solution);
+      destroy_combination(mm->proposition);
       free(mm);
       return NULL;
    }
@@ -285,11 +302,13 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
 
 
 void destroy_model_mastermind(ModelMastermind *mm) {
-   if (mm != NULL) {
-      if (mm->solution != NULL)
+   if(mm != NULL){
+      if(mm->proposition != NULL)
+         destroy_combination(mm->proposition);
+      if(mm->solution != NULL)
          free(mm->solution);
-      if (mm->proposition != NULL)
-         free(mm->proposition);
+      if(mm->feedback != NULL)
+         free(mm->feedback);
       destroy_history(mm->history);
       free(mm);
    }
@@ -300,18 +319,16 @@ void generate_random_solution(ModelMastermind *mm) {
    assert(mm != NULL);
 
    srand(time(NULL));
-
-   for (unsigned int i = 0; i < mm->history->nbPawns; i++) {
+   for (unsigned int i = 0; i < mm->history->nbPawns; i++)
       mm->solution[i] = rand() % (NB_PAWN_COLORS - 1);
-   }
 }
 
 
 bool verify_proposition(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   for (unsigned int i = 0; i < mm->history->nbPawns; i++)
-      if (mm->proposition[i] == PAWN_DEFAULT)
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++)
+      if(mm->proposition->pawns[i] == PAWN_DEFAULT)
          return false;
 
    return true;
@@ -321,51 +338,54 @@ bool verify_proposition(ModelMastermind *mm) {
 void reset_proposition(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   for (unsigned int i = 0; i < mm->history->nbPawns; i++)
-      mm->proposition[i] = PAWN_DEFAULT;
+   mm->proposition->nbCorrect = 0;
+   mm->proposition->nbMisplaced = 0;
+
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++)
+      mm->proposition->pawns[i] = PAWN_DEFAULT;
 }
 
 
-void determine_feedback_last_combination(ModelMastermind *mm) {
+void reset_feedback(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   unsigned int nbCorrect = 0;
-   unsigned int nbMisplaced = 0;
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++)
+      mm->feedback[i] = FB_DEFAULT;
+}
+
+
+void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution) {
+   assert(proposition != NULL && solution != NULL);
 
    unsigned int nbColorsInProposition[NB_PAWN_COLORS];
    unsigned int nbColorsInSolution[NB_PAWN_COLORS];
 
-   for (unsigned int i = 0; i < NB_PAWN_COLORS; i++) {
+   for(unsigned int i = 0; i < NB_PAWN_COLORS; i++){
       nbColorsInProposition[i] = 0;
       nbColorsInSolution[i] = 0;
    }
 
-   Combination *lastCombination = mm->history->combinations[mm->history->currentIndex];
-   PAWN_COLOR *solution = mm->solution;
-
-   for (unsigned int i = 0; i < mm->history->nbPawns; i++) {
-      if (lastCombination->pawns[i] == solution[i])
-         nbCorrect++;
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++){
+      if(proposition->pawns[i] == solution[i])
+         proposition->nbCorrect++;
       else {
-         nbColorsInProposition[lastCombination->pawns[i]]++;
+         nbColorsInProposition[proposition->pawns[i]]++;
          nbColorsInSolution[solution[i]]++;
       }
    }
 
    for (unsigned int i = 0; i < NB_PAWN_COLORS; i++) {
       if (nbColorsInProposition[i] < nbColorsInSolution[i])
-         nbMisplaced += nbColorsInProposition[i];
+         proposition->nbMisplaced += nbColorsInProposition[i];
       else
-         nbMisplaced += nbColorsInSolution[i];
+         proposition->nbMisplaced += nbColorsInSolution[i];
    }
-
-   lastCombination->nbCorrect = nbCorrect;
-   lastCombination->nbMisplaced = nbMisplaced;
 }
 
 
 void update_current_combination_index(ModelMastermind *mm) {
    assert(mm != NULL);
+
    mm->history->currentIndex--;
 }
 
@@ -373,45 +393,93 @@ void update_current_combination_index(ModelMastermind *mm) {
 void verify_end_game(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   if (mm->history->combinations[mm->history->currentIndex]->nbCorrect ==
-       mm->history->nbPawns || mm->history->currentIndex <= 0)
+   if (mm->history->combinations[mm->history->currentIndex]->nbCorrect == mm->history->nbPawns ||
+       mm->history->currentIndex <= 0)
       mm->inGame = false;
 }
 
 
 PAWN_COLOR get_selected_color(ModelMastermind *mm) {
    assert(mm != NULL);
+
    return mm->selectedColor;
+}
+
+
+ROLE get_role(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   return mm->role;
 }
 
 
 char *get_pseudo(ModelMastermind *mm) {
    assert(mm != NULL);
+
    return mm->savedPseudo;
+}
+
+
+bool get_in_game(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   return mm->inGame;
+}
+
+
+bool get_valid_solution(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   return mm->validSolution;
+}
+
+
+Combination *get_proposition(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   return mm->proposition;
+}
+
+
+PAWN_COLOR *get_solution(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   return mm->solution;
 }
 
 
 unsigned int get_nb_pawns(ModelMastermind *mm) {
    assert(mm != NULL);
+
    return mm->history->nbPawns;
 }
 
 
 unsigned int get_nb_combinations(ModelMastermind *mm) {
    assert(mm != NULL);
+
    return mm->history->nbCombinations;
-}
-
-
-bool get_in_game(ModelMastermind *mm) {
-   assert(mm != NULL);
-   return mm->inGame;
 }
 
 
 int get_current_index(ModelMastermind *mm) {
    assert(mm != NULL);
+
    return mm->history->currentIndex;
+}
+
+
+Combination *get_last_combination(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   return mm->history->combinations[mm->history->currentIndex];
+}
+
+
+PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
+   assert(mm != NULL && pawnIndex < mm->history->nbPawns);
+
+   return mm->history->combinations[mm->history->currentIndex]->pawns[pawnIndex];
 }
 
 
@@ -429,23 +497,27 @@ unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm) {
 }
 
 
-PAWN_COLOR
-get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
-   assert(mm != NULL && pawnIndex < mm->history->nbPawns);
+FEEDBACK_COLOR get_feedback_pawn(ModelMastermind *mm, unsigned int index) {
+   assert(mm != NULL);
 
-   return mm->history->combinations[mm->history->currentIndex]->pawns[pawnIndex];
+   return mm->feedback[index];
 }
+
 
 PAWN_COLOR **get_configs(ModelMastermind *mm) {
    assert(mm != NULL);
+
    return mm->configs;
 }
 
 void set_proposition_in_history(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   for (unsigned int i = 0; i < mm->history->nbPawns; i++)
-      mm->history->combinations[mm->history->currentIndex]->pawns[i] = mm->proposition[i];
+   mm->history->combinations[mm->history->currentIndex]->nbCorrect = mm->proposition->nbCorrect;
+   mm->history->combinations[mm->history->currentIndex]->nbMisplaced = mm->proposition->nbMisplaced;
+
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++)
+      mm->history->combinations[mm->history->currentIndex]->pawns[i] = mm->proposition->pawns[i];
 }
 
 
@@ -481,8 +553,50 @@ void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor) {
 
 void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i) {
    assert(mm != NULL && i < mm->history->nbPawns);
-   mm->proposition[i] = mm->selectedColor;
+   mm->proposition->pawns[i] = mm->selectedColor;
 }
+
+
+void set_proposition_as_solution(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++)
+      mm->solution[i] = mm->proposition->pawns[i];
+}
+
+
+void set_feedback_pawn(ModelMastermind *mm, unsigned int index) {
+   assert(mm != NULL);
+
+   mm->feedback[index] = (mm->feedback[index] + 1) % NB_FB_COLORS;
+}
+
+
+void update_last_combination_feedback(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   unsigned int nbCorrect = 0;
+   unsigned int nbMisplaced = 0;
+
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++){
+      if(mm->feedback[i] == FB_BLACK)
+         nbCorrect += 1;
+
+      if(mm->feedback[i] == FB_WHITE)
+         nbMisplaced += 1;
+   }
+
+   mm->history->combinations[mm->history->currentIndex]->nbCorrect = nbCorrect;
+   mm->history->combinations[mm->history->currentIndex]->nbMisplaced = nbMisplaced;
+}
+
+
+void set_valid_solution_true(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   mm->validSolution = true;
+}
+
 
 SavedScores *load_scores(const char *filePath){
    assert(filePath != NULL);
@@ -511,41 +625,36 @@ SavedScores *load_scores(const char *filePath){
    return save;
 }
 
-void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition) {
-   assert(mm != NULL && proposition != NULL);
-   for (unsigned i = 0; i < mm->history->nbPawns; i++) {
-      mm->proposition[i] = proposition[i];
-   }
-}
 
-static PAWN_COLOR **create_configs(unsigned int nbPawns) {
-   PAWN_COLOR **configs = malloc(
-           pow(NB_PAWN_COLORS, nbPawns) * sizeof(PAWN_COLOR *));
-   if (configs == NULL) {
+static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
+   Combination **configs = malloc(nbConfigs * sizeof(Combination *));
+   if(configs == NULL)
       return NULL;
-   }
 
-   for (unsigned i = 0; i < pow(NB_PAWN_COLORS, nbPawns); i++) {
-      configs[i] = malloc(NB_PAWN_COLORS * sizeof(PAWN_COLOR));
-      if (configs[i] == NULL) {
-         for (unsigned j = 0; j < i; ++j) {
-            free(configs[j]);
-         }
+   for(unsigned i = 0; i < nbConfigs; i++){
+      configs[i] = create_combination(nbPawns);
+      if(configs[i] == NULL){
+         for(unsigned j = 0; j < i; ++j)
+            destroy_combination(configs[i]);
+         
          free(configs);
          return NULL;
       }
 
-      for (unsigned j = 0; j < NB_PAWN_COLORS; j++) {
-         if (!i) {
-            configs[i][j] = 0;
-         } else {
-            configs[i][j] = configs[i - 1][j];
-            if (!j) {
-               configs[i][j] += 1;
-            } else {
-               if (configs[i][j - 1] >= NB_PAWN_COLORS) {
-                  configs[i][j - 1] %= NB_PAWN_COLORS;
-                  configs[i][j] += 1;
+      for(unsigned j = 0; j < NB_PAWN_COLORS; j++){
+         if(!i)
+            configs[i]->pawns[j] = 0;
+         
+         else{
+            configs[i]->pawns[j] = configs[i - 1]->pawns[j];
+            
+            if(!j)
+               configs[i]->pawns[j] += 1;
+            
+            else{
+               if(configs[i]->pawns[j - 1] >= NB_PAWN_COLORS){
+                  configs[i]->pawns[j - 1] %= NB_PAWN_COLORS;
+                  configs[i]->pawns[j] += 1;
                }
             }
          }
@@ -556,3 +665,11 @@ static PAWN_COLOR **create_configs(unsigned int nbPawns) {
 }
 
 
+PAWN_COLOR *find_next_combination(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   int nextCombiIndex = -1; 
+   for(unsigned int i = mm->lastConfigIndex; nextCombiIndex == -1 && i < mm->nbConfigs; i++) {
+      
+   }
+}

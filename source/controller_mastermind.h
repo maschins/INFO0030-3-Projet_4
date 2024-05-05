@@ -136,6 +136,7 @@ void init_main_menu(ControllerMainMenu *cmm);
 void init_mastermind(ControllerMastermind *cm);
 void show_window(GtkWidget *button, gpointer data);
 void hide_window(GtkWidget *button, gpointer data);
+void init_feedback_zone_mastermind(ControllerMastermind *cm);
 
 void on_nb_pawns_slider_changed(GtkWidget *slider, gpointer data);
 void on_guesser_choosed(GtkWidget *radioButton, ControllerMainMenu *cmm);
@@ -147,8 +148,9 @@ void on_save_button_clicked(GtkWidget *button, gpointer data);
 void on_proposition_button_clicked(GtkWidget *button, gpointer data);
 void on_apply_clicked(GtkWidget *button, gpointer data);
 void on_reset_clicked(GtkWidget *button, gpointer data);
+void on_feedback_button_clicked(GtkWidget *button, gpointer data);
 
 void reset_proposition_buttons(ControllerMastermind *cm);
-
+void reset_feedback_buttons(ControllerMastermind *cm);
 
 #endif /* CONTROLLER_MASTERMIND_H */
