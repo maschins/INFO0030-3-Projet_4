@@ -129,19 +129,7 @@ static History *create_history(unsigned int nbPawns, unsigned int nbCombinations
  * */
 static void destroy_history(History *history);
 
-/**
- * \fn static PAWN_COLOR **create_configs(ModelMainMenu *mmm)
- * \brief creates and fills a tab of every color configuration possible
- *
- * \param nbPawns Number of pawns of a combination.
- *
- * \pre /
- * \post The memory for the configurations are possible and they are all
- * generated
- *
- * \return A 2D array with every possible combination
- *         NULL in case of error
- */
+
 static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns);
 
 
@@ -154,12 +142,12 @@ static Combination *create_combination(unsigned int nbPawns) {
    combination->nbMisplaced = 0;
 
    combination->pawns = malloc(nbPawns * sizeof(PAWN_COLOR));
-   if (combination->pawns == NULL) {
+   if(combination->pawns == NULL){
       free(combination);
       return NULL;
    }
 
-   for (unsigned int i = 0; i < nbPawns; i++)
+   for(unsigned int i = 0; i < nbPawns; i++)
       combination->pawns[i] = PAWN_DEFAULT;
 
    return combination;
@@ -167,8 +155,8 @@ static Combination *create_combination(unsigned int nbPawns) {
 
 
 static void destroy_combination(Combination *combination) {
-   if (combination != NULL) {
-      if (combination->pawns != NULL)
+   if(combination != NULL){
+      if(combination->pawns != NULL)
          free(combination->pawns);
       free(combination);
    }
@@ -285,9 +273,9 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
    }
 
    mm->nbConfigs = pow(NB_PAWN_COLORS, mm->history->nbPawns);
-   mm->lastConfigIndex = 0;
+   mm->lastConfigIndex = 1;
 
-   mm->configs = create_configs(mm->nbConfigs, mm->history);
+   mm->configs = create_configs(mm->nbConfigs, mm->history->nbPawns);
    if(mm->configs == NULL){
       destroy_history(mm->history);
       free(mm->feedback);
@@ -366,8 +354,11 @@ void determine_feedback_proposition(ModelMastermind *mm, Combination *propositio
    }
 
    for(unsigned int i = 0; i < mm->history->nbPawns; i++){
-      if(proposition->pawns[i] == solution[i])
+      fprintf(stderr, "%d %d\n", proposition->pawns[i], solution[i]);
+      if(proposition->pawns[i] == solution[i]){
+         fprintf(stderr, "coucou\n");
          proposition->nbCorrect++;
+      }
       else {
          nbColorsInProposition[proposition->pawns[i]]++;
          nbColorsInSolution[solution[i]]++;
@@ -504,12 +495,6 @@ FEEDBACK_COLOR get_feedback_pawn(ModelMastermind *mm, unsigned int index) {
 }
 
 
-PAWN_COLOR **get_configs(ModelMastermind *mm) {
-   assert(mm != NULL);
-
-   return mm->configs;
-}
-
 void set_proposition_in_history(ModelMastermind *mm) {
    assert(mm != NULL);
 
@@ -588,6 +573,8 @@ void update_last_combination_feedback(ModelMastermind *mm) {
 
    mm->history->combinations[mm->history->currentIndex]->nbCorrect = nbCorrect;
    mm->history->combinations[mm->history->currentIndex]->nbMisplaced = nbMisplaced;
+
+   fprintf(stderr, "Fb donné par le joueur de la dernière combi : %d %d\n", mm->history->combinations[mm->history->currentIndex]->nbCorrect, mm->history->combinations[mm->history->currentIndex]->nbMisplaced);
 }
 
 
@@ -625,39 +612,27 @@ SavedScores *load_scores(const char *filePath){
    return save;
 }
 
-
 static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
    Combination **configs = malloc(nbConfigs * sizeof(Combination *));
    if(configs == NULL)
       return NULL;
 
-   for(unsigned i = 0; i < nbConfigs; i++){
+   unsigned int totalPossibleConfigs = pow(NB_PAWN_COLORS - 1, nbPawns);
+
+   for(unsigned int i = 0; i < totalPossibleConfigs; i++){
       configs[i] = create_combination(nbPawns);
       if(configs[i] == NULL){
-         for(unsigned j = 0; j < i; ++j)
+         for(unsigned int j = 0; j < i; ++j)
             destroy_combination(configs[i]);
          
          free(configs);
          return NULL;
       }
 
-      for(unsigned j = 0; j < NB_PAWN_COLORS; j++){
-         if(!i)
-            configs[i]->pawns[j] = 0;
-         
-         else{
-            configs[i]->pawns[j] = configs[i - 1]->pawns[j];
-            
-            if(!j)
-               configs[i]->pawns[j] += 1;
-            
-            else{
-               if(configs[i]->pawns[j - 1] >= NB_PAWN_COLORS){
-                  configs[i]->pawns[j - 1] %= NB_PAWN_COLORS;
-                  configs[i]->pawns[j] += 1;
-               }
-            }
-         }
+      unsigned int factor = i;
+      for(unsigned int j = 0; j < nbPawns; j++){
+         configs[i]->pawns[nbPawns - j - 1] = factor % (NB_PAWN_COLORS - 1);
+         factor /= (NB_PAWN_COLORS - 1);
       }
    }
 
@@ -665,11 +640,28 @@ static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns
 }
 
 
-PAWN_COLOR *find_next_combination(ModelMastermind *mm) {
+void find_next_proposition(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   int nextCombiIndex = -1; 
-   for(unsigned int i = mm->lastConfigIndex; nextCombiIndex == -1 && i < mm->nbConfigs; i++) {
-      
+   if(mm->history->currentIndex == NB_COMBINATIONS - 1)
+      for(unsigned int j = 0; j < mm->history->nbPawns; j++)
+         mm->proposition->pawns[j] = mm->configs[0]->pawns[j];
+
+   else{
+      int nextCombiIndex = -1; 
+      for(unsigned int i = mm->lastConfigIndex; nextCombiIndex == -1 && i < mm->nbConfigs; i++) {
+         determine_feedback_proposition(mm, mm->configs[i], mm->history->combinations[mm->history->currentIndex + 1]->pawns);
+
+         if(mm->configs[i]->nbCorrect == mm->history->combinations[mm->history->currentIndex + 1]->nbCorrect &&
+            mm->configs[i]->nbMisplaced == mm->history->combinations[mm->history->currentIndex + 1]->nbMisplaced)
+               nextCombiIndex = i;
+      }
+
+      if(nextCombiIndex != -1){
+         for(unsigned int j = 0; j < mm->history->nbPawns; j++)
+            mm->proposition->pawns[j] = mm->configs[nextCombiIndex]->pawns[j];
+
+         mm->lastConfigIndex = nextCombiIndex + 1;
+      }
    }
 }

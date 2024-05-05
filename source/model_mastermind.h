@@ -18,12 +18,12 @@
 /**
  * \brief Max pseudo length.
  * */
-#define MAX_PSEUDO_LENGTH 51
+#define MAX_PSEUDO_LENGTH 50
 
 /**
  * \brief Min pseudo length.
  * */
-#define MIN_PSEUDO_LENGTH 6
+#define MIN_PSEUDO_LENGTH 5
 
 /**
  * \brief Minimum number of pawns.
@@ -38,7 +38,7 @@
 /**
  * \brief Default number of pawns.
  * */
-#define DEFAULT_NB_PAWNS 4
+#define DEFAULT_NB_PAWNS 2
 
 /**
  * \brief Number of combination.
@@ -154,7 +154,6 @@ unsigned int get_nb_correct_last_combination(ModelMastermind *mm);
 unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
 Combination *get_last_combination(ModelMastermind *mm);
 PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
-PAWN_COLOR **get_configs(ModelMastermind *mm);
 
 void set_proposition_in_history(ModelMastermind *mm);
 
@@ -169,7 +168,7 @@ void set_proposition_as_solution(ModelMastermind *mm);
 void update_last_combination_feedback(ModelMastermind *mm);
 void set_valid_solution_true(ModelMastermind *mm);
 
-PAWN_COLOR *find_next_combination(ModelMastermind *mm);
+void find_next_proposition(ModelMastermind *mm);
 /**
  * \fn void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition)
  * \brief set the current proposition to a given one

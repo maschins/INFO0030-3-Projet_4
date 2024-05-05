@@ -504,7 +504,7 @@ void on_save_button_clicked(GtkWidget *button, gpointer data) {
       gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_TOO_LONG_ERROR);
    } 
    else if(strlen(pseudo) < MIN_PSEUDO_LENGTH){
-      const char *PSEUDO_TOO_SHORT_ERROR = "Pseudo is too long (Min 5 char).";
+      const char *PSEUDO_TOO_SHORT_ERROR = "Pseudo is too short (Min 5 char).";
       gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_TOO_SHORT_ERROR);
    }
    else{
@@ -653,15 +653,26 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
                set_proposition_as_solution(cm->mm);
                init_feedback_zone_mastermind(cm);
                set_valid_solution_true(cm->mm);
+
+               // Find first proposition
+               find_next_proposition(cm->mm);
+               set_proposition_in_history(cm->mm);
+               update_last_combination_images(cm->vm, cm->mm);
             }
          }
          else{
             update_last_combination_feedback(cm->mm);
             udpate_last_feedback_images(cm->vm, cm->mm);
             verify_end_game(cm->mm);
+            
             update_current_combination_index(cm->mm);
             reset_feedback(cm->mm);
             reset_feedback_buttons(cm);
+
+            find_next_proposition(cm->mm);
+            set_proposition_in_history(cm->mm);
+            update_last_combination_images(cm->vm, cm->mm);
+
          }
       }
 
