@@ -6,6 +6,7 @@ DOC_DIR=doc
 #Tools & flags
 CC=gcc
 CFLAGS=--std=c99 --pedantic -Wall -W -Wmissing-prototypes
+LDFLAGS=-lm
 GTKFLAGS= `pkg-config --cflags --libs gtk+-2.0`
 LD=gcc
 TAR_NAME=mastermind_10.tar.gz
