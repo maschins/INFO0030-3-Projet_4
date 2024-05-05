@@ -18,7 +18,7 @@
 /**
  * \brief Path of the file where the scores are saved
  */
-#define SAVED_SCORES_PATH "/source/scores.txt"
+#define SAVED_SCORES_PATH "./source/scores.txt"
 
 /**
  * \brief Max pseudo length.

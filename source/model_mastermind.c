@@ -505,9 +505,10 @@ SavedScores *load_scores(const char *filePath){
       return NULL;
 
 
-   save->length = 0;
+   save->length = 1;
 
-   if(access(filePath, F_OK) != -1){
+   if(access(filePath, F_OK) == 0){
+      printf("Previous save found\n");
       FILE *pFile = fopen(filePath, "r");
       if (pFile == NULL) {
          return NULL; // File name is ill-formed
@@ -519,12 +520,20 @@ SavedScores *load_scores(const char *filePath){
          return NULL;//File content ill-formed
       }
 
+      save->savedScores = malloc(save->length * sizeof (Score *));
+      if(save->savedScores == NULL){
+         free(save);
+         fclose(pFile);
+         return NULL;
+      }
+
       for (unsigned i = 0; save->length + 1 > i; i++) {
          save->savedScores[i] = malloc(sizeof (Score));
          if (save->savedScores[i] == NULL){
             for (unsigned j = 0; j < i; j++) {
                free(save->savedScores[j]);
             }
+            free(save->savedScores);
             free(save);
             fclose(pFile);
             return NULL;
@@ -538,11 +547,20 @@ SavedScores *load_scores(const char *filePath){
             fclose(pFile);
             return NULL;
          }
+         printf("Name: %s, Score: %u", save->savedScores[i]->pseudo,
+                save->savedScores[i]->score);
       }
    }
    else {
+      printf("No previous save\n");
+      save->savedScores = malloc(save->length * sizeof(Score *));
+      if(save->savedScores == NULL){
+         free(save);
+         return NULL;
+      }
       save->savedScores[0] = malloc(sizeof (Score));
       if(save->savedScores[0] == NULL){
+         free(save->savedScores);
          free(save);
          return NULL;
       }
