@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <unistd.h>
 
 #include "model_mastermind.h"
 
@@ -48,6 +49,8 @@ struct model_mastermind_t {
     unsigned int nbConfigs;
     unsigned int lastConfigIndex;
     Combination **configs;       /*!< All the possible configurations */
+    SavedScores *save;                   /*!< Structure containing the
+ * previously saved scores */
 };
 
 
@@ -283,6 +286,16 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
       free(mm->feedback);
       free(mm->solution);
       destroy_combination(mm->proposition);
+      free(mm);
+      return NULL;
+   }
+
+   mm->save = load_scores(SAVED_SCORES_PATH);
+   if(mm->save == NULL){
+      free(mm->solution);
+      free(mm->proposition);
+      destroy_history(mm->history);
+      //TODO create destroyer for configs
       free(mm);
       return NULL;
    }
@@ -585,31 +598,114 @@ void set_valid_solution_true(ModelMastermind *mm) {
 }
 
 
-SavedScores *load_scores(const char *filePath) {
+SavedScores *get_saved_scores(ModelMastermind *mm) {
+   assert(mm != NULL);
+   return mm->save;
+}
+
+SavedScores *load_scores(const char *filePath){
    assert(filePath != NULL);
 
-   FILE *pFile = fopen(filePath, "r");
-   if(pFile == NULL){
-      return NULL; // File name is ill-formed
-   }
-
-   SavedScores *save = malloc(sizeof(SavedScores));
-   if(save == NULL){
-      fclose(pFile);
+   SavedScores *save = malloc(sizeof (SavedScores));
+   if(save == NULL)
       return NULL;
+
+
+   save->length = 1;
+
+   if(access(filePath, F_OK) == 0){
+      printf("Previous save found\n");
+      FILE *pFile = fopen(filePath, "r");
+      if (pFile == NULL) {
+         return NULL; // File name is ill-formed
+      }
+
+      if (!fscanf(pFile, "%u \n", &save->length)) {
+         free(save);
+         fclose(pFile);
+         return NULL;//File content ill-formed
+      }
+
+      save->savedScores = malloc(save->length * sizeof (Score *));
+      if(save->savedScores == NULL){
+         free(save);
+         fclose(pFile);
+         return NULL;
+      }
+
+      for (unsigned i = 0; save->length + 1 > i; i++) {
+         save->savedScores[i] = malloc(sizeof (Score));
+         if (save->savedScores[i] == NULL){
+            for (unsigned j = 0; j < i; j++) {
+               free(save->savedScores[j]);
+            }
+            free(save->savedScores);
+            free(save);
+            fclose(pFile);
+            return NULL;
+         }
+         if(!fscanf(pFile, "%s %u \n", save->savedScores[i]->pseudo,
+                    &save->savedScores[i]->score)){
+            for (unsigned j = 0; j < i; j++) {
+               free(save->savedScores[j]);
+            }
+            free(save);
+            fclose(pFile);
+            return NULL;
+         }
+         printf("Name: %s, Score: %u", save->savedScores[i]->pseudo,
+                save->savedScores[i]->score);
+      }
    }
-
-   if(!fscanf(pFile, "%u \n", &save->length)){
-      free(save);
-
-      return NULL;//File content ill-formed
-   }
-
-   for(unsigned i = 0; i < save->length; i++){
-      save->savedScores[i] = malloc(sizeof(Score));
+   else {
+      printf("No previous save\n");
+      save->savedScores = malloc(save->length * sizeof(Score *));
+      if(save->savedScores == NULL){
+         free(save);
+         return NULL;
+      }
+      save->savedScores[0] = malloc(sizeof (Score));
+      if(save->savedScores[0] == NULL){
+         free(save->savedScores);
+         free(save);
+         return NULL;
+      }
    }
 
    return save;
+}
+
+int write_scores(SavedScores *scores, const char *filePath){
+   assert(scores != NULL && filePath != NULL);
+
+   FILE *pFile = fopen(filePath, "w");
+   if (pFile == NULL) {
+      return -1; // File name is ill-formed
+   }
+
+   fprintf(pFile, "%u \n",scores->length);
+   for (unsigned i = 0; i < scores->length; i++) {
+      fprintf(pFile, "%s %u \n", scores->savedScores[i]->pseudo,
+              scores->savedScores[i]->score);
+   }
+
+   destroy_saved_scores(scores);
+
+   return 0;
+}
+
+void destroy_saved_scores(SavedScores *scores) {
+   for (unsigned j = 0; j < scores->length; j++) {
+      free(scores->savedScores[j]);
+   }
+   free(scores);
+}
+
+void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition) {
+   assert(mm != NULL && proposition != NULL);
+   for (unsigned i = 0; i < mm->history->nbPawns; i++) {
+      mm->proposition[i] = proposition[i];
+   }
 }
 
 static Combination **

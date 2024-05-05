@@ -16,6 +16,11 @@
 #define __MODEL_MASTERMIND__
 
 /**
+ * \brief Path of the file where the scores are saved
+ */
+#define SAVED_SCORES_PATH "./source/scores.txt"
+
+/**
  * \brief Max pseudo length.
  * */
 #define MAX_PSEUDO_LENGTH 50
@@ -179,6 +184,19 @@ Combination *get_last_combination(ModelMastermind *mm);
 PAWN_COLOR
 get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
 
+/**
+ * \fn SavedScores *get_saved_scores(ModelMastermind *mm)
+ * \brief gets the saved scores in the ModelMastermind
+ *
+ * \param mm a pointer on the ModelMMastermind structure
+ *
+ * \pre mm != NULL
+ * \post Scores are returned
+ *
+ * \return score field for mm
+ */
+SavedScores *get_saved_scores(ModelMastermind *mm);
+
 void set_proposition_in_history(ModelMastermind *mm);
 
 char *get_main_menu_pseudo(ModelMainMenu *mmm);
@@ -202,6 +220,50 @@ void update_last_combination_feedback(ModelMastermind *mm);
 void set_valid_solution_true(ModelMastermind *mm);
 
 void find_next_proposition(ModelMastermind *mm);
+
+/**
+ * \fn SavedScores *load_scores(const char *filePath)
+ * \brief Allocates the space for it and saves the scores from the given file
+ * if the given file doesn't exist allocates the memory and returns the
+ * empty structure
+ *
+ * \param filePath the file from which de score needs to be read
+ *
+ * \pre filePath != NULL
+ * \post the memory is allocated and the values are read
+ *
+ * \return A pointer on the created SavedScores structure
+ *         NULL if an error was encountered
+ */
+SavedScores *load_scores(const char *filePath);
+
+/**
+ * \fn int write_scores(SavedScores *scores, const char *filePath)
+ * \brief writes in the given file the scores and destroy the score
+ *
+ * \param scores A pointer on the score structure that needs to be saved in
+ * the file
+ * \param filePath A string containing the path of the file in which the
+ * score should be wrote
+ *
+ * \pre scores != NULL, filePath != NULL
+ * \post The score are written in the file and the structure is freed
+ *
+ * \return 0 if success
+ *         -1 Error manipulating the file
+ */
+int write_scores(SavedScores *scores, const char *filePath);
+
+/**
+ * \fn void destroy_saved_scores(SavedScores *scores)
+ * \brief destroy given SavedScores structure
+ *
+ * \param scores pointer on structure ot destroy
+ *
+ * \pre scores != NULL
+ * \post scores is destroyed and memory has been freed
+ */
+void destroy_saved_scores(SavedScores *scores);
 
 /**
  * \fn void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition)
