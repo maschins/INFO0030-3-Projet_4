@@ -701,13 +701,6 @@ void destroy_saved_scores(SavedScores *scores) {
    free(scores);
 }
 
-void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition) {
-   assert(mm != NULL && proposition != NULL);
-   for (unsigned i = 0; i < mm->history->nbPawns; i++) {
-      mm->proposition[i] = proposition[i];
-   }
-}
-
 static Combination **
 create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
    Combination **configs = malloc(nbConfigs * sizeof(Combination *));
