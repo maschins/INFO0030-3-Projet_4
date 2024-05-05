@@ -147,6 +147,8 @@ int get_current_index(ModelMastermind *mm);
 unsigned int get_nb_correct_last_combination(ModelMastermind *mm);
 unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
 PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
+PAWN_COLOR **get_configs(ModelMastermind *mm);
+
 void set_proposition_in_history(ModelMastermind *mm);
 
 char *get_main_menu_pseudo(ModelMainMenu *mmm);
@@ -156,4 +158,15 @@ void set_pseudo(ModelMainMenu *mmm, char *pseudo);
 void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor);
 void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
 
+/**
+ * \fn void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition)
+ * \brief set the current proposition to a given one
+ *
+ * \param mm pointer to the Model Structure
+ * \param proposition new proposition to set
+ *
+ * \pre mm != NULL, proposition != NULL
+ * \post the new proposition is correctly set
+ */
+void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition);
 #endif //__MODEL_MASTERMIND__

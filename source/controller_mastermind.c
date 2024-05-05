@@ -42,6 +42,8 @@ struct controller_mastermind_t{
    GtkWidget **propositionButtons;
 };
 
+static bool verify_combination(ControllerMastermind *cm, const PAWN_COLOR
+*combination);
 
 ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
    assert(mmm != NULL && vmm != NULL);
@@ -596,4 +598,31 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
          reset_proposition_buttons(cm);
       }
    }
+}
+
+void on_feedback_given(GtkWidget *button, gpointer data) {
+   assert(button != NULL && data != NULL);
+
+   ControllerMastermind *cm = (ControllerMastermind *)data;
+
+   if(get_in_game(cm->mm)){
+      if(get_current_index(cm->mm) == 9){
+         set_propositions(cm->mm, get_configs(cm->mm)[0]);
+         set_proposition_in_history(cm->mm);
+         update_last_combination_images(cm->vm, cm->mm);
+      }
+
+      else {
+         if(get_nb_correct_last_combination(cm->mm)) {
+
+         }
+      }
+   }
+}
+
+static bool verify_combination(ControllerMastermind *cm, const PAWN_COLOR
+*combination){
+   assert(cm != NULL && combination != NULL);
+
+   return 0;
 }
