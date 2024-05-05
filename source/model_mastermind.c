@@ -500,12 +500,29 @@ SavedScores *load_scores(const char *filePath){
 
    if (!fscanf(pFile, "%u \n", &save->length)) {
       free(save);
-
+      fclose(pFile);
       return NULL;//File content ill-formed
    }
 
    for (unsigned i = 0; i < save->length; i++) {
       save->savedScores[i] = malloc(sizeof (Score));
+      if (save->savedScores[i] == NULL){
+         for (unsigned j = 0; j < i; j++) {
+            free(save->savedScores[j]);
+         }
+         free(save);
+         fclose(pFile);
+         return NULL;
+      }
+      if(!fscanf(pFile, "%c %u \n", save->savedScores[i]->pseudo,
+                 &save->savedScores[i]->score)){
+         for (unsigned j = 0; j < i; j++) {
+            free(save->savedScores[j]);
+         }
+         free(save);
+         fclose(pFile);
+         return NULL;
+      }
    }
 
    return save;
