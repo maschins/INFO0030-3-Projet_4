@@ -52,6 +52,16 @@ struct model_main_menu_t{
    unsigned int nbPawns;            /*!< Number of pawns selected */
 };
 
+struct score_t{
+    char pseudo[MAX_PSEUDO_LENGTH]; /*!< Saved player pseudo */
+    unsigned score;                 /*!< Score of saved player */
+};
+
+struct saved_scores_t{
+    unsigned length;                /*!< Number of scores saved */
+    Score **savedScores;             /*!< Saved score from players */
+};
+
 
 /**
  * \fn static Combination *create_combination(unsigned int nbPawns)
@@ -434,4 +444,31 @@ void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor) {
 void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i) {
    assert(mm != NULL && i < mm->history->nbPawns);
    mm->proposition[i] = mm->selectedColor;
+}
+
+SavedScores *load_scores(const char *filePath){
+   assert(filePath != NULL);
+
+   FILE *pFile = fopen(filePath, "r");
+   if (pFile == NULL) {
+      return NULL; // File name is ill-formed
+   }
+
+   SavedScores *save = malloc(sizeof (SavedScores));
+   if(save == NULL){
+      fclose(pFile);
+      return NULL;
+   }
+
+   if (!fscanf(pFile, "%u \n", &save->length)) {
+      free(save);
+
+      return NULL;//File content ill-formed
+   }
+
+   for (unsigned i = 0; i < save->length; i++) {
+      save->savedScores[i] = malloc(sizeof (Score));
+   }
+
+   return save;
 }

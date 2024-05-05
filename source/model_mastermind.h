@@ -108,6 +108,22 @@ typedef struct model_mastermind_t ModelMastermind;
  * */
 typedef struct model_main_menu_t ModelMainMenu;
 
+/**
+ * \struct Score
+ * \brief Type representing the player score
+ *
+ * Declaration the Score opaque type.
+ * */
+typedef struct score_t Score;
+
+/**
+ * \struct SavedScores
+ * \brief Type representing the scores of the precedent players
+ *
+ * Declaration the SavedScore opaque type.
+ * */
+typedef struct saved_scores_t SavedScores;
+
 ModelMainMenu *create_model_main_menu(void);
 void destroy_model_main_menu(ModelMainMenu *mmm);
 
