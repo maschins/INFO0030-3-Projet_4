@@ -159,6 +159,32 @@ void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor);
 void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
 
 /**
+ * \fn SavedScores *load_scores(const char *filePath)
+ * \brief Allocates the space for it and saves the scores from the given file
+ *
+ * \param filePath the file from which de score needs to be read
+ *
+ * \pre filePath != NULL
+ * \post the memory is allocated and the values are read
+ *
+ * \return A pointer on the created SavedScores structure
+ *         NULL if an error was encountered
+ */
+SavedScores *load_scores(const char *filePath);
+
+
+/**
+ * \fn void destroy_saved_scores(SavedScores *scores)
+ * \brief destroy given SavedScores structure
+ *
+ * \param scores pointer on structure ot destroy
+ *
+ * \pre scores != NULL
+ * \post scores is destroyed and memory has been freed
+ */
+void destroy_saved_scores(SavedScores *scores);
+
+/**
  * \fn void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition)
  * \brief set the current proposition to a given one
  *

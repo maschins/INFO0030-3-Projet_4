@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <unistd.h>
 
 #include "model_mastermind.h"
 
@@ -487,45 +488,81 @@ void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i) {
 SavedScores *load_scores(const char *filePath){
    assert(filePath != NULL);
 
-   FILE *pFile = fopen(filePath, "r");
-   if (pFile == NULL) {
-      return NULL; // File name is ill-formed
-   }
-
    SavedScores *save = malloc(sizeof (SavedScores));
-   if(save == NULL){
-      fclose(pFile);
+   if(save == NULL)
       return NULL;
-   }
 
-   if (!fscanf(pFile, "%u \n", &save->length)) {
-      free(save);
-      fclose(pFile);
-      return NULL;//File content ill-formed
-   }
 
-   for (unsigned i = 0; i < save->length; i++) {
-      save->savedScores[i] = malloc(sizeof (Score));
-      if (save->savedScores[i] == NULL){
-         for (unsigned j = 0; j < i; j++) {
-            free(save->savedScores[j]);
-         }
-         free(save);
-         fclose(pFile);
-         return NULL;
+   save->length = 0;
+
+   if(access(filePath, F_OK) != -1){
+      FILE *pFile = fopen(filePath, "r");
+      if (pFile == NULL) {
+         return NULL; // File name is ill-formed
       }
-      if(!fscanf(pFile, "%c %u \n", save->savedScores[i]->pseudo,
-                 &save->savedScores[i]->score)){
-         for (unsigned j = 0; j < i; j++) {
-            free(save->savedScores[j]);
-         }
+
+      if (!fscanf(pFile, "%u \n", &save->length)) {
          free(save);
          fclose(pFile);
+         return NULL;//File content ill-formed
+      }
+
+      for (unsigned i = 0; save->length + 1 > i; i++) {
+         save->savedScores[i] = malloc(sizeof (Score));
+         if (save->savedScores[i] == NULL){
+            for (unsigned j = 0; j < i; j++) {
+               free(save->savedScores[j]);
+            }
+            free(save);
+            fclose(pFile);
+            return NULL;
+         }
+         if(!fscanf(pFile, "%c %u \n", save->savedScores[i]->pseudo,
+                    &save->savedScores[i]->score)){
+            for (unsigned j = 0; j < i; j++) {
+               free(save->savedScores[j]);
+            }
+            free(save);
+            fclose(pFile);
+            return NULL;
+         }
+      }
+   }
+   else {
+      save->savedScores[0] = malloc(sizeof (Score));
+      if(save->savedScores[0] == NULL){
+         free(save);
          return NULL;
       }
    }
 
    return save;
+}
+
+int write_scores(SavedScores *scores, const char *filePath){
+   assert(scores != NULL && filePath != NULL);
+
+   FILE *pFile = fopen(filePath, "w");
+   if (pFile == NULL) {
+      return -1; // File name is ill-formed
+   }
+
+   fprintf(pFile, "%u \n",scores->length);
+   for (unsigned i = 0; i < scores->length; i++) {
+      fprintf(pFile, "%c %u \n", scores->savedScores[i]->pseudo,
+              scores->savedScores[i]->score);
+   }
+
+   destroy_saved_scores(scores);
+
+   return 0;
+}
+
+void destroy_saved_scores(SavedScores *scores) {
+   for (unsigned j = 0; j < scores->length; j++) {
+      free(scores->savedScores[j]);
+   }
+   free(scores);
 }
 
 void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition) {
