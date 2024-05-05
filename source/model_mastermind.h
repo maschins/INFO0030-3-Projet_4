@@ -16,6 +16,11 @@
 #define __MODEL_MASTERMIND__
 
 /**
+ * \brief Path of the file where the scores are saved
+ */
+#define SAVED_SCORES_PATH "/source/scores.txt"
+
+/**
  * \brief Max pseudo length.
  * */
 #define MAX_PSEUDO_LENGTH 51

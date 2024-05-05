@@ -44,7 +44,9 @@ struct model_mastermind_t {
     PAWN_COLOR *proposition;             /*!< Guesser proposition */
     PAWN_COLOR *solution;                /*!< Proposer combination */
     History *history;                    /*!< Combinations settings and history */
-    PAWN_COLOR **configs;       /*!< All the possible configurations */
+    PAWN_COLOR **configs;                /*!< All the possible configurations */
+    SavedScores *save;                   /*!< Structure containing the
+ * previously saved scores */
 };
 
 
@@ -277,6 +279,16 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
       free(mm->solution);
       free(mm->proposition);
       destroy_history(mm->history);
+      free(mm);
+      return NULL;
+   }
+
+   mm->save = load_scores(SAVED_SCORES_PATH);
+   if(mm->save == NULL){
+      free(mm->solution);
+      free(mm->proposition);
+      destroy_history(mm->history);
+      //TODO create destroyer for configs
       free(mm);
       return NULL;
    }
@@ -608,5 +620,3 @@ static PAWN_COLOR **create_configs(unsigned int nbPawns) {
 
    return configs;
 }
-
-

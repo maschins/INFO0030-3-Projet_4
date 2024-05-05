@@ -626,3 +626,9 @@ static bool verify_combination(ControllerMastermind *cm, const PAWN_COLOR
 
    return 0;
 }
+
+static void handle_quit(){
+
+
+   gtk_main_quit();
+}
