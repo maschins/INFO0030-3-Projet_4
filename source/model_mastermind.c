@@ -354,9 +354,7 @@ void determine_feedback_proposition(ModelMastermind *mm, Combination *propositio
    }
 
    for(unsigned int i = 0; i < mm->history->nbPawns; i++){
-      fprintf(stderr, "%d %d\n", proposition->pawns[i], solution[i]);
       if(proposition->pawns[i] == solution[i]){
-         fprintf(stderr, "coucou\n");
          proposition->nbCorrect++;
       }
       else {
@@ -573,8 +571,6 @@ void update_last_combination_feedback(ModelMastermind *mm) {
 
    mm->history->combinations[mm->history->currentIndex]->nbCorrect = nbCorrect;
    mm->history->combinations[mm->history->currentIndex]->nbMisplaced = nbMisplaced;
-
-   fprintf(stderr, "Fb donné par le joueur de la dernière combi : %d %d\n", mm->history->combinations[mm->history->currentIndex]->nbCorrect, mm->history->combinations[mm->history->currentIndex]->nbMisplaced);
 }
 
 
@@ -617,9 +613,7 @@ static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns
    if(configs == NULL)
       return NULL;
 
-   unsigned int totalPossibleConfigs = pow(NB_PAWN_COLORS - 1, nbPawns);
-
-   for(unsigned int i = 0; i < totalPossibleConfigs; i++){
+   for(unsigned int i = 0; i < nbConfigs; i++){
       configs[i] = create_combination(nbPawns);
       if(configs[i] == NULL){
          for(unsigned int j = 0; j < i; ++j)
