@@ -48,35 +48,35 @@
 /**
  * \brief Defines the different pawn colors.
 */
-typedef enum{
-   PAWN_BLUE,     /*!< Blue color pawn */
-   PAWN_CYAN,     /*!< Cyan color pawn */
-   PAWN_GREEN,    /*!< Green color pawn */
-   PAWN_ORANGE,   /*!< Orange color pawn */
-   PAWN_PURPLE,   /*!< Purple color pawn */
-   PAWN_RED,      /*!< Red color pawn */
-   PAWN_YELLOW,   /*!< Yellow color pawn */
-   PAWN_DEFAULT,  /*!< Default pawn */
-   NB_PAWN_COLORS /*!< Number of colors */
-}PAWN_COLOR;
+typedef enum {
+    PAWN_BLUE,     /*!< Blue color pawn */
+    PAWN_CYAN,     /*!< Cyan color pawn */
+    PAWN_GREEN,    /*!< Green color pawn */
+    PAWN_ORANGE,   /*!< Orange color pawn */
+    PAWN_PURPLE,   /*!< Purple color pawn */
+    PAWN_RED,      /*!< Red color pawn */
+    PAWN_YELLOW,   /*!< Yellow color pawn */
+    PAWN_DEFAULT,  /*!< Default pawn */
+    NB_PAWN_COLORS /*!< Number of colors */
+} PAWN_COLOR;
 
 /**
  * \brief Defines the different feedback colors.
 */
-typedef enum{
-   FB_BLACK,      /*!< Black feedback pawn color */
-   FB_WHITE,      /*!< White feedback pawn color  */
-   FB_DEFAULT,    /*!< No feedback pawn */
-   NB_FB_COLORS   /*!< Number of feedback colors */ 
-}FEEDBACK_COLOR;
+typedef enum {
+    FB_BLACK,      /*!< Black feedback pawn color */
+    FB_WHITE,      /*!< White feedback pawn color  */
+    FB_DEFAULT,    /*!< No feedback pawn */
+    NB_FB_COLORS   /*!< Number of feedback colors */
+} FEEDBACK_COLOR;
 
 /**
  * \brief Defines the different player roles.
 */
-typedef enum{
-   GUESSER, /*!< Guesser role */ 
-   PROPOSER /*!< Proposer role */ 
-}ROLE;
+typedef enum {
+    GUESSER, /*!< Guesser role */
+    PROPOSER /*!< Proposer role */
+} ROLE;
 
 /**
  * Declare the Combination opaque type.
@@ -125,50 +125,84 @@ typedef struct score_t Score;
 typedef struct saved_scores_t SavedScores;
 
 ModelMainMenu *create_model_main_menu(void);
+
 void destroy_model_main_menu(ModelMainMenu *mmm);
 
 ModelMastermind *create_model_mastermind(ModelMainMenu *mmm);
+
 void destroy_model_mastermind(ModelMastermind *mm);
 
 void generate_random_solution(ModelMastermind *mm);
+
 bool verify_proposition(ModelMastermind *mm);
+
 void reset_proposition(ModelMastermind *mm);
+
 void reset_feedback(ModelMastermind *mm);
 
-void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution);
+void
+determine_feedback_proposition(ModelMastermind *mm, Combination *proposition,
+                               PAWN_COLOR *solution);
+
 void update_current_combination_index(ModelMastermind *mm);
+
 void verify_end_game(ModelMastermind *mm);
 
 PAWN_COLOR get_selected_color(ModelMastermind *mm);
+
 ROLE get_role(ModelMastermind *mm);
+
 Combination *get_proposition(ModelMastermind *mm);
+
 FEEDBACK_COLOR get_feedback_pawn(ModelMastermind *mm, unsigned int index);
+
 char *get_pseudo(ModelMastermind *mm);
+
 unsigned int get_nb_pawns(ModelMastermind *mm);
+
 unsigned int get_nb_combinations(ModelMastermind *mm);
+
 bool get_in_game(ModelMastermind *mm);
+
 PAWN_COLOR *get_solution(ModelMastermind *mm);
+
 bool get_valid_solution(ModelMastermind *mm);
+
 int get_current_index(ModelMastermind *mm);
+
 unsigned int get_nb_correct_last_combination(ModelMastermind *mm);
+
 unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
+
 Combination *get_last_combination(ModelMastermind *mm);
-PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
+
+PAWN_COLOR
+get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
 
 void set_proposition_in_history(ModelMastermind *mm);
 
 char *get_main_menu_pseudo(ModelMainMenu *mmm);
+
 void set_role(ModelMainMenu *mmm, ROLE role);
+
 void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns);
+
 void set_pseudo(ModelMainMenu *mmm, char *pseudo);
+
 void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor);
+
 void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
+
 void set_feedback_pawn(ModelMastermind *mm, unsigned int index);
+
 void set_proposition_as_solution(ModelMastermind *mm);
+
 void update_last_combination_feedback(ModelMastermind *mm);
+
 void set_valid_solution_true(ModelMastermind *mm);
 
 void find_next_proposition(ModelMastermind *mm);
+
 /**
  * \fn void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition)
  * \brief set the current proposition to a given one
@@ -180,4 +214,5 @@ void find_next_proposition(ModelMastermind *mm);
  * \post the new proposition is correctly set
  */
 void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition);
+
 #endif //__MODEL_MASTERMIND__

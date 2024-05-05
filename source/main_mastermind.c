@@ -21,7 +21,7 @@
 int main(int argc, char **argv) {
 
    gtk_init(&argc, &argv);
-   
+
    // Create main menu model.
    ModelMainMenu *mmm = create_model_main_menu();
    if(mmm == NULL)
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
    }
 
    init_main_menu(cmm);
-   
+
    gtk_main();
 
    // Free memory

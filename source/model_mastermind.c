@@ -21,51 +21,51 @@
 #include "model_mastermind.h"
 
 struct combination_t {
-   unsigned int nbCorrect;   /*!< Number of correctly placed pawns with correct color in the combination */
-   unsigned int nbMisplaced; /*!< Number of wrongly placed pawns with correct color in the combination */
-   PAWN_COLOR *pawns;        /*!< Combination of pawns */
+    unsigned int nbCorrect;   /*!< Number of correctly placed pawns with correct color in the combination */
+    unsigned int nbMisplaced; /*!< Number of wrongly placed pawns with correct color in the combination */
+    PAWN_COLOR *pawns;        /*!< Combination of pawns */
 };
 
 
 struct history_t {
-   unsigned int nbPawns;         /*!< Number of pawns of a combination */
-   unsigned int nbCombinations;  /*!< Number of combinations in the histroy */
-   int currentIndex;             /*!< Index of the last combination in the history */
-   Combination **combinations;   /*!< History of combinations proposed by the guesser */
+    unsigned int nbPawns;         /*!< Number of pawns of a combination */
+    unsigned int nbCombinations;  /*!< Number of combinations in the histroy */
+    int currentIndex;             /*!< Index of the last combination in the history */
+    Combination **combinations;   /*!< History of combinations proposed by the guesser */
 };
 
 
 struct model_mastermind_t {
-   ROLE role;
-   char savedPseudo[MAX_PSEUDO_LENGTH]; /*!< Player pseudo */
-   bool inGame;                         /*!< State of the game */
-   PAWN_COLOR selectedColor;            /*!< Selected color */
-   Combination *proposition;             /*!< Guesser proposition */
-   bool validSolution;
-   PAWN_COLOR *solution;                /*!< Proposer combination */
-   History *history;                    /*!< Combinations settings and history */
-   FEEDBACK_COLOR *feedback;
-   unsigned int nbConfigs;
-   unsigned int lastConfigIndex;
-   Combination **configs;       /*!< All the possible configurations */
+    ROLE role;
+    char savedPseudo[MAX_PSEUDO_LENGTH]; /*!< Player pseudo */
+    bool inGame;                         /*!< State of the game */
+    PAWN_COLOR selectedColor;            /*!< Selected color */
+    Combination *proposition;             /*!< Guesser proposition */
+    bool validSolution;
+    PAWN_COLOR *solution;                /*!< Proposer combination */
+    History *history;                    /*!< Combinations settings and history */
+    FEEDBACK_COLOR *feedback;
+    unsigned int nbConfigs;
+    unsigned int lastConfigIndex;
+    Combination **configs;       /*!< All the possible configurations */
 };
 
 
 struct model_main_menu_t {
-   char pseudo[MAX_PSEUDO_LENGTH];  /*!< Saved player pseudo */
-   bool validPseudo;                /*!< State of pseudo validity */
-   ROLE role;                       /*!< Player role */
-   unsigned int nbPawns;            /*!< Number of pawns selected */
+    char pseudo[MAX_PSEUDO_LENGTH];  /*!< Saved player pseudo */
+    bool validPseudo;                /*!< State of pseudo validity */
+    ROLE role;                       /*!< Player role */
+    unsigned int nbPawns;            /*!< Number of pawns selected */
 };
 
-struct score_t{
-   char pseudo[MAX_PSEUDO_LENGTH]; /*!< Saved player pseudo */
-   unsigned score;                 /*!< Score of saved player */
+struct score_t {
+    char pseudo[MAX_PSEUDO_LENGTH]; /*!< Saved player pseudo */
+    unsigned score;                 /*!< Score of saved player */
 };
 
-struct saved_scores_t{
-   unsigned length;                /*!< Number of scores saved */
-   Score **savedScores;             /*!< Saved score from players */
+struct saved_scores_t {
+    unsigned length;                /*!< Number of scores saved */
+    Score **savedScores;             /*!< Saved score from players */
 };
 
 
@@ -114,7 +114,8 @@ static void destroy_combination(Combination *combination);
  *         NULL in case of error.
  * 
  * */
-static History *create_history(unsigned int nbPawns, unsigned int nbCombinations);
+static History *
+create_history(unsigned int nbPawns, unsigned int nbCombinations);
 
 
 /**
@@ -130,12 +131,13 @@ static History *create_history(unsigned int nbPawns, unsigned int nbCombinations
 static void destroy_history(History *history);
 
 
-static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns);
+static Combination **
+create_configs(unsigned int nbConfigs, unsigned int nbPawns);
 
 
 static Combination *create_combination(unsigned int nbPawns) {
    Combination *combination = malloc(sizeof(Combination));
-   if (combination == NULL)
+   if(combination == NULL)
       return NULL;
 
    combination->nbCorrect = 0;
@@ -166,7 +168,7 @@ static void destroy_combination(Combination *combination) {
 static History *
 create_history(unsigned int nbPawns, unsigned int nbCombinations) {
    History *history = malloc(sizeof(History));
-   if (history == NULL)
+   if(history == NULL)
       return NULL;
 
    history->nbPawns = nbPawns;
@@ -174,14 +176,14 @@ create_history(unsigned int nbPawns, unsigned int nbCombinations) {
    history->currentIndex = nbCombinations - 1;
 
    history->combinations = malloc(nbCombinations * sizeof(Combination *));
-   if (history->combinations == NULL) {
+   if(history->combinations == NULL){
       free(history);
       return NULL;
    }
 
-   for (unsigned int i = 0; i < nbCombinations; i++) {
+   for(unsigned int i = 0; i < nbCombinations; i++){
       history->combinations[i] = create_combination(nbPawns);
-      if (history->combinations[i] == NULL) {
+      if(history->combinations[i] == NULL){
          destroy_history(history);
          return NULL;
       }
@@ -192,10 +194,10 @@ create_history(unsigned int nbPawns, unsigned int nbCombinations) {
 
 
 static void destroy_history(History *history) {
-   if (history != NULL) {
-      if (history->combinations != NULL) {
-         for (unsigned int i = 0; i < history->nbCombinations; i++)
-            if (history->combinations[i] != NULL)
+   if(history != NULL){
+      if(history->combinations != NULL){
+         for(unsigned int i = 0; i < history->nbCombinations; i++)
+            if(history->combinations[i] != NULL)
                destroy_combination(history->combinations[i]);
 
          free(history->combinations);
@@ -207,7 +209,7 @@ static void destroy_history(History *history) {
 
 ModelMainMenu *create_model_main_menu(void) {
    ModelMainMenu *mmm = malloc(sizeof(ModelMainMenu));
-   if (mmm == NULL)
+   if(mmm == NULL)
       return NULL;
 
    strcpy(mmm->pseudo, "Guest");
@@ -220,14 +222,14 @@ ModelMainMenu *create_model_main_menu(void) {
 
 
 void destroy_model_main_menu(ModelMainMenu *mmm) {
-   if (mmm != NULL)
+   if(mmm != NULL)
       free(mmm);
 }
 
 
 ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
    ModelMastermind *mm = malloc(sizeof(ModelMastermind));
-   if (mm == NULL)
+   if(mm == NULL)
       return NULL;
 
    // Copy main menu settings in game model.
@@ -261,7 +263,7 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
    for(unsigned int i = 0; i < mmm->nbPawns; i++){
       mm->solution[i] = PAWN_DEFAULT;
       mm->feedback[i] = FB_DEFAULT;
-   }  
+   }
 
    mm->history = create_history(mmm->nbPawns, NB_COMBINATIONS);
    if(mm->history == NULL){
@@ -307,7 +309,7 @@ void generate_random_solution(ModelMastermind *mm) {
    assert(mm != NULL);
 
    srand(time(NULL));
-   for (unsigned int i = 0; i < mm->history->nbPawns; i++)
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++)
       mm->solution[i] = rand() % (NB_PAWN_COLORS - 1);
 }
 
@@ -342,7 +344,9 @@ void reset_feedback(ModelMastermind *mm) {
 }
 
 
-void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution) {
+void
+determine_feedback_proposition(ModelMastermind *mm, Combination *proposition,
+                               PAWN_COLOR *solution) {
    assert(proposition != NULL && solution != NULL);
 
    unsigned int nbColorsInProposition[NB_PAWN_COLORS];
@@ -356,15 +360,14 @@ void determine_feedback_proposition(ModelMastermind *mm, Combination *propositio
    for(unsigned int i = 0; i < mm->history->nbPawns; i++){
       if(proposition->pawns[i] == solution[i]){
          proposition->nbCorrect++;
-      }
-      else {
+      } else{
          nbColorsInProposition[proposition->pawns[i]]++;
          nbColorsInSolution[solution[i]]++;
       }
    }
 
-   for (unsigned int i = 0; i < NB_PAWN_COLORS; i++) {
-      if (nbColorsInProposition[i] < nbColorsInSolution[i])
+   for(unsigned int i = 0; i < NB_PAWN_COLORS; i++){
+      if(nbColorsInProposition[i] < nbColorsInSolution[i])
          proposition->nbMisplaced += nbColorsInProposition[i];
       else
          proposition->nbMisplaced += nbColorsInSolution[i];
@@ -382,8 +385,8 @@ void update_current_combination_index(ModelMastermind *mm) {
 void verify_end_game(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   if (mm->history->combinations[mm->history->currentIndex]->nbCorrect == mm->history->nbPawns ||
-       mm->history->currentIndex <= 0)
+   if(mm->history->combinations[mm->history->currentIndex]->nbCorrect ==
+      mm->history->nbPawns || mm->history->currentIndex <= 0)
       mm->inGame = false;
 }
 
@@ -465,7 +468,8 @@ Combination *get_last_combination(ModelMastermind *mm) {
 }
 
 
-PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
+PAWN_COLOR
+get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
    assert(mm != NULL && pawnIndex < mm->history->nbPawns);
 
    return mm->history->combinations[mm->history->currentIndex]->pawns[pawnIndex];
@@ -581,34 +585,35 @@ void set_valid_solution_true(ModelMastermind *mm) {
 }
 
 
-SavedScores *load_scores(const char *filePath){
+SavedScores *load_scores(const char *filePath) {
    assert(filePath != NULL);
 
    FILE *pFile = fopen(filePath, "r");
-   if (pFile == NULL) {
+   if(pFile == NULL){
       return NULL; // File name is ill-formed
    }
 
-   SavedScores *save = malloc(sizeof (SavedScores));
+   SavedScores *save = malloc(sizeof(SavedScores));
    if(save == NULL){
       fclose(pFile);
       return NULL;
    }
 
-   if (!fscanf(pFile, "%u \n", &save->length)) {
+   if(!fscanf(pFile, "%u \n", &save->length)){
       free(save);
 
       return NULL;//File content ill-formed
    }
 
-   for (unsigned i = 0; i < save->length; i++) {
-      save->savedScores[i] = malloc(sizeof (Score));
+   for(unsigned i = 0; i < save->length; i++){
+      save->savedScores[i] = malloc(sizeof(Score));
    }
 
    return save;
 }
 
-static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
+static Combination **
+create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
    Combination **configs = malloc(nbConfigs * sizeof(Combination *));
    if(configs == NULL)
       return NULL;
@@ -618,7 +623,7 @@ static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns
       if(configs[i] == NULL){
          for(unsigned int j = 0; j < i; ++j)
             destroy_combination(configs[i]);
-         
+
          free(configs);
          return NULL;
       }
@@ -642,13 +647,21 @@ void find_next_proposition(ModelMastermind *mm) {
          mm->proposition->pawns[j] = mm->configs[0]->pawns[j];
 
    else{
-      int nextCombiIndex = -1; 
-      for(unsigned int i = mm->lastConfigIndex; nextCombiIndex == -1 && i < mm->nbConfigs; i++) {
-         determine_feedback_proposition(mm, mm->configs[i], mm->history->combinations[mm->history->currentIndex + 1]->pawns);
+      int nextCombiIndex = -1;
+      for(unsigned int i = mm->lastConfigIndex;
+          nextCombiIndex == -1 && i < mm->nbConfigs; i++){
+         determine_feedback_proposition(mm, mm->configs[i],
+                                        mm->history->combinations[
+                                                mm->history->currentIndex +
+                                                1]->pawns);
 
-         if(mm->configs[i]->nbCorrect == mm->history->combinations[mm->history->currentIndex + 1]->nbCorrect &&
-            mm->configs[i]->nbMisplaced == mm->history->combinations[mm->history->currentIndex + 1]->nbMisplaced)
-               nextCombiIndex = i;
+         if(mm->configs[i]->nbCorrect ==
+            mm->history->combinations[mm->history->currentIndex +
+                                      1]->nbCorrect &&
+            mm->configs[i]->nbMisplaced ==
+            mm->history->combinations[mm->history->currentIndex +
+                                      1]->nbMisplaced)
+            nextCombiIndex = i;
       }
 
       if(nextCombiIndex != -1){

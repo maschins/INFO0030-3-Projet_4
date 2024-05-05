@@ -3,47 +3,48 @@
 #include <stdlib.h>
 #include "controller_mastermind.h"
 
-struct controller_main_menu_t{
-   ModelMainMenu *mmm;
-   ViewMainMenu *vmm;
-   GtkWidget *pseudoEntry;
-   GtkWidget *saveButton;
-   GtkWidget *guesserButton;
-   GtkWidget *proposerButton;
-   GtkWidget *nbPawnsSlider;
-   GtkWidget *playButton;
-   GtkWidget *quitButton;
+struct controller_main_menu_t {
+    ModelMainMenu *mmm;
+    ViewMainMenu *vmm;
+    GtkWidget *pseudoEntry;
+    GtkWidget *saveButton;
+    GtkWidget *guesserButton;
+    GtkWidget *proposerButton;
+    GtkWidget *nbPawnsSlider;
+    GtkWidget *playButton;
+    GtkWidget *quitButton;
 };
 
 
-struct menu_bar_t{
-   GtkWidget *bar;
-   GtkWidget *menuGame;
-   GtkWidget *menuHelp;
-   GtkWidget *itemGame;
-   GtkWidget *itemHelp;
-   GtkWidget *itemMainMenu;
-   GtkWidget *itemScore;
-   GtkWidget *itemQuit;
-   GtkWidget *itemAbouts;
+struct menu_bar_t {
+    GtkWidget *bar;
+    GtkWidget *menuGame;
+    GtkWidget *menuHelp;
+    GtkWidget *itemGame;
+    GtkWidget *itemHelp;
+    GtkWidget *itemMainMenu;
+    GtkWidget *itemScore;
+    GtkWidget *itemQuit;
+    GtkWidget *itemAbouts;
 };
 
 
-struct controller_mastermind_t{
-   ControllerMainMenu *cmm;
-   ModelMastermind *mm;
-   ViewMastermind *vm;
-   GtkWidget *aboutsOkayButton;
-   MenuBar *menuBar;
-   GtkWidget *applyButton;
-   GtkWidget *resetButton;
-   GtkWidget **colorSelectionButtons;
-   GtkWidget **propositionButtons;
-   GtkWidget **feedbackButtons;
+struct controller_mastermind_t {
+    ControllerMainMenu *cmm;
+    ModelMastermind *mm;
+    ViewMastermind *vm;
+    GtkWidget *aboutsOkayButton;
+    MenuBar *menuBar;
+    GtkWidget *applyButton;
+    GtkWidget *resetButton;
+    GtkWidget **colorSelectionButtons;
+    GtkWidget **propositionButtons;
+    GtkWidget **feedbackButtons;
 };
 
 
-ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
+ControllerMainMenu *
+create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
    assert(mmm != NULL && vmm != NULL);
 
    // Allocate memory for controller.
@@ -69,14 +70,16 @@ ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu
    }
 
    // Créer le premier bouton radio
-   cmm->guesserButton = gtk_radio_button_new_with_label(NULL, GUESSER_BUTTON_LABEL);
+   cmm->guesserButton = gtk_radio_button_new_with_label(NULL,
+                                                        GUESSER_BUTTON_LABEL);
    if(cmm->guesserButton == NULL){
       free(cmm);
       return NULL;
    }
 
    // Créer le deuxième bouton radio, lié au premier
-   cmm->proposerButton = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(cmm->guesserButton), PROPOSER_BUTTON_LABEL);
+   cmm->proposerButton = gtk_radio_button_new_with_label_from_widget(
+           GTK_RADIO_BUTTON(cmm->guesserButton), PROPOSER_BUTTON_LABEL);
    if(cmm->proposerButton == NULL){
       free(cmm);
       return NULL;
@@ -86,7 +89,8 @@ ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu
    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cmm->guesserButton), TRUE);
 
    // Create the slide to select the nb of pawns.
-   cmm->nbPawnsSlider = gtk_hscale_new_with_range(MIN_NB_PAWNS, MAX_NB_PAWNS, 1);
+   cmm->nbPawnsSlider = gtk_hscale_new_with_range(MIN_NB_PAWNS, MAX_NB_PAWNS,
+                                                  1);
    gtk_range_set_value(GTK_RANGE(cmm->nbPawnsSlider), DEFAULT_NB_PAWNS);
    gtk_scale_set_digits(GTK_SCALE(cmm->nbPawnsSlider), 0);
    gtk_scale_set_value_pos(GTK_SCALE(cmm->nbPawnsSlider), GTK_POS_TOP);
@@ -116,7 +120,9 @@ void destroy_controller_main_menu(ControllerMainMenu *cmm) {
 }
 
 
-ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm, ControllerMainMenu *cmm){
+ControllerMastermind *
+create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm,
+                             ControllerMainMenu *cmm) {
    assert(vm != NULL && mm != NULL);
 
    ControllerMastermind *cm = malloc(sizeof(ControllerMastermind));
@@ -155,7 +161,8 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
       return NULL;
    }
 
-   cm->colorSelectionButtons = malloc((NB_PAWN_COLORS - 1) * sizeof(GtkWidget *)); // -1 because default color is not selectable. 
+   cm->colorSelectionButtons = malloc((NB_PAWN_COLORS - 1) *
+                                      sizeof(GtkWidget * )); // -1 because default color is not selectable.
    if(cm->colorSelectionButtons == NULL){
       free(cm->menuBar);
       free(cm);
@@ -163,7 +170,9 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
    }
 
    for(unsigned int i = 0; i < NB_PAWN_COLORS - 1; i++){
-      cm->colorSelectionButtons[i] = create_button_with_pixbuf(get_color_image_pixbuf(vm, i), get_mastermind_color_button_size(vm));
+      cm->colorSelectionButtons[i] = create_button_with_pixbuf(
+              get_color_image_pixbuf(vm, i),
+              get_mastermind_color_button_size(vm));
       if(cm->colorSelectionButtons[i] == NULL){
          free(cm->colorSelectionButtons);
          free(cm->menuBar);
@@ -172,7 +181,7 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
       }
    }
 
-   cm->propositionButtons = malloc(get_nb_pawns(mm) * sizeof(GtkWidget *));
+   cm->propositionButtons = malloc(get_nb_pawns(mm) * sizeof(GtkWidget * ));
    if(cm->propositionButtons == NULL){
       free(cm->colorSelectionButtons);
       free(cm->menuBar);
@@ -181,7 +190,9 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
    }
 
    for(unsigned int i = 0; i < get_nb_pawns(mm); i++){
-      cm->propositionButtons[i] = create_button_with_pixbuf(get_color_image_pixbuf(vm, PAWN_DEFAULT), get_mastermind_proposition_button_size(vm));
+      cm->propositionButtons[i] = create_button_with_pixbuf(
+              get_color_image_pixbuf(vm, PAWN_DEFAULT),
+              get_mastermind_proposition_button_size(vm));
       if(cm->propositionButtons[i] == NULL){
          free(cm->propositionButtons);
          free(cm->colorSelectionButtons);
@@ -191,16 +202,18 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
       }
    }
 
-   cm->feedbackButtons = malloc(get_nb_pawns(mm) * sizeof(GtkWidget *));
+   cm->feedbackButtons = malloc(get_nb_pawns(mm) * sizeof(GtkWidget * ));
    if(cm->feedbackButtons == NULL){
-         free(cm->colorSelectionButtons);
-         free(cm->propositionButtons);
-         free(cm->menuBar);
-         free(cm);
+      free(cm->colorSelectionButtons);
+      free(cm->propositionButtons);
+      free(cm->menuBar);
+      free(cm);
    }
 
    for(unsigned int i = 0; i < get_nb_pawns(mm); i++){
-      cm->feedbackButtons[i] = create_button_with_pixbuf(get_feedback_image_pixbuf(vm, FB_DEFAULT), get_mastermind_proposition_button_size(vm));
+      cm->feedbackButtons[i] = create_button_with_pixbuf(
+              get_feedback_image_pixbuf(vm, FB_DEFAULT),
+              get_mastermind_proposition_button_size(vm));
       if(cm->feedbackButtons[i] == NULL){
          free(cm->feedbackButtons);
          free(cm->propositionButtons);
@@ -215,7 +228,7 @@ ControllerMastermind *create_controller_mastermind(ModelMastermind *mm, ViewMast
 }
 
 
-void destroy_controller_mastermind(ControllerMastermind *cm){
+void destroy_controller_mastermind(ControllerMastermind *cm) {
    if(cm != NULL){
       if(cm->menuBar != NULL)
          free(cm->menuBar);
@@ -266,13 +279,15 @@ MenuBar *create_menu_bar(void) {
       return NULL;
    }
 
-   menuBar->itemMainMenu = gtk_menu_item_new_with_label(MENU_GAME_MAIN_MENU_ITEM_LABEL);
+   menuBar->itemMainMenu = gtk_menu_item_new_with_label(
+           MENU_GAME_MAIN_MENU_ITEM_LABEL);
    if(menuBar->itemMainMenu == NULL){
       free(menuBar);
       return NULL;
    }
 
-   menuBar->itemScore = gtk_menu_item_new_with_label(MENU_GAME_SCORE_ITEM_LABEL);
+   menuBar->itemScore = gtk_menu_item_new_with_label(
+           MENU_GAME_SCORE_ITEM_LABEL);
    if(menuBar->itemScore == NULL){
       free(menuBar);
       return NULL;
@@ -284,23 +299,28 @@ MenuBar *create_menu_bar(void) {
       return NULL;
    }
 
-   menuBar->itemAbouts = gtk_menu_item_new_with_label(MENU_HELP_ABOUTS_ITEM_LABEL);
+   menuBar->itemAbouts = gtk_menu_item_new_with_label(
+           MENU_HELP_ABOUTS_ITEM_LABEL);
    if(menuBar->itemAbouts == NULL){
       free(menuBar);
       return NULL;
    }
 
-   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuBar->itemGame), menuBar->menuGame);
-   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuBar->itemHelp), menuBar->menuHelp);
+   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuBar->itemGame),
+                             menuBar->menuGame);
+   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuBar->itemHelp),
+                             menuBar->menuHelp);
 
    gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->bar), menuBar->itemGame);
    gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->bar), menuBar->itemHelp);
-   
-   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemMainMenu);
+
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame),
+                         menuBar->itemMainMenu);
    gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemScore);
    gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuGame), menuBar->itemQuit);
-   
-   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuHelp), menuBar->itemAbouts);
+
+   gtk_menu_shell_append(GTK_MENU_SHELL(menuBar->menuHelp),
+                         menuBar->itemAbouts);
 
    return menuBar;
 }
@@ -316,10 +336,12 @@ void init_main_menu(ControllerMainMenu *cmm) {
    GtkWidget *nbPawnsHBox = get_main_menu_nb_pawns_hbox(cmm->vmm);
 
    gtk_container_add(GTK_CONTAINER(window), mainVBox);
-   gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_logo(cmm->vmm), TRUE, TRUE, 10);
+   gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_logo(cmm->vmm), TRUE,
+                      TRUE, 10);
 
    gtk_container_add(GTK_CONTAINER(mainVBox), nbPawnsHBox);
-   gtk_box_pack_start(GTK_BOX(nbPawnsHBox), get_main_menu_nb_pawns_label(cmm->vmm), FALSE, FALSE, 10);
+   gtk_box_pack_start(GTK_BOX(nbPawnsHBox),
+                      get_main_menu_nb_pawns_label(cmm->vmm), FALSE, FALSE, 10);
    gtk_box_pack_start(GTK_BOX(nbPawnsHBox), cmm->nbPawnsSlider, TRUE, TRUE, 0);
 
    const int smallFontSize = 9;
@@ -327,20 +349,26 @@ void init_main_menu(ControllerMainMenu *cmm) {
    pango_font_description_set_family(font_desc, "sans");
 
    gtk_container_add(GTK_CONTAINER(mainVBox), welcomeHBox);
-   gtk_box_pack_start(GTK_BOX(welcomeHBox), get_main_menu_welcome_label(cmm->vmm), FALSE, FALSE, 0);
-   gtk_box_pack_start(GTK_BOX(welcomeHBox), get_main_menu_current_pseudo_label(cmm->vmm), FALSE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(welcomeHBox),
+                      get_main_menu_welcome_label(cmm->vmm), FALSE, FALSE, 0);
+   gtk_box_pack_start(GTK_BOX(welcomeHBox),
+                      get_main_menu_current_pseudo_label(cmm->vmm), FALSE,
+                      FALSE, 0);
 
    gtk_container_add(GTK_CONTAINER(mainVBox), pseudoHBox);
-   gtk_box_pack_start(GTK_BOX(pseudoHBox), get_main_menu_pseudo_label(cmm->vmm), TRUE, TRUE, 0);
+   gtk_box_pack_start(GTK_BOX(pseudoHBox), get_main_menu_pseudo_label(cmm->vmm),
+                      TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(pseudoHBox), cmm->pseudoEntry, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(pseudoHBox), cmm->saveButton, TRUE, TRUE, 0);
-   
-   gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_error_label(cmm->vmm), TRUE, TRUE, 0);
+
+   gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_error_label(cmm->vmm),
+                      TRUE, TRUE, 0);
    // Small font for error message.
    pango_font_description_set_size(font_desc, smallFontSize * PANGO_SCALE);
    gtk_widget_modify_font(get_main_menu_error_label(cmm->vmm), font_desc);
    pango_font_description_free(font_desc);
-   gtk_misc_set_alignment(GTK_MISC(get_main_menu_error_label(cmm->vmm)), 0.5, 0.5);
+   gtk_misc_set_alignment(GTK_MISC(get_main_menu_error_label(cmm->vmm)), 0.5,
+                          0.5);
 
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->guesserButton, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->proposerButton, TRUE, TRUE, 0);
@@ -348,13 +376,20 @@ void init_main_menu(ControllerMainMenu *cmm) {
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->quitButton, TRUE, TRUE, 0);
 
    // Connect signals.
-   g_signal_connect(G_OBJECT(cmm->nbPawnsSlider), "value-changed", G_CALLBACK(on_nb_pawns_slider_changed), cmm);
-   g_signal_connect(G_OBJECT(cmm->playButton), "clicked", G_CALLBACK(on_play_clicked), cmm);
-   g_signal_connect(G_OBJECT(cmm->guesserButton), "clicked", G_CALLBACK(on_guesser_choosed), cmm);
-   g_signal_connect(G_OBJECT(cmm->proposerButton), "clicked", G_CALLBACK(on_proposer_choosed), cmm);
-   g_signal_connect(G_OBJECT(cmm->saveButton), "clicked", G_CALLBACK(on_save_button_clicked), cmm);
-   g_signal_connect(G_OBJECT(cmm->quitButton), "clicked", G_CALLBACK(gtk_main_quit), NULL);
-   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(cmm->nbPawnsSlider), "value-changed",
+                    G_CALLBACK(on_nb_pawns_slider_changed), cmm);
+   g_signal_connect(G_OBJECT(cmm->playButton), "clicked",
+                    G_CALLBACK(on_play_clicked), cmm);
+   g_signal_connect(G_OBJECT(cmm->guesserButton), "clicked",
+                    G_CALLBACK(on_guesser_choosed), cmm);
+   g_signal_connect(G_OBJECT(cmm->proposerButton), "clicked",
+                    G_CALLBACK(on_proposer_choosed), cmm);
+   g_signal_connect(G_OBJECT(cmm->saveButton), "clicked",
+                    G_CALLBACK(on_save_button_clicked), cmm);
+   g_signal_connect(G_OBJECT(cmm->quitButton), "clicked",
+                    G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit),
+                    NULL);
 
    gtk_widget_show_all(window);
 }
@@ -370,34 +405,47 @@ void init_mastermind(ControllerMastermind *cm) {
    GtkWidget *mainVBox = get_mastermind_main_vbox(cm->vm);
    GtkWidget *historyTable = get_mastermind_history_table(cm->vm);
    GtkWidget *propositionHBox = get_mastermind_proposition_hbox(cm->vm);
-   GtkWidget *propositionControlHBox = get_mastermind_proposition_control_hbox(cm->vm);
+   GtkWidget *propositionControlHBox = get_mastermind_proposition_control_hbox(
+           cm->vm);
    GtkWidget *colorSelectionHBox = get_mastermind_color_selection_hbox(cm->vm);
    GtkWidget *scoreHBox = get_mastermind_score_hbox(cm->vm);
 
-   gtk_box_pack_start(GTK_BOX(aboutsMainVBox), get_mastermind_abouts_label(cm->vm), TRUE, TRUE, 10);
-   gtk_box_pack_start(GTK_BOX(aboutsMainVBox), cm->aboutsOkayButton, FALSE, FALSE, 10);
+   gtk_box_pack_start(GTK_BOX(aboutsMainVBox),
+                      get_mastermind_abouts_label(cm->vm), TRUE, TRUE, 10);
+   gtk_box_pack_start(GTK_BOX(aboutsMainVBox), cm->aboutsOkayButton, FALSE,
+                      FALSE, 10);
 
    unsigned int nbCombi = get_nb_combinations(cm->mm);
    unsigned int nbPawns = get_nb_pawns(cm->mm);
 
    for(unsigned int i = 0; i < nbCombi; i++){
       for(unsigned int j = 0; j < nbPawns; j++){
-         gtk_table_attach_defaults(GTK_TABLE(historyTable), get_mastermind_history_combination_button(cm->vm, i, j), j, j + 1, i, i + 1);
-         gtk_table_attach(GTK_TABLE(historyTable), get_mastermind_history_feedback_button(cm->vm, i, j), nbPawns + j, nbPawns + j + 1, i, i + 1, 0, 0, 0, 0);
+         gtk_table_attach_defaults(GTK_TABLE(historyTable),
+                                   get_mastermind_history_combination_button(
+                                           cm->vm, i, j), j, j + 1, i, i + 1);
+         gtk_table_attach(GTK_TABLE(historyTable),
+                          get_mastermind_history_feedback_button(cm->vm, i, j),
+                          nbPawns + j, nbPawns + j + 1, i, i + 1, 0, 0, 0, 0);
       }
    }
 
    for(unsigned int i = 0; i < nbPawns; i++){
-      gtk_box_pack_start(GTK_BOX(propositionHBox), cm->propositionButtons[i], TRUE, TRUE, 0);
-      g_signal_connect(G_OBJECT(cm->propositionButtons[i]), "clicked", G_CALLBACK(on_proposition_button_clicked), cm);
+      gtk_box_pack_start(GTK_BOX(propositionHBox), cm->propositionButtons[i],
+                         TRUE, TRUE, 0);
+      g_signal_connect(G_OBJECT(cm->propositionButtons[i]), "clicked",
+                       G_CALLBACK(on_proposition_button_clicked), cm);
    }
 
-   gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->applyButton, TRUE, TRUE, 0);
-   gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->resetButton, TRUE, TRUE, 0);
+   gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->applyButton, TRUE,
+                      TRUE, 0);
+   gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->resetButton, TRUE,
+                      TRUE, 0);
 
-   for(unsigned int i = 0; i < NB_PAWN_COLORS - 1; i++) {
-      g_signal_connect(G_OBJECT(cm->colorSelectionButtons[i]), "clicked", G_CALLBACK(on_color_picked), cm);
-      gtk_box_pack_start(GTK_BOX(colorSelectionHBox), cm->colorSelectionButtons[i], TRUE, TRUE, 0);
+   for(unsigned int i = 0; i < NB_PAWN_COLORS - 1; i++){
+      g_signal_connect(G_OBJECT(cm->colorSelectionButtons[i]), "clicked",
+                       G_CALLBACK(on_color_picked), cm);
+      gtk_box_pack_start(GTK_BOX(colorSelectionHBox),
+                         cm->colorSelectionButtons[i], TRUE, TRUE, 0);
    }
 
    //GtkWidget *scoreAlignment = gtk_alignment_new(0.5, 0.5, 0, 0);
@@ -414,14 +462,21 @@ void init_mastermind(ControllerMastermind *cm) {
    gtk_container_add(GTK_CONTAINER(window), mainVBox);
 
    // Connect signals
-   g_signal_connect(G_OBJECT(cm->aboutsOkayButton), "clicked", G_CALLBACK(hide_window), aboutsWindow);
+   g_signal_connect(G_OBJECT(cm->aboutsOkayButton), "clicked",
+                    G_CALLBACK(hide_window), aboutsWindow);
 
-   g_signal_connect(G_OBJECT(cm->menuBar->itemMainMenu), "activate", G_CALLBACK(on_main_menu_clicked), cm);
-   g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate", G_CALLBACK(gtk_main_quit), NULL);
-   g_signal_connect(G_OBJECT(cm->menuBar->itemAbouts), "activate", G_CALLBACK(show_window), aboutsWindow);
-   g_signal_connect(G_OBJECT(cm->applyButton), "clicked", G_CALLBACK(on_apply_clicked), cm);
-   g_signal_connect(G_OBJECT(cm->resetButton), "clicked", G_CALLBACK(on_reset_clicked), cm);
-   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemMainMenu), "activate",
+                    G_CALLBACK(on_main_menu_clicked), cm);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate",
+                    G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemAbouts), "activate",
+                    G_CALLBACK(show_window), aboutsWindow);
+   g_signal_connect(G_OBJECT(cm->applyButton), "clicked",
+                    G_CALLBACK(on_apply_clicked), cm);
+   g_signal_connect(G_OBJECT(cm->resetButton), "clicked",
+                    G_CALLBACK(on_reset_clicked), cm);
+   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit),
+                    NULL);
 
    gtk_widget_show_all(window);
 }
@@ -433,12 +488,14 @@ void init_feedback_zone_mastermind(ControllerMastermind *cm) {
    GtkWidget *mainVBox = get_mastermind_main_vbox(cm->vm);
    GtkWidget *hbox = get_mastermind_feedback_zone_hbox(cm->vm);
 
-   gtk_container_remove(GTK_CONTAINER(mainVBox), get_mastermind_color_selection_hbox(cm->vm));
+   gtk_container_remove(GTK_CONTAINER(mainVBox),
+                        get_mastermind_color_selection_hbox(cm->vm));
    gtk_container_add(GTK_CONTAINER(mainVBox), hbox);
 
    for(unsigned int i = 0; i < get_nb_pawns(cm->mm); i++){
       gtk_box_pack_start(GTK_BOX(hbox), cm->feedbackButtons[i], TRUE, TRUE, 0);
-      g_signal_connect(G_OBJECT(cm->feedbackButtons[i]), "clicked", G_CALLBACK(on_feedback_button_clicked), cm);
+      g_signal_connect(G_OBJECT(cm->feedbackButtons[i]), "clicked",
+                       G_CALLBACK(on_feedback_button_clicked), cm);
    }
 
    gtk_widget_show_all(get_mastermind_window(cm->vm));
@@ -448,7 +505,7 @@ void init_feedback_zone_mastermind(ControllerMastermind *cm) {
 void show_window(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   GtkWidget *window = (GtkWidget *)data;
+   GtkWidget *window = (GtkWidget *) data;
 
    gtk_widget_show_all(window);
 }
@@ -457,7 +514,7 @@ void show_window(GtkWidget *button, gpointer data) {
 void hide_window(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   GtkWidget *window = (GtkWidget *)data;
+   GtkWidget *window = (GtkWidget *) data;
 
    gtk_widget_hide(window);
 }
@@ -466,7 +523,7 @@ void hide_window(GtkWidget *button, gpointer data) {
 void on_nb_pawns_slider_changed(GtkWidget *slider, gpointer data) {
    assert(slider != NULL && data != NULL);
 
-   ControllerMainMenu *cmm = (ControllerMainMenu *)data;
+   ControllerMainMenu *cmm = (ControllerMainMenu *) data;
 
    unsigned int nbPawns = gtk_range_get_value(GTK_RANGE(slider));
    set_nb_pawns_slider(cmm->mmm, nbPawns);
@@ -488,22 +545,24 @@ void on_proposer_choosed(GtkWidget *button, ControllerMainMenu *cmm) {
 void on_save_button_clicked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   ControllerMainMenu *cmm = (ControllerMainMenu *)data;
+   ControllerMainMenu *cmm = (ControllerMainMenu *) data;
    const char *pseudo = gtk_entry_get_text(GTK_ENTRY(cmm->pseudoEntry));
 
    if(strlen(pseudo) > MAX_PSEUDO_LENGTH){
       const char *PSEUDO_TOO_LONG_ERROR = "Pseudo is too long (Max 50 char).";
-      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_TOO_LONG_ERROR);
-   } 
-   else if(strlen(pseudo) < MIN_PSEUDO_LENGTH){
+      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)),
+                         PSEUDO_TOO_LONG_ERROR);
+   } else if(strlen(pseudo) < MIN_PSEUDO_LENGTH){
       const char *PSEUDO_TOO_SHORT_ERROR = "Pseudo is too short (Min 5 char).";
-      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_TOO_SHORT_ERROR);
-   }
-   else{
-      gtk_label_set_text(GTK_LABEL(get_main_menu_current_pseudo_label(cmm->vmm)), pseudo);
+      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)),
+                         PSEUDO_TOO_SHORT_ERROR);
+   } else{
+      gtk_label_set_text(
+              GTK_LABEL(get_main_menu_current_pseudo_label(cmm->vmm)), pseudo);
       const char *PSEUDO_GOOD = "Pseudo saved !";
-      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_GOOD);
-      set_pseudo(cmm->mmm, (char *)pseudo);
+      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)),
+                         PSEUDO_GOOD);
+      set_pseudo(cmm->mmm, (char *) pseudo);
    }
 }
 
@@ -511,7 +570,7 @@ void on_save_button_clicked(GtkWidget *button, gpointer data) {
 void on_play_clicked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   ControllerMainMenu *cmm = (ControllerMainMenu *)data;
+   ControllerMainMenu *cmm = (ControllerMainMenu *) data;
 
    ModelMastermind *mm = create_model_mastermind(cmm->mmm);
    if(mm == NULL)
@@ -536,7 +595,7 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
 void on_main_menu_clicked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   ControllerMastermind *cm = (ControllerMastermind *)data;
+   ControllerMastermind *cm = (ControllerMastermind *) data;
 
    hide_window(button, get_mastermind_window(cm->vm));
    show_window(button, get_main_menu_window(cm->cmm->vmm));
@@ -544,7 +603,7 @@ void on_main_menu_clicked(GtkWidget *button, gpointer data) {
    ModelMastermind *mm = cm->mm;
    ViewMastermind *vm = cm->vm;
 
-   destroy_controller_mastermind(cm); 
+   destroy_controller_mastermind(cm);
    destroy_view_mastermind(vm);
    destroy_model_mastermind(mm);
 }
@@ -553,7 +612,7 @@ void on_main_menu_clicked(GtkWidget *button, gpointer data) {
 void on_color_picked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   ControllerMastermind *cm = (ControllerMastermind *)data;
+   ControllerMastermind *cm = (ControllerMastermind *) data;
 
    int newColor = -1;
    for(unsigned int i = 0; newColor == -1 && i < NB_PAWN_COLORS - 1; i++)
@@ -568,18 +627,23 @@ void on_color_picked(GtkWidget *button, gpointer data) {
 void on_proposition_button_clicked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   ControllerMastermind *cm = (ControllerMastermind *)data;
-   
-   if(get_role(cm->mm) == GUESSER || (get_role(cm->mm) == PROPOSER && !get_valid_solution(cm->mm))){
+   ControllerMastermind *cm = (ControllerMastermind *) data;
+
+   if(get_role(cm->mm) == GUESSER ||
+      (get_role(cm->mm) == PROPOSER && !get_valid_solution(cm->mm))){
       int pawnIndex = -1;
-      for(unsigned int i = 0; pawnIndex == -1 && i < get_nb_pawns(cm->mm); i++) {
+      for(unsigned int i = 0; pawnIndex == -1 && i < get_nb_pawns(cm->mm); i++){
          if(cm->propositionButtons[i] == button)
             pawnIndex = i;
       }
-      
+
       if(pawnIndex != -1){
          set_proposition_pawn_selected_color(cm->mm, pawnIndex);
-         apply_pixbufs_to_button(button, get_color_image_pixbuf(cm->vm, get_selected_color(cm->mm)), get_mastermind_proposition_button_size(cm->vm));
+         apply_pixbufs_to_button(button, get_color_image_pixbuf(cm->vm,
+                                                                get_selected_color(
+                                                                        cm->mm)),
+                                 get_mastermind_proposition_button_size(
+                                         cm->vm));
       }
    }
 }
@@ -588,14 +652,12 @@ void on_proposition_button_clicked(GtkWidget *button, gpointer data) {
 void on_reset_clicked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   ControllerMastermind *cm = (ControllerMastermind *)data;
+   ControllerMastermind *cm = (ControllerMastermind *) data;
 
    if(!get_valid_solution(cm->mm)){
       reset_proposition(cm->mm);
       reset_proposition_buttons(cm);
-   }
-
-   else if(get_role(cm->mm) == PROPOSER){
+   } else if(get_role(cm->mm) == PROPOSER){
       reset_feedback(cm->mm);
       reset_feedback_buttons(cm);
    }
@@ -605,28 +667,35 @@ void on_reset_clicked(GtkWidget *button, gpointer data) {
 void reset_proposition_buttons(ControllerMastermind *cm) {
    if(cm != NULL)
       for(unsigned int i = 0; i < get_nb_pawns(cm->mm); ++i)
-         apply_pixbufs_to_button(cm->propositionButtons[i], get_color_image_pixbuf(cm->vm, PAWN_DEFAULT), get_mastermind_proposition_button_size(cm->vm));
+         apply_pixbufs_to_button(cm->propositionButtons[i],
+                                 get_color_image_pixbuf(cm->vm, PAWN_DEFAULT),
+                                 get_mastermind_proposition_button_size(
+                                         cm->vm));
 }
 
 
 void reset_feedback_buttons(ControllerMastermind *cm) {
    if(cm != NULL)
       for(unsigned int i = 0; i < get_nb_pawns(cm->mm); ++i)
-         apply_pixbufs_to_button(cm->feedbackButtons[i], get_feedback_image_pixbuf(cm->vm, FB_DEFAULT), get_mastermind_proposition_button_size(cm->vm));
+         apply_pixbufs_to_button(cm->feedbackButtons[i],
+                                 get_feedback_image_pixbuf(cm->vm, FB_DEFAULT),
+                                 get_mastermind_proposition_button_size(
+                                         cm->vm));
 }
 
 
 void on_apply_clicked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   ControllerMastermind *cm = (ControllerMastermind *)data;
+   ControllerMastermind *cm = (ControllerMastermind *) data;
 
-   
+
    if(get_in_game(cm->mm)){
       if(get_role(cm->mm) == GUESSER){
          if(verify_proposition(cm->mm)){
-            
-            determine_feedback_proposition(cm->mm, get_proposition(cm->mm), get_solution(cm->mm));
+
+            determine_feedback_proposition(cm->mm, get_proposition(cm->mm),
+                                           get_solution(cm->mm));
             set_proposition_in_history(cm->mm);
             verify_end_game(cm->mm);
 
@@ -638,8 +707,7 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
             reset_proposition(cm->mm);
             reset_proposition_buttons(cm);
          }
-      }
-      else{
+      } else{
          if(!get_valid_solution(cm->mm)){
             if(verify_proposition(cm->mm)){
                set_proposition_as_solution(cm->mm);
@@ -655,7 +723,7 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
             update_last_combination_feedback(cm->mm);
             udpate_last_feedback_images(cm->vm, cm->mm);
             verify_end_game(cm->mm);
-            
+
             update_current_combination_index(cm->mm);
             reset_feedback(cm->mm);
             reset_feedback_buttons(cm);
@@ -669,16 +737,20 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
 void on_feedback_button_clicked(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
-   ControllerMastermind *cm = (ControllerMastermind *)data;
+   ControllerMastermind *cm = (ControllerMastermind *) data;
 
    int pawnIndex = -1;
-   for(unsigned int i = 0; pawnIndex == -1 && i < get_nb_pawns(cm->mm); i++) {
+   for(unsigned int i = 0; pawnIndex == -1 && i < get_nb_pawns(cm->mm); i++){
       if(cm->feedbackButtons[i] == button)
          pawnIndex = i;
    }
-   
+
    if(pawnIndex != -1){
       set_feedback_pawn(cm->mm, pawnIndex);
-      apply_pixbufs_to_button(button, get_feedback_image_pixbuf(cm->vm, get_feedback_pawn(cm->mm, pawnIndex)), get_mastermind_proposition_button_size(cm->vm));
+      apply_pixbufs_to_button(button, get_feedback_image_pixbuf(cm->vm,
+                                                                get_feedback_pawn(
+                                                                        cm->mm,
+                                                                        pawnIndex)),
+                              get_mastermind_proposition_button_size(cm->vm));
    }
 }

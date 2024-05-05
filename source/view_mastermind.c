@@ -4,44 +4,44 @@
 #include "view_mastermind.h"
 
 
-struct view_main_menu_t{
-   ModelMainMenu *mmm;
-   GtkWidget *window;
-   GtkWidget *mainVBox;
-   GtkWidget *pseudoHBox;
-   GtkWidget *welcomeHBox;
-   GtkWidget *nbPawnsHBox;
-   GtkWidget *logo;
-   GtkWidget *welcomeLabel;
-   GtkWidget *currentPseudoLabel;
-   GtkWidget *pseudoLabel;
-   GtkWidget *errorLabel;
-   GtkWidget *nbPawnsLabel;
+struct view_main_menu_t {
+    ModelMainMenu *mmm;
+    GtkWidget *window;
+    GtkWidget *mainVBox;
+    GtkWidget *pseudoHBox;
+    GtkWidget *welcomeHBox;
+    GtkWidget *nbPawnsHBox;
+    GtkWidget *logo;
+    GtkWidget *welcomeLabel;
+    GtkWidget *currentPseudoLabel;
+    GtkWidget *pseudoLabel;
+    GtkWidget *errorLabel;
+    GtkWidget *nbPawnsLabel;
 };
 
 
-struct view_mastermind_t{
-   ModelMastermind *mm;
-   unsigned int smallButtonSize;
-   unsigned int bigButtonSize;
-   unsigned int colorButtonSize;
-   unsigned int propositionButtonSize;
-   GtkWidget *windowAbouts;
-   GtkWidget *aboutsMainVBox;
-   GtkWidget *aboutsLabel;
-   GtkWidget *window;
-   GtkWidget *mainVBox;
-   GtkWidget *historyTable;
-   GtkWidget *feedbackZoneHBox;
-   GtkWidget *propositionHBox;
-   GtkWidget *propositionControlHBox;
-   GtkWidget *colorSelectionHBox;
-   GtkWidget *scoreHBox;
-   GdkPixbuf **colorImagePixbufs;
-   GdkPixbuf **feedbackImagePixbufs;
-   GtkWidget ***historyCombinations;
-   GtkWidget ***historyFeedbacks;
-   GtkWidget *scoreLabel;
+struct view_mastermind_t {
+    ModelMastermind *mm;
+    unsigned int smallButtonSize;
+    unsigned int bigButtonSize;
+    unsigned int colorButtonSize;
+    unsigned int propositionButtonSize;
+    GtkWidget *windowAbouts;
+    GtkWidget *aboutsMainVBox;
+    GtkWidget *aboutsLabel;
+    GtkWidget *window;
+    GtkWidget *mainVBox;
+    GtkWidget *historyTable;
+    GtkWidget *feedbackZoneHBox;
+    GtkWidget *propositionHBox;
+    GtkWidget *propositionControlHBox;
+    GtkWidget *colorSelectionHBox;
+    GtkWidget *scoreHBox;
+    GdkPixbuf **colorImagePixbufs;
+    GdkPixbuf **feedbackImagePixbufs;
+    GtkWidget ***historyCombinations;
+    GtkWidget ***historyFeedbacks;
+    GtkWidget *scoreLabel;
 };
 
 
@@ -56,7 +56,8 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
    vmm->mmm = mmm;
 
    // Create window
-   vmm->window = create_window(MAIN_MENU_WINDOW_LABEL, MAIN_MENU_WINDOW_WIDTH, MAIN_MENU_WINDOW_HEIGHT);
+   vmm->window = create_window(MAIN_MENU_WINDOW_LABEL, MAIN_MENU_WINDOW_WIDTH,
+                               MAIN_MENU_WINDOW_HEIGHT);
    if(vmm->window == NULL){
       free(vmm);
       return NULL;
@@ -156,7 +157,8 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
 
    vm->bigButtonSize = MASTERMIND_WINDOW_SIZE * 60;
    vm->smallButtonSize = MASTERMIND_WINDOW_SIZE * 30;
-   vm->colorButtonSize = nbPawns * (vm->bigButtonSize + vm->smallButtonSize) / (NB_PAWN_COLORS-1);
+   vm->colorButtonSize = nbPawns * (vm->bigButtonSize + vm->smallButtonSize) /
+                         (NB_PAWN_COLORS - 1);
    vm->propositionButtonSize = vm->bigButtonSize + vm->smallButtonSize;
 
    vm->windowAbouts = create_window(ABOUTS_WINDOW_LABEL, -1, -1);
@@ -233,31 +235,28 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
       return NULL;
    }
 
-   const char *COLOR_IMAGE_FILENAMES[] = {
-      "./images/blue.png",
-      "./images/cyan.png",
-      "./images/green.png",
-      "./images/orange.png",
-      "./images/purple.png",
-      "./images/red.png",
-      "./images/yellow.png",
-      "./images/default.png",
-   };
+   const char *COLOR_IMAGE_FILENAMES[] = {"./images/blue.png",
+                                          "./images/cyan.png",
+                                          "./images/green.png",
+                                          "./images/orange.png",
+                                          "./images/purple.png",
+                                          "./images/red.png",
+                                          "./images/yellow.png",
+                                          "./images/default.png",};
 
-   const char *FEEDBACK_IMAGE_FILENAMES[] = {
-      "./images/black.png",
-      "./images/white.png",
-      "./images/no_feedback.png"
-   };
+   const char *FEEDBACK_IMAGE_FILENAMES[] = {"./images/black.png",
+                                             "./images/white.png",
+                                             "./images/no_feedback.png"};
 
-   vm->colorImagePixbufs = malloc(NB_PAWN_COLORS * sizeof(GdkPixbuf *));
+   vm->colorImagePixbufs = malloc(NB_PAWN_COLORS * sizeof(GdkPixbuf * ));
    if(vm->colorImagePixbufs == NULL){
       free(vm);
       return NULL;
    }
 
    for(unsigned int i = 0; i < NB_PAWN_COLORS; i++){
-      vm->colorImagePixbufs[i] = gdk_pixbuf_new_from_file(COLOR_IMAGE_FILENAMES[i], NULL);
+      vm->colorImagePixbufs[i] = gdk_pixbuf_new_from_file(
+              COLOR_IMAGE_FILENAMES[i], NULL);
       if(vm->colorImagePixbufs[i] == NULL){
          free(vm->colorImagePixbufs);
          free(vm);
@@ -265,7 +264,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
       }
    }
 
-   vm->feedbackImagePixbufs = malloc(NB_FB_COLORS * sizeof(GdkPixbuf *));
+   vm->feedbackImagePixbufs = malloc(NB_FB_COLORS * sizeof(GdkPixbuf * ));
    if(vm->feedbackImagePixbufs == NULL){
       free(vm->colorImagePixbufs);
       free(vm);
@@ -273,7 +272,8 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
    }
 
    for(unsigned int i = 0; i < NB_FB_COLORS; i++){
-      vm->feedbackImagePixbufs[i] = gdk_pixbuf_new_from_file(FEEDBACK_IMAGE_FILENAMES[i], NULL);
+      vm->feedbackImagePixbufs[i] = gdk_pixbuf_new_from_file(
+              FEEDBACK_IMAGE_FILENAMES[i], NULL);
       if(vm->feedbackImagePixbufs[i] == NULL){
          free(vm->feedbackImagePixbufs);
          free(vm->colorImagePixbufs);
@@ -282,7 +282,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
       }
    }
 
-   vm->historyCombinations = malloc(nbCombi * sizeof(GtkWidget **));
+   vm->historyCombinations = malloc(nbCombi * sizeof(GtkWidget * *));
    if(vm->historyCombinations == NULL){
       free(vm->feedbackImagePixbufs);
       free(vm->colorImagePixbufs);
@@ -291,7 +291,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
    }
 
    for(unsigned int i = 0; i < nbCombi; i++){
-      vm->historyCombinations[i] = malloc(nbPawns * sizeof(GtkWidget *));
+      vm->historyCombinations[i] = malloc(nbPawns * sizeof(GtkWidget * ));
       if(vm->historyCombinations[i] == NULL){
          for(unsigned int j = 0; j < i; j++)
             free(vm->historyCombinations[j]);
@@ -303,7 +303,8 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
          return NULL;
       }
       for(unsigned int j = 0; j < nbPawns; j++){
-         vm->historyCombinations[i][j] = create_button_with_pixbuf(get_color_image_pixbuf(vm, PAWN_DEFAULT), vm->bigButtonSize);
+         vm->historyCombinations[i][j] = create_button_with_pixbuf(
+                 get_color_image_pixbuf(vm, PAWN_DEFAULT), vm->bigButtonSize);
          if(vm->historyCombinations[i][j] == NULL){
             for(unsigned int k = 0; k < i; k++)
                free(vm->historyCombinations[k]);
@@ -317,11 +318,11 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
       }
    }
 
-   vm->historyFeedbacks = malloc(nbCombi * sizeof(GtkWidget **));
+   vm->historyFeedbacks = malloc(nbCombi * sizeof(GtkWidget * *));
    if(vm->historyFeedbacks == NULL){
       for(unsigned int i = 0; i < nbCombi; i++)
          free(vm->historyCombinations[i]);
-      
+
       free(vm->historyCombinations);
       free(vm->feedbackImagePixbufs);
       free(vm->colorImagePixbufs);
@@ -330,14 +331,14 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
    }
 
    for(unsigned int i = 0; i < nbCombi; i++){
-      vm->historyFeedbacks[i] = malloc(nbPawns * sizeof(GtkWidget *));
+      vm->historyFeedbacks[i] = malloc(nbPawns * sizeof(GtkWidget * ));
       if(vm->historyFeedbacks[i] == NULL){
          for(unsigned int j = 0; j < i; j++)
             free(vm->historyFeedbacks[j]);
-         
+
          for(unsigned int j = 0; j < nbCombi; j++)
             free(vm->historyCombinations[j]);
-         
+
          free(vm->historyFeedbacks);
          free(vm->historyCombinations);
          free(vm->feedbackImagePixbufs);
@@ -346,11 +347,13 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
          return NULL;
       }
       for(unsigned int j = 0; j < nbPawns; j++){
-         vm->historyFeedbacks[i][j] = create_button_with_pixbuf(get_feedback_image_pixbuf(vm, FB_DEFAULT), vm->smallButtonSize);
+         vm->historyFeedbacks[i][j] = create_button_with_pixbuf(
+                 get_feedback_image_pixbuf(vm, FB_DEFAULT),
+                 vm->smallButtonSize);
          if(vm->historyFeedbacks[i][j] == NULL){
             for(unsigned int k = 0; k < i; k++)
                free(vm->historyFeedbacks[k]);
-         
+
             for(unsigned int k = 0; k < nbCombi; k++)
                free(vm->historyCombinations[k]);
 
@@ -399,7 +402,8 @@ void destroy_view_mastermind(ViewMastermind *vm) {
 }
 
 
-GtkWidget *create_window(const char *title, unsigned int width, unsigned int height) {
+GtkWidget *
+create_window(const char *title, unsigned int width, unsigned int height) {
    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    if(window == NULL)
       return NULL;
@@ -413,10 +417,12 @@ GtkWidget *create_window(const char *title, unsigned int width, unsigned int hei
 }
 
 
-void apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb, unsigned int size) {
+void
+apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb, unsigned int size) {
    assert(button != NULL && pb != NULL);
 
-   GdkPixbuf *resizedPixbuf = gdk_pixbuf_scale_simple(pb, size, size, GDK_INTERP_BILINEAR);
+   GdkPixbuf *resizedPixbuf = gdk_pixbuf_scale_simple(pb, size, size,
+                                                      GDK_INTERP_BILINEAR);
    GtkWidget *image = gtk_image_new_from_pixbuf(resizedPixbuf);
    gtk_button_set_image(GTK_BUTTON(button), image);
 }
@@ -435,14 +441,16 @@ GtkWidget *create_button_with_pixbuf(GdkPixbuf *pb, unsigned int size) {
 }
 
 
-GtkWidget *create_image(const char *imagePath, unsigned int width, unsigned int height) {
+GtkWidget *
+create_image(const char *imagePath, unsigned int width, unsigned int height) {
    assert(imagePath != NULL);
 
    GdkPixbuf *pb = gdk_pixbuf_new_from_file(imagePath, NULL);
    if(pb == NULL)
       return NULL;
 
-   GdkPixbuf *resizedPb = gdk_pixbuf_scale_simple(pb, width, height, GDK_INTERP_BILINEAR);
+   GdkPixbuf *resizedPb = gdk_pixbuf_scale_simple(pb, width, height,
+                                                  GDK_INTERP_BILINEAR);
    GtkWidget *image = gtk_image_new_from_pixbuf(resizedPb);
 
    return image;
@@ -455,7 +463,9 @@ void update_last_combination_images(ViewMastermind *vm, ModelMastermind *mm) {
    unsigned int index = get_current_index(mm);
 
    for(unsigned int i = 0; i < get_nb_pawns(mm); i++){
-      apply_pixbufs_to_button(vm->historyCombinations[index][i], vm->colorImagePixbufs[get_pawn_last_combination(mm, i)], vm->bigButtonSize);  
+      apply_pixbufs_to_button(vm->historyCombinations[index][i],
+                              vm->colorImagePixbufs[get_pawn_last_combination(
+                                      mm, i)], vm->bigButtonSize);
    }
 }
 
@@ -469,13 +479,19 @@ void udpate_last_feedback_images(ViewMastermind *vm, ModelMastermind *mm) {
    unsigned int nbMisplaced = get_nb_misplaced_last_combination(mm);
 
    for(unsigned int i = 0; i < nbCorrect; i++)
-      apply_pixbufs_to_button(vm->historyFeedbacks[index][i], vm->feedbackImagePixbufs[FB_BLACK], vm->smallButtonSize); 
+      apply_pixbufs_to_button(vm->historyFeedbacks[index][i],
+                              vm->feedbackImagePixbufs[FB_BLACK],
+                              vm->smallButtonSize);
 
    for(unsigned int i = nbCorrect; i < nbCorrect + nbMisplaced; i++)
-      apply_pixbufs_to_button(vm->historyFeedbacks[index][i], vm->feedbackImagePixbufs[FB_WHITE], vm->smallButtonSize);
+      apply_pixbufs_to_button(vm->historyFeedbacks[index][i],
+                              vm->feedbackImagePixbufs[FB_WHITE],
+                              vm->smallButtonSize);
 
    for(unsigned int i = nbCorrect + nbMisplaced; i < nbPawns; i++)
-      apply_pixbufs_to_button(vm->historyFeedbacks[index][i], vm->feedbackImagePixbufs[FB_DEFAULT], vm->smallButtonSize);
+      apply_pixbufs_to_button(vm->historyFeedbacks[index][i],
+                              vm->feedbackImagePixbufs[FB_DEFAULT],
+                              vm->smallButtonSize);
 }
 
 
@@ -647,14 +663,20 @@ GtkWidget *get_mastermind_score_hbox(ViewMastermind *vm) {
 }
 
 
-GtkWidget *get_mastermind_history_combination_button(ViewMastermind *vm, unsigned int i, unsigned int j) {
-   assert(vm != NULL && i < get_nb_combinations(vm->mm) && j < get_nb_pawns(vm->mm));
+GtkWidget *
+get_mastermind_history_combination_button(ViewMastermind *vm, unsigned int i,
+                                          unsigned int j) {
+   assert(vm != NULL && i < get_nb_combinations(vm->mm) &&
+          j < get_nb_pawns(vm->mm));
    return vm->historyCombinations[i][j];
 }
 
 
-GtkWidget *get_mastermind_history_feedback_button(ViewMastermind *vm, unsigned int i, unsigned int j) {
-   assert(vm != NULL && i < get_nb_combinations(vm->mm) && j < get_nb_pawns(vm->mm));
+GtkWidget *
+get_mastermind_history_feedback_button(ViewMastermind *vm, unsigned int i,
+                                       unsigned int j) {
+   assert(vm != NULL && i < get_nb_combinations(vm->mm) &&
+          j < get_nb_pawns(vm->mm));
    return vm->historyFeedbacks[i][j];
 }
 
