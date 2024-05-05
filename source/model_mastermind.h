@@ -161,6 +161,8 @@ void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
 /**
  * \fn SavedScores *load_scores(const char *filePath)
  * \brief Allocates the space for it and saves the scores from the given file
+ * if the given file doesn't exist allocates the memory and returns the
+ * empty structure
  *
  * \param filePath the file from which de score needs to be read
  *
@@ -172,6 +174,22 @@ void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
  */
 SavedScores *load_scores(const char *filePath);
 
+/**
+ * \fn int write_scores(SavedScores *scores, const char *filePath)
+ * \brief writes in the given file the scores and destroy the score
+ *
+ * \param scores A pointer on the score structure that needs to be saved in
+ * the file
+ * \param filePath A string containing the path of the file in which the
+ * score should be wrote
+ *
+ * \pre scores != NULL, filePath != NULL
+ * \post The score are written in the file and the structure is freed
+ *
+ * \return 0 if success
+ *         -1 Error manipulating the file
+ */
+int write_scores(SavedScores *scores, const char *filePath);
 
 /**
  * \fn void destroy_saved_scores(SavedScores *scores)

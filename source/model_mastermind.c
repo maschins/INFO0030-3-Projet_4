@@ -517,7 +517,7 @@ SavedScores *load_scores(const char *filePath){
             fclose(pFile);
             return NULL;
          }
-         if(!fscanf(pFile, "%c %u \n", save->savedScores[i]->pseudo,
+         if(!fscanf(pFile, "%s %u \n", save->savedScores[i]->pseudo,
                     &save->savedScores[i]->score)){
             for (unsigned j = 0; j < i; j++) {
                free(save->savedScores[j]);
@@ -549,7 +549,7 @@ int write_scores(SavedScores *scores, const char *filePath){
 
    fprintf(pFile, "%u \n",scores->length);
    for (unsigned i = 0; i < scores->length; i++) {
-      fprintf(pFile, "%c %u \n", scores->savedScores[i]->pseudo,
+      fprintf(pFile, "%s %u \n", scores->savedScores[i]->pseudo,
               scores->savedScores[i]->score);
    }
 
