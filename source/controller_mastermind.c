@@ -45,6 +45,18 @@ struct controller_mastermind_t{
 static bool verify_combination(ControllerMastermind *cm, const PAWN_COLOR
 *combination);
 
+/**
+ * \fn static void handle_quit(GtkWidget *button, gpointer data)
+ * \brief Handles quitting the game
+ *
+ * \param button pointer on the button that was used to quit
+ * \param data needed data to quit the game
+ *
+ * \pre button != NULL, data != NULL
+ * \post the score is saved in the file and the game is quit
+ */
+static void handle_quit(GtkWidget *button, gpointer data);
+
 ControllerMainMenu *create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
    assert(mmm != NULL && vmm != NULL);
 
@@ -351,8 +363,8 @@ void init_main_menu(ControllerMainMenu *cmm) {
    g_signal_connect(G_OBJECT(cmm->guesserButton), "clicked", G_CALLBACK(on_guesser_choosed), cmm);
    g_signal_connect(G_OBJECT(cmm->proposerButton), "clicked", G_CALLBACK(on_proposer_choosed), cmm);
    g_signal_connect(G_OBJECT(cmm->saveButton), "clicked", G_CALLBACK(on_save_button_clicked), cmm);
-   g_signal_connect(G_OBJECT(cmm->quitButton), "clicked", G_CALLBACK(gtk_main_quit), NULL);
-   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(cmm->quitButton), "clicked", G_CALLBACK(gtk_main_quit),NULL);
+   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit),NULL);
 
    gtk_widget_show_all(window);
 }
@@ -415,11 +427,12 @@ void init_mastermind(ControllerMastermind *cm) {
    g_signal_connect(G_OBJECT(cm->aboutsOkayButton), "clicked", G_CALLBACK(hide_window), aboutsWindow);
 
    g_signal_connect(G_OBJECT(cm->menuBar->itemMainMenu), "activate", G_CALLBACK(on_main_menu_clicked), cm);
-   g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate", G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate", G_CALLBACK
+   (handle_quit), cm);
    g_signal_connect(G_OBJECT(cm->menuBar->itemAbouts), "activate", G_CALLBACK(show_window), aboutsWindow);
    g_signal_connect(G_OBJECT(cm->applyButton), "clicked", G_CALLBACK(on_apply_clicked), cm);
    g_signal_connect(G_OBJECT(cm->resetButton), "clicked", G_CALLBACK(on_reset_clicked), cm);
-   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(handle_quit), cm);
 
    gtk_widget_show_all(window);
 }
@@ -495,15 +508,15 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
 
    ModelMastermind *mm = create_model_mastermind(cmm->mmm);
    if(mm == NULL)
-      gtk_main_quit();
+      handle_quit(button, data);
 
    ViewMastermind *vm = create_view_mastermind(mm);
    if(vm == NULL)
-      gtk_main_quit();
+      handle_quit(button, data);
 
    ControllerMastermind *cm = create_controller_mastermind(mm, vm, cmm);
    if(cm == NULL)
-      gtk_main_quit();
+      handle_quit(button, data);
 
    gtk_widget_hide(get_main_menu_window(cmm->vmm));
 
@@ -627,8 +640,12 @@ static bool verify_combination(ControllerMastermind *cm, const PAWN_COLOR
    return 0;
 }
 
-static void handle_quit(){
+static void handle_quit(GtkWidget *button, gpointer data){
+   assert(button != NULL && data != NULL);
 
+   ControllerMastermind *cm = (ControllerMastermind *)data;
+
+   write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
 
    gtk_main_quit();
 }

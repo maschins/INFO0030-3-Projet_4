@@ -154,6 +154,19 @@ unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
 PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
 PAWN_COLOR **get_configs(ModelMastermind *mm);
 
+/**
+ * \fn SavedScores *get_saved_scores(ModelMastermind *mm)
+ * \brief gets the saved scores in the ModelMastermind
+ *
+ * \param mm a pointer on the ModelMMastermind structure
+ *
+ * \pre mm != NULL
+ * \post Scores are returned
+ *
+ * \return score field for mm
+ */
+SavedScores *get_saved_scores(ModelMastermind *mm);
+
 void set_proposition_in_history(ModelMastermind *mm);
 
 char *get_main_menu_pseudo(ModelMainMenu *mmm);

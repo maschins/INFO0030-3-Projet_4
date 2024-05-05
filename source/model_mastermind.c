@@ -497,6 +497,11 @@ void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i) {
    mm->proposition[i] = mm->selectedColor;
 }
 
+SavedScores *get_saved_scores(ModelMastermind *mm) {
+   assert(mm != NULL);
+   return mm->save;
+}
+
 SavedScores *load_scores(const char *filePath){
    assert(filePath != NULL);
 
