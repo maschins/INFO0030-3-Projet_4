@@ -570,19 +570,19 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
    ModelMastermind *mm = create_model_mastermind(cmm->mmm);
    if(mm == NULL) {
       printf("mm NULL");
-      handle_quit(button, data);
+      gtk_main_quit();
    }
 
    ViewMastermind *vm = create_view_mastermind(mm);
    if(vm == NULL) {
       printf("vm NULL");
-      handle_quit(button, data);
+      gtk_main_quit();
    }
 
    ControllerMastermind *cm = create_controller_mastermind(mm, vm, cmm);
    if(cm == NULL) {
       printf("cm NULL");
-      handle_quit(button, data);
+      gtk_main_quit();
    }
 
    gtk_widget_hide(get_main_menu_window(cmm->vmm));
@@ -598,7 +598,7 @@ void on_main_menu_clicked(GtkWidget *button, gpointer data) {
 
    ControllerMastermind *cm = (ControllerMastermind *) data;
 
-   //write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
+   write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
 
    hide_window(button, get_mastermind_window(cm->vm));
    show_window(button, get_main_menu_window(cm->cmm->vmm));
@@ -764,7 +764,7 @@ static void handle_quit(GtkWidget *button, gpointer data){
 
    ControllerMastermind *cm = (ControllerMastermind *)data;
 
-   //write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
+   write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
 
    gtk_main_quit();
 }
