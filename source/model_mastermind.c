@@ -37,20 +37,19 @@ struct history_t {
 
 
 struct model_mastermind_t {
-   ROLE role;
-   char savedPseudo[MAX_PSEUDO_LENGTH]; /*!< Player pseudo */
-   bool inGame;                         /*!< State of the game */
-   PAWN_COLOR selectedColor;            /*!< Selected color */
-   Combination *proposition;             /*!< Guesser proposition */
-   bool validSolution;
-   PAWN_COLOR *solution;                /*!< Proposer combination */
-   History *history;                    /*!< Combinations settings and history */
-   FEEDBACK_COLOR *feedback;
-   unsigned int nbConfigs;
-   unsigned int lastConfigIndex;
-   Combination **configs;       /*!< All the possible configurations */
-   SavedScores *save;                   /*!< Structure containing the
-* previously saved scores */
+   ROLE role;                             /*!< Player role */
+   char savedPseudo[MAX_PSEUDO_LENGTH];   /*!< Player pseudo */
+   bool inGame;                           /*!< State of the game */
+   PAWN_COLOR selectedColor;              /*!< Selected color */
+   Combination *proposition;              /*!< Guesser proposition */
+   bool validSolution;                    /*!< Validity of the solution */
+   PAWN_COLOR *solution;                  /*!< Proposer combination */
+   History *history;                      /*!< Combinations settings and history */
+   FEEDBACK_COLOR *feedback;              /*!< Player feedback given to computer */ 
+   unsigned int nbConfigs;                /*!< Total of possible combinations */
+   unsigned int lastConfigIndex;          /*!< Index of last combination proposed by the compute */
+   Combination **configs;                 /*!< All the possible configurations */
+   SavedScores *save;                     /*!< Structure containing the previously saved scores */
 };
 
 
@@ -68,7 +67,7 @@ struct score_t {
 
 struct saved_scores_t {
    unsigned length;                /*!< Number of scores saved */
-   Score **savedScores;             /*!< Saved score from players */
+   Score **savedScores;            /*!< Saved score from players */
 };
 
 
