@@ -396,6 +396,8 @@ void destroy_model_mastermind(ModelMastermind *mm) {
       if(mm->feedback != NULL)
          free(mm->feedback);
       destroy_history(mm->history);
+      if(mm->save != NULL)
+         destroy_saved_scores(mm->save);
       free(mm);
    }
 }
@@ -465,16 +467,16 @@ int write_scores(SavedScores *scores, const char *filePath) {
    assert(scores != NULL && filePath != NULL);
 
    FILE *pFile = fopen(filePath, "w");
-   if(pFile == NULL)
-      return -1; // File name is ill-formed
+   if(pFile == NULL){
+      fprintf(stderr, "Error while saving score");
+      return -1;
+   }
 
    fprintf(pFile, "%u\n", scores->length);
 
    for(unsigned i = 0; i < scores->length; i++){
       fprintf(pFile, "%s %u\n", scores->savedScores[i]->pseudo, scores->savedScores[i]->score);
    }
-
-   destroy_saved_scores(scores);
 
    return 0;
 }
