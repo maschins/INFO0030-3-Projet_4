@@ -307,21 +307,23 @@ static void update_score(ModelMastermind *mm) {
       Score **tmp = realloc(mm->save->savedScores,
                             mm->save->length * sizeof(Score *));
       if(tmp == NULL){
-         for(unsigned j = 0; j < mm->save->length - 1; j++){
+         for(unsigned j = 0; j < mm->save->length - 1; j++)
             free(mm->save->savedScores[j]);
-         }
+
          free(mm->save->savedScores);
          free(mm->save);
       } else{
          mm->save->savedScores = tmp;
          mm->save->savedScores[mm->save->length - 1] = malloc(sizeof(Score));
          if(mm->save->savedScores[mm->save->length - 1] == NULL){
-            for(unsigned j = 0; j < mm->save->length - 2; j++){
+            for(unsigned j = 0; j < mm->save->length - 2; j++)
                free(mm->save->savedScores[j]);
-            }
+            
             free(mm->save->savedScores);
             free(mm->save);
-         } else{
+         } 
+         
+         else{
             strcpy(mm->save->savedScores[mm->save->length - 1]->pseudo,
                    mm->savedPseudo);
             mm->save->savedScores[mm->save->length - 1]->score = 1;
