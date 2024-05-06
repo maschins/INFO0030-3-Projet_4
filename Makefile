@@ -14,7 +14,7 @@ TAR_NAME=mastermind_10.tar.gz
 #Files
 EXEC=mastermind
 OBJECTS=source/main_mastermind.o source/controller_mastermind.o source/model_mastermind.o source/view_mastermind.o
-FILES=Doxyfile Makefile Images
+FILES=Doxyfile Makefile images
 
 #Rules
 all: $(EXEC)
