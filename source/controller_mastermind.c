@@ -73,7 +73,6 @@ ControllerMainMenu *
 create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
    assert(mmm != NULL && vmm != NULL);
 
-   // Allocate memory for controller.
    ControllerMainMenu *cmm = malloc(sizeof(ControllerMainMenu));
    if(cmm == NULL)
       return NULL;
@@ -81,21 +80,18 @@ create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
    cmm->mmm = mmm;
    cmm->vmm = vmm;
 
-   // Create pseudo entry.
    cmm->pseudoEntry = gtk_entry_new();
    if(cmm->pseudoEntry == NULL){
       free(cmm);
       return NULL;
    }
 
-   // Create save button.
    cmm->saveButton = gtk_button_new_with_label(SAVE_BUTTON_LABEL);
    if(cmm->saveButton == NULL){
       free(cmm);
       return NULL;
    }
 
-   // Créer le premier bouton radio
    cmm->guesserButton = gtk_radio_button_new_with_label(NULL,
                                                         GUESSER_BUTTON_LABEL);
    if(cmm->guesserButton == NULL){
@@ -103,7 +99,6 @@ create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
       return NULL;
    }
 
-   // Créer le deuxième bouton radio, lié au premier
    cmm->proposerButton = gtk_radio_button_new_with_label_from_widget(
            GTK_RADIO_BUTTON(cmm->guesserButton), PROPOSER_BUTTON_LABEL);
    if(cmm->proposerButton == NULL){
@@ -111,10 +106,8 @@ create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
       return NULL;
    }
 
-   // Select guesser option by default.
    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cmm->guesserButton), TRUE);
 
-   // Create the slide to select the nb of pawns.
    cmm->nbPawnsSlider = gtk_hscale_new_with_range(MIN_NB_PAWNS, MAX_NB_PAWNS,
                                                   1);
    gtk_range_set_value(GTK_RANGE(cmm->nbPawnsSlider), DEFAULT_NB_PAWNS);
@@ -122,14 +115,12 @@ create_controller_main_menu(ModelMainMenu *mmm, ViewMainMenu *vmm) {
    gtk_scale_set_value_pos(GTK_SCALE(cmm->nbPawnsSlider), GTK_POS_TOP);
    gtk_scale_set_draw_value(GTK_SCALE(cmm->nbPawnsSlider), TRUE);
 
-   // Create play button.
    cmm->playButton = gtk_button_new_with_label(PLAY_BUTTON_LABEL);
    if(cmm->playButton == NULL){
       free(cmm);
       return NULL;
    }
 
-   // Create quit button.
    cmm->quitButton = gtk_button_new_with_label(QUIT_BUTTON_LABEL);
    if(cmm->quitButton == NULL){
       free(cmm);
