@@ -407,7 +407,7 @@ void verify_end_game(ModelMastermind *mm) {
       mm->history->nbPawns || mm->history->currentIndex <= 0)
       mm->inGame = false;
 
-   update_score(mm);
+   //update_score(mm);
 }
 
 

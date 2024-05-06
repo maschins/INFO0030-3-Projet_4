@@ -56,8 +56,7 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
    vmm->mmm = mmm;
 
    // Create window
-   vmm->window = create_window(MAIN_MENU_WINDOW_LABEL, MAIN_MENU_WINDOW_WIDTH,
-                               MAIN_MENU_WINDOW_HEIGHT);
+   vmm->window = create_window(MAIN_MENU_WINDOW_LABEL, MAIN_MENU_WINDOW_WIDTH, MAIN_MENU_WINDOW_HEIGHT);
    if(vmm->window == NULL){
       free(vmm);
       return NULL;
@@ -155,7 +154,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
       return NULL;
    }
 
-   vm->endGameWindow = create_window(END_GAME_WINDOW_LABEL, -1, -1);
+   vm->endGameWindow = create_window(END_GAME_WINDOW_LABEL, END_GAME_WINDOW_WIDTH, END_GAME_WINDOW_HEIGHT);
    if(vm->endGameWindow == NULL){
       free(vm);
       return NULL;
@@ -272,8 +271,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
    }
 
    for(unsigned int i = 0; i < NB_FB_COLORS; i++){
-      vm->feedbackImagePixbufs[i] = gdk_pixbuf_new_from_file(
-              FEEDBACK_IMAGE_FILENAMES[i], NULL);
+      vm->feedbackImagePixbufs[i] = gdk_pixbuf_new_from_file(FEEDBACK_IMAGE_FILENAMES[i], NULL);
       if(vm->feedbackImagePixbufs[i] == NULL){
          free(vm->feedbackImagePixbufs);
          free(vm->colorImagePixbufs);
@@ -303,8 +301,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
          return NULL;
       }
       for(unsigned int j = 0; j < nbPawns; j++){
-         vm->historyCombinations[i][j] = create_button_with_pixbuf(
-                 get_color_image_pixbuf(vm, PAWN_DEFAULT), vm->bigButtonSize);
+         vm->historyCombinations[i][j] = create_button_with_pixbuf(get_color_image_pixbuf(vm, PAWN_DEFAULT), vm->bigButtonSize);
          if(vm->historyCombinations[i][j] == NULL){
             for(unsigned int k = 0; k < i; k++)
                free(vm->historyCombinations[k]);
@@ -402,8 +399,7 @@ void destroy_view_mastermind(ViewMastermind *vm) {
 }
 
 
-GtkWidget *
-create_window(const char *title, unsigned int width, unsigned int height) {
+GtkWidget *create_window(const char *title, unsigned int width, unsigned int height) {
    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
    if(window == NULL)
       return NULL;
@@ -417,8 +413,7 @@ create_window(const char *title, unsigned int width, unsigned int height) {
 }
 
 
-void
-apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb, unsigned int size) {
+void apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb, unsigned int size) {
    assert(button != NULL && pb != NULL);
 
    GdkPixbuf *resizedPixbuf = gdk_pixbuf_scale_simple(pb, size, size, GDK_INTERP_BILINEAR);
@@ -440,8 +435,7 @@ GtkWidget *create_button_with_pixbuf(GdkPixbuf *pb, unsigned int size) {
 }
 
 
-GtkWidget *
-create_image(const char *imagePath, unsigned int width, unsigned int height) {
+GtkWidget *create_image(const char *imagePath, unsigned int width, unsigned int height) {
    assert(imagePath != NULL);
 
    GdkPixbuf *pb = gdk_pixbuf_new_from_file(imagePath, NULL);

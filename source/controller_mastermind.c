@@ -350,8 +350,7 @@ void init_main_menu(ControllerMainMenu *cmm) {
    gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_logo(cmm->vmm), TRUE, TRUE, 10);
 
    gtk_container_add(GTK_CONTAINER(mainVBox), nbPawnsHBox);
-   gtk_box_pack_start(GTK_BOX(nbPawnsHBox),
-                      get_main_menu_nb_pawns_label(cmm->vmm), FALSE, FALSE, 10);
+   gtk_box_pack_start(GTK_BOX(nbPawnsHBox), get_main_menu_nb_pawns_label(cmm->vmm), FALSE, FALSE, 10);
    gtk_box_pack_start(GTK_BOX(nbPawnsHBox), cmm->nbPawnsSlider, TRUE, TRUE, 0);
 
    const int smallFontSize = 9;
@@ -483,15 +482,17 @@ void init_end_game_window(ControllerMastermind *cm, bool win) {
    assert(cm != NULL);
 
    GtkWidget *window = get_mastermind_end_game_window(cm->vm);
-   GtkWidget *image;
+   GdkPixbuf *pb;
 
    if(win)
-      image = gtk_image_new_from_pixbuf(get_mastermind_win_image(cm->vm));
+      pb = gdk_pixbuf_scale_simple(get_mastermind_win_image(cm->vm), END_GAME_WINDOW_WIDTH, END_GAME_WINDOW_HEIGHT, GDK_INTERP_BILINEAR);
 
    else
-      image = gtk_image_new_from_pixbuf(get_mastermind_loose_image(cm->vm));
+      pb = gdk_pixbuf_scale_simple(get_mastermind_loose_image(cm->vm), END_GAME_WINDOW_WIDTH, END_GAME_WINDOW_HEIGHT, GDK_INTERP_BILINEAR);
 
-   gtk_container_add(GTK_CONTAINER(window), image);
+   fprintf(stderr, "%d", win);
+
+   gtk_container_add(GTK_CONTAINER(window), gtk_image_new_from_pixbuf(pb));
    gtk_widget_show_all(window);
 }
 
@@ -634,11 +635,8 @@ void on_proposition_button_clicked(GtkWidget *button, gpointer data) {
 
       if(pawnIndex != -1){
          set_proposition_pawn_selected_color(cm->mm, pawnIndex);
-         apply_pixbufs_to_button(button, get_color_image_pixbuf(cm->vm,
-                                                                get_selected_color(
-                                                                        cm->mm)),
-                                 get_mastermind_proposition_button_size(
-                                         cm->vm));
+         apply_pixbufs_to_button(button, get_color_image_pixbuf(cm->vm, get_selected_color(cm->mm)),
+                                 get_mastermind_proposition_button_size(cm->vm));
       }
    }
 }
@@ -664,8 +662,7 @@ void reset_proposition_buttons(ControllerMastermind *cm) {
       for(unsigned int i = 0; i < get_nb_pawns(cm->mm); ++i)
          apply_pixbufs_to_button(cm->propositionButtons[i],
                                  get_color_image_pixbuf(cm->vm, PAWN_DEFAULT),
-                                 get_mastermind_proposition_button_size(
-                                         cm->vm));
+                                 get_mastermind_proposition_button_size(cm->vm));
 }
 
 
@@ -699,7 +696,9 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
             reset_proposition(cm->mm);
             reset_proposition_buttons(cm);
          }
-      } else{
+      } 
+      
+      else{
          if(!get_valid_solution(cm->mm)){
             if(verify_proposition(cm->mm)){
                set_proposition_as_solution(cm->mm);
@@ -721,11 +720,9 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
             reset_feedback_buttons(cm);
          }
       }
-   }
 
-   else{
-      fprintf(stderr, "coucou\n");
-      init_end_game_window(cm, (get_current_index(cm->mm) < NB_COMBINATIONS && !get_role(cm->mm)));
+      if(!get_in_game(cm->mm))
+         init_end_game_window(cm, (get_current_index(cm->mm) >= 0 && !get_role(cm->mm)));
    }
 }
 
@@ -753,7 +750,7 @@ static void handle_quit(GtkWidget *button, gpointer data){
 
    ControllerMastermind *cm = (ControllerMastermind *)data;
 
-   write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
+   //write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
 
    gtk_main_quit();
 }

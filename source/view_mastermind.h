@@ -13,12 +13,14 @@
 #define ABOUTS_WINDOW_LABEL "Abouts"
 
 #define END_GAME_WINDOW_LABEL "End game"
+#define END_GAME_WINDOW_WIDTH 200
+#define END_GAME_WINDOW_HEIGHT 150
 
 #define LOGO_PATH "./images/title.png"
 #define LOGO_WIDTH MAIN_MENU_WINDOW_WIDTH
 #define LOGO_HEIGHT (0.2 * MAIN_MENU_WINDOW_HEIGHT)
 
-typedef struct view_main_menu_t ViewMainMenu;
+typedef struct view_main_menu_t ViewMainMenu; 
 
 typedef struct view_mastermind_t ViewMastermind;
 
