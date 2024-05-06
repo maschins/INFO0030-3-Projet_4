@@ -506,6 +506,7 @@ void init_end_game_window(ControllerMastermind *cm, bool win) {
    fprintf(stderr, "%d", win);
 
    gtk_container_add(GTK_CONTAINER(window), gtk_image_new_from_pixbuf(pb));
+   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(hide_window), window);
    gtk_widget_show_all(window);
 }
 
