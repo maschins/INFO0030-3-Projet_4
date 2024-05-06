@@ -40,4 +40,4 @@ clean:
 	rm -rf */*.o $(EXEC) $(DOC_DIR) $(TAR_NAME)
 
 archive: doc rapport.pdf
-	tar -czf $(TAR_NAME) source rapport $(FILES) $(DOC_DIR)
+	tar -czf $(TAR_NAME) source/*.c source/*.h rapport $(FILES) $(DOC_DIR)
