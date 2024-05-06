@@ -674,6 +674,18 @@ GtkWidget *get_mastermind_score_hbox(ViewMastermind *vm);
  */
 GtkWidget *get_mastermind_score_label(ViewMastermind *vm);
 
+/**
+ * \fn void set_score_label_text(GtkWidget *label, char *string)
+ * \brief change the score label
+ *
+ * \param label pointer on label that need to be changed
+ * \param string new string in the label
+ *
+ * \pre label != NULL, string != NULL
+ * \post label sting is changed
+ */
+void set_score_label_text(GtkWidget *label, char *string);
+
 
 /**
  * \fn GtkWidget *get_mastermind_history_combination_button(ViewMastermind

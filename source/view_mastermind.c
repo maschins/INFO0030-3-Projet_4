@@ -787,7 +787,7 @@ GtkWidget *get_mastermind_score_label(ViewMastermind *vm) {
 
 
 void set_score_label_text(GtkWidget *label, char *string) {
-   assert(label != NULL);
+   assert(label != NULL && string != NULL);
 
    gtk_label_set_text(GTK_LABEL(label), string);
 }
