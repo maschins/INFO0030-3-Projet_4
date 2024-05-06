@@ -761,12 +761,8 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
       }
    }
 
-   else{
-      if(get_current_index(cm->mm) < NB_COMBINATIONS)
-         init_end_game_window(cm, true);
-      else
-         init_end_game_window(cm, false);
-   }
+   else
+      init_end_game_window(cm, (get_current_index(cm->mm) < NB_COMBINATIONS && !get_role(cm->mm)));
 }
 
 
