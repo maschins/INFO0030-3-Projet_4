@@ -443,11 +443,11 @@ void init_mastermind(ControllerMastermind *cm) {
    unsigned size = (get_saved_scores_length(cm->mm) < MAX_SCORE_DISPLAYED)
                    ? get_saved_scores_length(cm->mm) : MAX_SCORE_DISPLAYED;
 
-   for(unsigned i = 0; i < size; i++){
+   for(unsigned i = 0; i < size; i++)
       gtk_box_pack_start(GTK_BOX(scoreMainVBox),
                          get_mastermind_players_scores_label(cm->vm)[i], TRUE,
                          TRUE, 10);
-   }
+
    gtk_box_pack_start(GTK_BOX(scoreMainVBox), cm->scoreOkayButton, FALSE, FALSE,
                       10);
 
@@ -591,12 +591,14 @@ void on_nb_pawns_slider_changed(GtkWidget *slider, gpointer data) {
 
 void on_guesser_choosed(GtkWidget *button, ControllerMainMenu *cmm) {
    assert(button != NULL && cmm != NULL);
+
    set_role(cmm->mmm, GUESSER);
 }
 
 
 void on_proposer_choosed(GtkWidget *button, ControllerMainMenu *cmm) {
    assert(button != NULL && cmm != NULL);
+   
    set_role(cmm->mmm, PROPOSER);
 }
 
