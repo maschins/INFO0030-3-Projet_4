@@ -344,12 +344,10 @@ void init_main_menu(ControllerMainMenu *cmm) {
    GtkWidget *window = get_main_menu_window(cmm->vmm);
    GtkWidget *mainVBox = get_main_menu_main_vbox(cmm->vmm);
    GtkWidget *pseudoHBox = get_main_menu_pseudo_hbox(cmm->vmm);
-   GtkWidget *welcomeHBox = get_main_menu_welcome_hbox(cmm->vmm);
    GtkWidget *nbPawnsHBox = get_main_menu_nb_pawns_hbox(cmm->vmm);
 
    gtk_container_add(GTK_CONTAINER(window), mainVBox);
-   gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_logo(cmm->vmm), TRUE,
-                      TRUE, 10);
+   gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_logo(cmm->vmm), TRUE, TRUE, 10);
 
    gtk_container_add(GTK_CONTAINER(mainVBox), nbPawnsHBox);
    gtk_box_pack_start(GTK_BOX(nbPawnsHBox),
@@ -360,27 +358,17 @@ void init_main_menu(ControllerMainMenu *cmm) {
    PangoFontDescription *font_desc = pango_font_description_new();
    pango_font_description_set_family(font_desc, "sans");
 
-   gtk_container_add(GTK_CONTAINER(mainVBox), welcomeHBox);
-   gtk_box_pack_start(GTK_BOX(welcomeHBox),
-                      get_main_menu_welcome_label(cmm->vmm), FALSE, FALSE, 0);
-   gtk_box_pack_start(GTK_BOX(welcomeHBox),
-                      get_main_menu_current_pseudo_label(cmm->vmm), FALSE,
-                      FALSE, 0);
-
    gtk_container_add(GTK_CONTAINER(mainVBox), pseudoHBox);
-   gtk_box_pack_start(GTK_BOX(pseudoHBox), get_main_menu_pseudo_label(cmm->vmm),
-                      TRUE, TRUE, 0);
+   gtk_box_pack_start(GTK_BOX(pseudoHBox), get_main_menu_pseudo_label(cmm->vmm), TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(pseudoHBox), cmm->pseudoEntry, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(pseudoHBox), cmm->saveButton, TRUE, TRUE, 0);
 
-   gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_error_label(cmm->vmm),
-                      TRUE, TRUE, 0);
+   gtk_box_pack_start(GTK_BOX(mainVBox), get_main_menu_error_label(cmm->vmm), TRUE, TRUE, 0);
    // Small font for error message.
    pango_font_description_set_size(font_desc, smallFontSize * PANGO_SCALE);
    gtk_widget_modify_font(get_main_menu_error_label(cmm->vmm), font_desc);
    pango_font_description_free(font_desc);
-   gtk_misc_set_alignment(GTK_MISC(get_main_menu_error_label(cmm->vmm)), 0.5,
-                          0.5);
+   gtk_misc_set_alignment(GTK_MISC(get_main_menu_error_label(cmm->vmm)), 0.5, 0.5);
 
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->guesserButton, TRUE, TRUE, 0);
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->proposerButton, TRUE, TRUE, 0);
@@ -388,20 +376,13 @@ void init_main_menu(ControllerMainMenu *cmm) {
    gtk_box_pack_start(GTK_BOX(mainVBox), cmm->quitButton, TRUE, TRUE, 0);
 
    // Connect signals.
-   g_signal_connect(G_OBJECT(cmm->nbPawnsSlider), "value-changed",
-                    G_CALLBACK(on_nb_pawns_slider_changed), cmm);
-   g_signal_connect(G_OBJECT(cmm->playButton), "clicked",
-                    G_CALLBACK(on_play_clicked), cmm);
-   g_signal_connect(G_OBJECT(cmm->guesserButton), "clicked",
-                    G_CALLBACK(on_guesser_choosed), cmm);
-   g_signal_connect(G_OBJECT(cmm->proposerButton), "clicked",
-                    G_CALLBACK(on_proposer_choosed), cmm);
-   g_signal_connect(G_OBJECT(cmm->saveButton), "clicked",
-                    G_CALLBACK(on_save_button_clicked), cmm);
-   g_signal_connect(G_OBJECT(cmm->quitButton), "clicked",
-                    G_CALLBACK(gtk_main_quit), NULL);
-   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit),
-                    NULL);
+   g_signal_connect(G_OBJECT(cmm->nbPawnsSlider), "value-changed", G_CALLBACK(on_nb_pawns_slider_changed), cmm);
+   g_signal_connect(G_OBJECT(cmm->playButton), "clicked", G_CALLBACK(on_play_clicked), cmm);
+   g_signal_connect(G_OBJECT(cmm->guesserButton), "clicked", G_CALLBACK(on_guesser_choosed), cmm);
+   g_signal_connect(G_OBJECT(cmm->proposerButton), "clicked", G_CALLBACK(on_proposer_choosed), cmm);
+   g_signal_connect(G_OBJECT(cmm->saveButton), "clicked", G_CALLBACK(on_save_button_clicked), cmm);
+   g_signal_connect(G_OBJECT(cmm->quitButton), "clicked", G_CALLBACK(gtk_main_quit), NULL);
+   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
    gtk_widget_show_all(window);
 }
@@ -417,15 +398,12 @@ void init_mastermind(ControllerMastermind *cm) {
    GtkWidget *mainVBox = get_mastermind_main_vbox(cm->vm);
    GtkWidget *historyTable = get_mastermind_history_table(cm->vm);
    GtkWidget *propositionHBox = get_mastermind_proposition_hbox(cm->vm);
-   GtkWidget *propositionControlHBox = get_mastermind_proposition_control_hbox(
-           cm->vm);
+   GtkWidget *propositionControlHBox = get_mastermind_proposition_control_hbox(cm->vm);
    GtkWidget *colorSelectionHBox = get_mastermind_color_selection_hbox(cm->vm);
    GtkWidget *scoreHBox = get_mastermind_score_hbox(cm->vm);
 
-   gtk_box_pack_start(GTK_BOX(aboutsMainVBox),
-                      get_mastermind_abouts_label(cm->vm), TRUE, TRUE, 10);
-   gtk_box_pack_start(GTK_BOX(aboutsMainVBox), cm->aboutsOkayButton, FALSE,
-                      FALSE, 10);
+   gtk_box_pack_start(GTK_BOX(aboutsMainVBox), get_mastermind_abouts_label(cm->vm), TRUE, TRUE, 10);
+   gtk_box_pack_start(GTK_BOX(aboutsMainVBox), cm->aboutsOkayButton, FALSE, FALSE, 10);
 
    unsigned int nbCombi = get_nb_combinations(cm->mm);
    unsigned int nbPawns = get_nb_pawns(cm->mm);
@@ -433,8 +411,8 @@ void init_mastermind(ControllerMastermind *cm) {
    for(unsigned int i = 0; i < nbCombi; i++){
       for(unsigned int j = 0; j < nbPawns; j++){
          gtk_table_attach_defaults(GTK_TABLE(historyTable),
-                                   get_mastermind_history_combination_button(
-                                           cm->vm, i, j), j, j + 1, i, i + 1);
+                                   get_mastermind_history_combination_button(cm->vm, i, j), 
+                                   j, j + 1, i, i + 1);
          gtk_table_attach(GTK_TABLE(historyTable),
                           get_mastermind_history_feedback_button(cm->vm, i, j),
                           nbPawns + j, nbPawns + j + 1, i, i + 1, 0, 0, 0, 0);
@@ -442,22 +420,16 @@ void init_mastermind(ControllerMastermind *cm) {
    }
 
    for(unsigned int i = 0; i < nbPawns; i++){
-      gtk_box_pack_start(GTK_BOX(propositionHBox), cm->propositionButtons[i],
-                         TRUE, TRUE, 0);
-      g_signal_connect(G_OBJECT(cm->propositionButtons[i]), "clicked",
-                       G_CALLBACK(on_proposition_button_clicked), cm);
+      gtk_box_pack_start(GTK_BOX(propositionHBox), cm->propositionButtons[i], TRUE, TRUE, 0);
+      g_signal_connect(G_OBJECT(cm->propositionButtons[i]), "clicked", G_CALLBACK(on_proposition_button_clicked), cm);
    }
 
-   gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->applyButton, TRUE,
-                      TRUE, 0);
-   gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->resetButton, TRUE,
-                      TRUE, 0);
+   gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->applyButton, TRUE, TRUE, 0);
+   gtk_box_pack_start(GTK_BOX(propositionControlHBox), cm->resetButton, TRUE, TRUE, 0);
 
    for(unsigned int i = 0; i < NB_PAWN_COLORS - 1; i++){
-      g_signal_connect(G_OBJECT(cm->colorSelectionButtons[i]), "clicked",
-                       G_CALLBACK(on_color_picked), cm);
-      gtk_box_pack_start(GTK_BOX(colorSelectionHBox),
-                         cm->colorSelectionButtons[i], TRUE, TRUE, 0);
+      g_signal_connect(G_OBJECT(cm->colorSelectionButtons[i]), "clicked", G_CALLBACK(on_color_picked), cm);
+      gtk_box_pack_start(GTK_BOX(colorSelectionHBox), cm->colorSelectionButtons[i], TRUE, TRUE, 0);
    }
 
    //GtkWidget *scoreAlignment = gtk_alignment_new(0.5, 0.5, 0, 0);
@@ -474,21 +446,14 @@ void init_mastermind(ControllerMastermind *cm) {
    gtk_container_add(GTK_CONTAINER(window), mainVBox);
 
    // Connect signals
-   g_signal_connect(G_OBJECT(cm->aboutsOkayButton), "clicked",
-                    G_CALLBACK(hide_window), aboutsWindow);
+   g_signal_connect(G_OBJECT(cm->aboutsOkayButton), "clicked", G_CALLBACK(hide_window), aboutsWindow);
 
-   g_signal_connect(G_OBJECT(cm->menuBar->itemMainMenu), "activate",
-                    G_CALLBACK(on_main_menu_clicked), cm);
-   g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate",
-                    G_CALLBACK(handle_quit), cm);
-   g_signal_connect(G_OBJECT(cm->menuBar->itemAbouts), "activate",
-                    G_CALLBACK(show_window), aboutsWindow);
-   g_signal_connect(G_OBJECT(cm->applyButton), "clicked",
-                    G_CALLBACK(on_apply_clicked), cm);
-   g_signal_connect(G_OBJECT(cm->resetButton), "clicked",
-                    G_CALLBACK(on_reset_clicked), cm);
-   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(handle_quit),
-                    cm);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemMainMenu), "activate", G_CALLBACK(on_main_menu_clicked), cm);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate", G_CALLBACK(handle_quit), cm);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemAbouts), "activate", G_CALLBACK(show_window), aboutsWindow);
+   g_signal_connect(G_OBJECT(cm->applyButton), "clicked", G_CALLBACK(on_apply_clicked), cm);
+   g_signal_connect(G_OBJECT(cm->resetButton), "clicked", G_CALLBACK(on_reset_clicked), cm);
+   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(handle_quit), cm);
 
    gtk_widget_show_all(window);
 }
