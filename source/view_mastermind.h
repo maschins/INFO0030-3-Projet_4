@@ -80,6 +80,7 @@ typedef struct view_main_menu_t ViewMainMenu;
  * */
 typedef struct view_mastermind_t ViewMastermind;
 
+
 /**
  * \fn ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm)
  * \brief Creates ViewMainMenu structure
@@ -94,6 +95,7 @@ typedef struct view_mastermind_t ViewMastermind;
  */
 ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm);
 
+
 /**
  * \fn void destroy_view_main_menu(ViewMainMenu *vmm)
  * \brief free the given ViewMainMenu structure
@@ -104,6 +106,7 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm);
  * \post vmm is freed
  */
 void destroy_view_main_menu(ViewMainMenu *vmm);
+
 
 /**
  * \fn ModelMastermind *create_view_mastermind(ModelMainMenu *mmm);
@@ -118,6 +121,7 @@ void destroy_view_main_menu(ViewMainMenu *vmm);
  *         NULL if memory allocation fails.
  */
 ViewMastermind *create_view_mastermind(ModelMastermind *mm);
+
 
 /**
  * \fn void destroy_view_mastermind(ViewMastermind *vm)
@@ -148,6 +152,7 @@ void destroy_view_mastermind(ViewMastermind *vm);
  */
 GtkWidget *
 create_window(const char *title, unsigned int width, unsigned int height);
+
 
 /**
  * \fn void apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb,
@@ -181,6 +186,7 @@ apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb, unsigned int size);
  */
 GtkWidget *create_button_with_pixbuf(GdkPixbuf *pb, unsigned int size);
 
+
 /**
  * \fn GtkWidget *create_image(const char *imagePath, unsigned int width,
  * unsigned int height)
@@ -199,6 +205,7 @@ GtkWidget *create_button_with_pixbuf(GdkPixbuf *pb, unsigned int size);
 GtkWidget *
 create_image(const char *imagePath, unsigned int width, unsigned int height);
 
+
 /**
  * \fn void update_last_combination_images(ViewMastermind *vm,
  * ModelMastermind *mm)
@@ -213,6 +220,7 @@ create_image(const char *imagePath, unsigned int width, unsigned int height);
  */
 void update_last_combination_images(ViewMastermind *vm, ModelMastermind *mm);
 
+
 /**
  * \fn void udpate_last_feedback_images(ViewMastermind *vm, ModelMastermind *mm)
  * \brief Updates the buttons of the last feedback to display the last given
@@ -225,6 +233,7 @@ void update_last_combination_images(ViewMastermind *vm, ModelMastermind *mm);
  * \post The feedback buttons' image are updated
  */
 void udpate_last_feedback_images(ViewMastermind *vm, ModelMastermind *mm);
+
 
 /**
  * \fn GdkPixbuf *get_color_image_pixbuf(ViewMastermind *vm, PAWN_COLOR color)
@@ -240,6 +249,7 @@ void udpate_last_feedback_images(ViewMastermind *vm, ModelMastermind *mm);
  * \return A pointer on the right pixbuf
  */
 GdkPixbuf *get_color_image_pixbuf(ViewMastermind *vm, PAWN_COLOR color);
+
 
 /**
  * \fn GdkPixbuf *get_feedback_image_pixbuf(ViewMastermind *vm,
@@ -257,6 +267,7 @@ GdkPixbuf *get_color_image_pixbuf(ViewMastermind *vm, PAWN_COLOR color);
  */
 GdkPixbuf *get_feedback_image_pixbuf(ViewMastermind *vm, FEEDBACK_COLOR color);
 
+
 /**
  * \fn GtkWidget *get_main_menu_window(ViewMainMenu *vmm)
  * \brief gets the main menu window widget
@@ -269,6 +280,7 @@ GdkPixbuf *get_feedback_image_pixbuf(ViewMastermind *vm, FEEDBACK_COLOR color);
  * \return A pointer on the widget of the main menu window
  */
 GtkWidget *get_main_menu_window(ViewMainMenu *vmm);
+
 
 /**
  * \fn GtkWidget *get_main_menu_main_vbox(ViewMainMenu *vmm)
@@ -283,6 +295,7 @@ GtkWidget *get_main_menu_window(ViewMainMenu *vmm);
  */
 GtkWidget *get_main_menu_main_vbox(ViewMainMenu *vmm);
 
+
 /**
  * \fn GtkWidget *get_main_menu_pseudo_hbox(ViewMainMenu *vmm)
  * \brief gets the main menu pseudo hbox widget
@@ -295,6 +308,7 @@ GtkWidget *get_main_menu_main_vbox(ViewMainMenu *vmm);
  * \return A pointer on the widget of the main menu pseudo hbox
  */
 GtkWidget *get_main_menu_pseudo_hbox(ViewMainMenu *vmm);
+
 
 /**
  * \fn GtkWidget *get_main_menu_nb_pawns_hbox(ViewMainMenu *vmm)
@@ -309,6 +323,7 @@ GtkWidget *get_main_menu_pseudo_hbox(ViewMainMenu *vmm);
  */
 GtkWidget *get_main_menu_nb_pawns_hbox(ViewMainMenu *vmm);
 
+
 /**
  * \fn GtkWidget *get_main_menu_logo(ViewMainMenu *vmm)
  * \brief gets the main menu logo
@@ -321,6 +336,7 @@ GtkWidget *get_main_menu_nb_pawns_hbox(ViewMainMenu *vmm);
  * \return A pointer on the widget of the main menu's logo
  */
 GtkWidget *get_main_menu_logo(ViewMainMenu *vmm);
+
 
 /**
  * \fn GtkWidget *get_main_menu_pseudo_label(ViewMainMenu *vmm)
@@ -335,6 +351,7 @@ GtkWidget *get_main_menu_logo(ViewMainMenu *vmm);
  */
 GtkWidget *get_main_menu_pseudo_label(ViewMainMenu *vmm);
 
+
 /**
  * \fn GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm)
  * \brief gets the main menu's number of pawns label widget
@@ -347,6 +364,7 @@ GtkWidget *get_main_menu_pseudo_label(ViewMainMenu *vmm);
  * \return A pointer on the widget of the main menu's number of pawns label
  */
 GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm);
+
 
 /**
  * \fn GtkWidget *get_main_menu_error_label(ViewMainMenu *vmm)
@@ -361,6 +379,7 @@ GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm);
  */
 GtkWidget *get_main_menu_error_label(ViewMainMenu *vmm);
 
+
 /**
  * \fn unsigned int get_mastermind_proposition_button_size(ViewMastermind *vm)
  * \brief gets the size of the proposition button
@@ -373,6 +392,7 @@ GtkWidget *get_main_menu_error_label(ViewMainMenu *vmm);
  * \return The value of the size of the proposition button
  */
 unsigned int get_mastermind_proposition_button_size(ViewMastermind *vm);
+
 
 /**
  * \fn unsigned int get_mastermind_color_button_size(ViewMastermind *vm)
@@ -387,6 +407,7 @@ unsigned int get_mastermind_proposition_button_size(ViewMastermind *vm);
  */
 unsigned int get_mastermind_color_button_size(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_mastermind_end_game_window(ViewMastermind *vm)
  * \brief gets the widget of the end of the game window
@@ -399,6 +420,7 @@ unsigned int get_mastermind_color_button_size(ViewMastermind *vm);
  * \return A pointer on the widget of the end game window
  */
 GtkWidget *get_mastermind_end_game_window(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_win_image(ViewMastermind *vm)
@@ -413,6 +435,7 @@ GtkWidget *get_mastermind_end_game_window(ViewMastermind *vm);
  */
 GdkPixbuf *get_mastermind_win_image(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_mastermind_loose_image(ViewMastermind *vm)
  * \brief gets the widget of the loose image
@@ -425,6 +448,7 @@ GdkPixbuf *get_mastermind_win_image(ViewMastermind *vm);
  * \return A pointer on the widget of the loose image
  */
 GdkPixbuf *get_mastermind_loose_image(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_abouts_window(ViewMastermind *vm)
@@ -439,6 +463,7 @@ GdkPixbuf *get_mastermind_loose_image(ViewMastermind *vm);
  */
 GtkWidget *get_mastermind_abouts_window(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_abouts_main_vbox(ViewMastermind *vm)
  * \brief gets the widget of the abouts' main vbox
@@ -451,6 +476,7 @@ GtkWidget *get_mastermind_abouts_window(ViewMastermind *vm);
  * \return A pointer on the widget of the main vbox of abouts
  */
 GtkWidget *get_abouts_main_vbox(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_abouts_label(ViewMastermind *vm)
@@ -465,6 +491,7 @@ GtkWidget *get_abouts_main_vbox(ViewMastermind *vm);
  */
 GtkWidget *get_mastermind_abouts_label(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_mastermind_score_window(ViewMastermind *vm)
  * \brief gets the widget of the score window
@@ -477,6 +504,7 @@ GtkWidget *get_mastermind_abouts_label(ViewMastermind *vm);
  * \return A pointer on the widget of the score window
  */
 GtkWidget *get_mastermind_score_window(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_scores_title_label(ViewMastermind *vm)
@@ -491,6 +519,7 @@ GtkWidget *get_mastermind_score_window(ViewMastermind *vm);
  */
 GtkWidget *get_mastermind_scores_title_label(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget **get_mastermind_players_scores_label(ViewMastermind *vm)
  * \brief gets an array of widgets of the labels with the top 10 player scores
@@ -503,6 +532,7 @@ GtkWidget *get_mastermind_scores_title_label(ViewMastermind *vm);
  * \return An array of pointer on the widget of player's score
  */
 GtkWidget **get_mastermind_players_scores_label(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_score_main_vbox(ViewMastermind *vm)
@@ -517,6 +547,7 @@ GtkWidget **get_mastermind_players_scores_label(ViewMastermind *vm);
  */
 GtkWidget *get_score_main_vbox(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_mastermind_window(ViewMastermind *vm)
  * \brief gets the widget of the mastermind window
@@ -529,6 +560,7 @@ GtkWidget *get_score_main_vbox(ViewMastermind *vm);
  * \return A pointer on the widget of the mastermind window
  */
 GtkWidget *get_mastermind_window(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_main_vbox(ViewMastermind *vm)
@@ -543,6 +575,7 @@ GtkWidget *get_mastermind_window(ViewMastermind *vm);
  */
 GtkWidget *get_mastermind_main_vbox(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_mastermind_history_table(ViewMastermind *vm)
  * \brief gets the widget of the mastermind history table
@@ -555,6 +588,7 @@ GtkWidget *get_mastermind_main_vbox(ViewMastermind *vm);
  * \return A pointer on the widget of the mastermind history table
  */
 GtkWidget *get_mastermind_history_table(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_feedback_zone_hbox(ViewMastermind *vm)
@@ -569,6 +603,7 @@ GtkWidget *get_mastermind_history_table(ViewMastermind *vm);
  */
 GtkWidget *get_mastermind_feedback_zone_hbox(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_mastermind_proposition_hbox(ViewMastermind *vm)
  * \brief gets the widget of the proposition hbox
@@ -581,6 +616,7 @@ GtkWidget *get_mastermind_feedback_zone_hbox(ViewMastermind *vm);
  * \return A pointer on the widget of the proposition hbox
  */
 GtkWidget *get_mastermind_proposition_hbox(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_proposition_control_hbox(ViewMastermind *vm)
@@ -595,6 +631,7 @@ GtkWidget *get_mastermind_proposition_hbox(ViewMastermind *vm);
  */
 GtkWidget *get_mastermind_proposition_control_hbox(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_mastermind_color_selection_hbox(ViewMastermind *vm)
  * \brief gets the widget of the color selection hbox
@@ -607,6 +644,7 @@ GtkWidget *get_mastermind_proposition_control_hbox(ViewMastermind *vm);
  * \return A pointer on the widget of the color selection hbox
  */
 GtkWidget *get_mastermind_color_selection_hbox(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_score_hbox(ViewMastermind *vm)
@@ -621,6 +659,7 @@ GtkWidget *get_mastermind_color_selection_hbox(ViewMastermind *vm);
  */
 GtkWidget *get_mastermind_score_hbox(ViewMastermind *vm);
 
+
 /**
  * \fn GtkWidget *get_mastermind_score_label(ViewMastermind *vm)
  * \brief gets the widget of the score label displayed at the bottom of the
@@ -634,6 +673,7 @@ GtkWidget *get_mastermind_score_hbox(ViewMastermind *vm);
  * \return A pointer on the widget of the score label
  */
 GtkWidget *get_mastermind_score_label(ViewMastermind *vm);
+
 
 /**
  * \fn GtkWidget *get_mastermind_history_combination_button(ViewMastermind
@@ -653,6 +693,7 @@ GtkWidget *get_mastermind_score_label(ViewMastermind *vm);
 GtkWidget *
 get_mastermind_history_combination_button(ViewMastermind *vm, unsigned int i,
                                           unsigned int j);
+
 
 /**
  * \fn GtkWidget *get_mastermind_history_feedback_button(ViewMastermind
