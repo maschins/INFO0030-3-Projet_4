@@ -30,7 +30,7 @@ struct view_main_menu_t {
 };
 
 
-typedef struct view_mastermind_t {
+struct view_mastermind_t {
    ModelMastermind *mm;                           /*!< Mastermind model */
    unsigned int smallButtonSize;                  /*!< Small button size */
    unsigned int bigButtonSize;                    /*!< Big button size */
