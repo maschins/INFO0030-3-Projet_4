@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
    // Free memory
    destroy_controller_main_menu(cmm);
    destroy_view_main_menu(vmm);
-   destroy_model_main_menu(mm);
+   destroy_model_main_menu(mmm);
 
    return EXIT_SUCCESS;
 }
