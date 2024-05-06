@@ -1,0 +1,182 @@
+% !TEX root = ./rapport.tex
+
+\section{Architecture générale du code}
+
+Notre code suit le pattern modèle-vue-contrôleur (MVC) tel que vu au cours. Nous avons choisi de créer un modèle, une vue et un contrôleur pour le menu principal ainsi qu'un autre modèle-vue-contrôleur pour le jeu. Séparer le menu principal du jeu nous a permis de simplifier l'organisation et la structure du code. Il était alors facile d'ajouter un élément dans le menu sans devoir toucher à la création ou la gestion de la mémoire pour le jeu.
+\\\\
+La fenêtre "Abouts" qui affiche des informations sur le jeu et la fenêtre "End game" qui affiche si le joueur a gagné ou perdu en fin de partie ont été conservées dans le modèle-vue-contrôleur du jeu. En effet, dans leur cas, envisager de créer une vue et un contrôleur complexifierait la lecture du code et l'organisation de la vue et du contrôleur du jeu.
+
+\subsection{Modèle}
+
+Le type opaque $modelMainMenu$ représente l'ensemble des données du menu principal. Il stocke le pseudo sauvegardé par le joueur, la bone validité de ce pseudo sans laquelle le joueur sera incapable de lancer une partie. Le role de joueur ainsi que le nombre de pions choisit pour la partie.
+\\\\
+De cette manière, l'ensemble des paramètres peuvent être configurés dans un premier temps par l'utilisateur dans le menu. Ces paramètres seront toujours conservés, ce qui permet, par exemple, au joueur de ne pas devoir renseigner à nouveau son pseudo en retournant dans le menu principal. De plus, le modèle du jeu peut être facilement créé et la mémoire allouée pour celui-ci peut être facilement libérer sans devoir se soucier de conserver un accès aux paramètres renseignés par le joueur.
+\begin{lstlisting}[language=C]
+struct model_main_menu_t {
+   char pseudo[MAX_PSEUDO_LENGTH];
+   bool validPseudo;
+   ROLE role;
+   unsigned int nbPawns;
+};
+\end{lstlisting}
+
+Le type opaque $Combination$ représente une combinaison. Chacun des pions de la combinaison est renseigné dans un tableau $pawns$ et son résultat est stocké dans les champs $nbCorrect$ et $nbMisplaced$.
+\begin{lstlisting}[language=C]
+struct combination_t {
+   unsigned int nbCorrect;
+   unsigned int nbMisplaced;
+   PAWN_COLOR *pawns;
+};
+\end{lstlisting}
+
+Le type opaque $History$ représente l'historique des combinaisons proposées durant la partie. Les combinaisons sont stockées dans une tableau de $Combination$. $currentIndex$ est l'indice de la dernière combinaison dans le tableau de combinaisions.
+\begin{lstlisting}[language=C]
+struct history_t {
+   unsigned int nbPawns;
+   unsigned int nbCombinations;
+   int currentIndex;
+   Combination **combinations;
+};
+\end{lstlisting}
+
+Le type opaque $Score$ représente une ligne de score dans le tableau des scores. Chaque ligne est composée d'un pseudo et d'une valeur de score.
+\begin{lstlisting}[language=C]
+struct score_t {
+   char pseudo[MAX_PSEUDO_LENGTH];
+   unsigned score;
+};
+\end{lstlisting}
+
+Le type $SavedScores$ représente l'ensemble des scores renseignés dans le fichier texte. Cette structure nous permet de charger facilement l'ensemble des scores en créant un tableau de $Score$.
+\begin{lstlisting}[language=C]
+struct saved_scores_t {
+   unsigned length;
+   Score **savedScores;
+};
+\end{lstlisting}
+
+Le type opaque $modelMastermind$ représente l'ensemble des données du jeu. On y copie les paramètres du menu principal tel que le pseudo, le role ainsi que le nombre de pions (plus précisément stocké dans l'historique). On y retrouve également la couleur sélectionnée, le proposition actuelle du joueur, la validité de la solution proposée, la solution de la partie, l'historique des combinaisons, le résultat du joueur vis à vis de la dernière combinaison proposée par l'ordinateur, le nombre de configurations créables, l'ensemble des configurations créables ainsi que le tableau de score.
+\begin{lstlisting}[language=C]
+struct model_mastermind_t {
+   ROLE role;
+   char savedPseudo[MAX_PSEUDO_LENGTH];
+   bool inGame;
+   PAWN_COLOR selectedColor;
+   Combination *proposition;
+   bool validSolution;
+   PAWN_COLOR *solution;
+   History *history;
+   FEEDBACK_COLOR *feedback;
+   unsigned int nbConfigs;
+   unsigned int lastConfigIndex;
+   Combination **configs;
+   SavedScores *save;
+};
+\end{lstlisting}
+Le coût de cette approche augmente légèrement la complexité, car elle nécessite la définition de plusieurs structures de données. Cependant, elle rend le code plus modulaire et plus facile à gérer, ce qui, dans de nombreux cas, nous a permis d'ajouter et retirer facilement des fonctionnalités.
+
+\subsection{View}
+Les types opaques $viewMainMenu$ et $viewMastermind$ stockent l'ensemble des éléments affichés à l'écran qui ne permettent pas d'interactions avec l'utilisateur (i.e. tables, boxs, labels, boutons uniquement utiles à l'affichage d'une image).
+
+\begin{lstlisting}[language=C]
+struct view_main_menu_t {
+   ModelMainMenu *mmm;
+   GtkWidget *window;
+   GtkWidget *mainVBox;
+   GtkWidget *pseudoHBox;
+   GtkWidget *nbPawnsHBox;
+   GtkWidget *logo;
+   GtkWidget *pseudoLabel;
+   GtkWidget *errorLabel;
+   GtkWidget *nbPawnsLabel;
+};
+\end{lstlisting}
+
+L'ensemble des pixbufs des images sont crées avant le lancement du menu ou du jeu. Dès lors, le programme ne s'interrompt pas soudainement à lorsque que la création du pixbuf d'une image est impossible.  
+
+Les boutons affichants l'historique des combinaisons ainsi que les boutons affichant l'historique des feedbacks sont quant à eux stockés dans des matrices de boutons.
+
+\begin{lstlisting}[language=C]
+struct view_mastermind_t {
+   ModelMastermind *mm;
+   unsigned int smallButtonSize;
+   unsigned int bigButtonSize;
+   unsigned int colorButtonSize;
+   unsigned int propositionButtonSize;
+   GdkPixbuf *winImage;
+   GdkPixbuf *looseImage;
+   GtkWidget *endGameWindow;
+   GtkWidget *windowAbouts;
+   GtkWidget *windowScore;
+   GtkWidget *aboutsMainVBox;
+   GtkWidget *scoreMainVBox;
+   GtkWidget *aboutsLabel;
+   GtkWidget *scoresTitleLabel;
+   GtkWidget *scoresLabels[MAX_SCORE_DISPLAYED];
+   GtkWidget *window;
+   GtkWidget *mainVBox;
+   GtkWidget *historyTable;
+   GtkWidget *feedbackZoneHBox;
+   GtkWidget *propositionHBox;
+   GtkWidget *propositionControlHBox;
+   GtkWidget *colorSelectionHBox;
+   GtkWidget *scoreHBox;
+   GdkPixbuf **colorImagePixbufs;
+   GdkPixbuf **feedbackImagePixbufs;
+   GtkWidget ***historyCombinations;
+   GtkWidget ***historyFeedbacks;
+   GtkWidget *scoreLabel;
+};
+\end{lstlisting}
+
+\subsection{Contrôleur}
+
+Les types opaques $controllerMainMenu$ et $controllerMastermind$ stockent l'ensemble des éléments affichés à l'écran qui permettent une ou plusieurs interactions avec l'utilisateur (i.e. boutons, sliders, boites d'entrée de texte, barre de menu).
+
+\begin{lstlisting}[language=C]
+struct controller_main_menu_t {
+   ModelMainMenu *mmm;
+   ViewMainMenu *vmm;
+   GtkWidget *pseudoEntry;
+   GtkWidget *saveButton;
+   GtkWidget *guesserButton;
+   GtkWidget *proposerButton;
+   GtkWidget *nbPawnsSlider;
+   GtkWidget *playButton;
+   GtkWidget *quitButton;
+};
+\end{lstlisting}
+
+Le type opaque $menuBar$ nous permet de facilement créer une barre de menu sans alourdir le contrôleur du jeu. 
+
+\begin{lstlisting}[language=C]
+struct menu_bar_t {
+   GtkWidget *bar;
+   GtkWidget *menuGame;
+   GtkWidget *menuHelp;
+   GtkWidget *itemGame;
+   GtkWidget *itemHelp;
+   GtkWidget *itemMainMenu;
+   GtkWidget *itemScore;
+   GtkWidget *itemQuit;
+   GtkWidget *itemAbouts;
+};
+\end{lstlisting}
+
+Les boutons permettant au joueur de sélectionner une couleur, de créer une combinaison ou de créer un résultat sur une combinaison proposée par l'ordinateur sont stockés dans des tableaux de boutons. 
+
+\begin{lstlisting}[language=C]
+struct controller_mastermind_t {
+   ControllerMainMenu *cmm;
+   ModelMastermind *mm;
+   ViewMastermind *vm;
+   GtkWidget *aboutsOkayButton;
+   GtkWidget *scoreOkayButton;
+   MenuBar *menuBar;
+   GtkWidget *applyButton;
+   GtkWidget *resetButton;
+   GtkWidget **colorSelectionButtons;
+   GtkWidget **propositionButtons;
+   GtkWidget **feedbackButtons;
+};
+\end{lstlisting}
