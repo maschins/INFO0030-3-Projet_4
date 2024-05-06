@@ -17,43 +17,43 @@
 #include "controller_mastermind.h"
 
 struct controller_main_menu_t {
-    ModelMainMenu *mmm;
-    ViewMainMenu *vmm;
-    GtkWidget *pseudoEntry;
-    GtkWidget *saveButton;
-    GtkWidget *guesserButton;
-    GtkWidget *proposerButton;
-    GtkWidget *nbPawnsSlider;
-    GtkWidget *playButton;
-    GtkWidget *quitButton;
+   ModelMainMenu *mmm;        /*!< Main menu model */
+   ViewMainMenu *vmm;         /*!< Main menu view */
+   GtkWidget *pseudoEntry;    /*!< Pseudo text entry box */
+   GtkWidget *saveButton;     /*!< Save pseudo buttin */
+   GtkWidget *guesserButton;  /*!< Guesser mode button */
+   GtkWidget *proposerButton; /*!< Proposer mode button */
+   GtkWidget *nbPawnsSlider;  /*!< Number of pawns slider */
+   GtkWidget *playButton;     /*!< Play button */
+   GtkWidget *quitButton;     /*!< Quit button */
 };
 
 
 struct menu_bar_t {
-    GtkWidget *bar;
-    GtkWidget *menuGame;
-    GtkWidget *menuHelp;
-    GtkWidget *itemGame;
-    GtkWidget *itemHelp;
-    GtkWidget *itemMainMenu;
-    GtkWidget *itemScore;
-    GtkWidget *itemQuit;
-    GtkWidget *itemAbouts;
+   GtkWidget *bar;            /*!< Bar of menu bar */
+   GtkWidget *menuGame;       /*!< Game submenu */
+   GtkWidget *menuHelp;       /*!< Help submenu */
+   GtkWidget *itemGame;       /*!< Game submenu button */
+   GtkWidget *itemHelp;       /*!< Help submenu button */
+   GtkWidget *itemMainMenu;   /*!< Main menu Game submenu button */
+   GtkWidget *itemScore;      /*!< Score Game submenu button */
+   GtkWidget *itemQuit;       /*!< Quit Game submenu button */
+   GtkWidget *itemAbouts;     /*!< Abouts Help submenu button */
 };
 
 
 struct controller_mastermind_t {
-    ControllerMainMenu *cmm;
-    ModelMastermind *mm;
-    ViewMastermind *vm;
-    GtkWidget *aboutsOkayButton;
-    GtkWidget *scoreOkayButton;
-    MenuBar *menuBar;
-    GtkWidget *applyButton;
-    GtkWidget *resetButton;
-    GtkWidget **colorSelectionButtons;
-    GtkWidget **propositionButtons;
-    GtkWidget **feedbackButtons;
+   ControllerMainMenu *cmm;            /*!< Main menu controller */
+   ModelMastermind *mm;                /*!< Mastermind model */
+   ViewMastermind *vm;                 /*!< Mastermind view */
+   GtkWidget *aboutsOkayButton;        /*!< Abouts okay button */
+   GtkWidget *scoreOkayButton;         /*!< Score okay button */
+   MenuBar *menuBar;                   /*!< Menu bar */
+   GtkWidget *applyButton;             /*!< Apply button */
+   GtkWidget *resetButton;             /*!< Reset button */
+   GtkWidget **colorSelectionButtons;  /*!< Color seleciton buttons */
+   GtkWidget **propositionButtons;     /*!< Proposition selection buttons */
+   GtkWidget **feedbackButtons;        /*!< Feedback buttons */
 };
 
 /**
