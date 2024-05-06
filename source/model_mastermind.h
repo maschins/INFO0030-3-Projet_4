@@ -668,11 +668,40 @@ void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor);
 void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
 
 
+/**
+ * \fn void set_feedback_pawn(ModelMastermind *mm, unsigned int index)
+ * \brief Changes a pawn in the feedback.
+ *
+ * \param mm A pointer on the ModelMastermind structure
+ * \param index the feedback pawn index.
+ *
+ * \pre mm != NULL, index < mm->history->nbPawns
+ * \post the feedback pawn is changed.
+ */
 void set_feedback_pawn(ModelMastermind *mm, unsigned int index);
 
+
+/**
+ * \fn void set_feedback_pawn(ModelMastermind *mm, unsigned int index)
+ * \brief Sets the proposition as the solution.
+ *
+ * \param mm A pointer on the ModelMastermind structure
+ *
+ * \pre mm != NULL
+ * \post the solution is the proposition.
+ */
 void set_proposition_as_solution(ModelMastermind *mm);
 
 
+/**
+ * \fn void set_valid_solution_true(ModelMastermind *mm)
+ * \brief Sets the solution to valid state.
+ *
+ * \param mm A pointer on the ModelMastermind structure
+ *
+ * \pre mm != NULL
+ * \post the solution validity is true
+ */
 void set_valid_solution_true(ModelMastermind *mm);
 
 #endif //__MODEL_MASTERMIND__
