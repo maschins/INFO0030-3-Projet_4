@@ -598,7 +598,7 @@ void on_guesser_choosed(GtkWidget *button, ControllerMainMenu *cmm) {
 
 void on_proposer_choosed(GtkWidget *button, ControllerMainMenu *cmm) {
    assert(button != NULL && cmm != NULL);
-   
+
    set_role(cmm->mmm, PROPOSER);
 }
 
@@ -834,6 +834,13 @@ static void handle_quit(GtkWidget *button, gpointer data) {
    ControllerMastermind *cm = (ControllerMastermind *) data;
 
    write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
+
+   ModelMastermind *mm = cm->mm;
+   ViewMastermind *vm = cm->vm;
+
+   destroy_controller_mastermind(cm);
+   destroy_view_mastermind(vm);
+   destroy_model_mastermind(mm);
 
    gtk_main_quit();
 }
