@@ -31,11 +31,13 @@ run: $(EXEC)
 doc:
 	doxygen $(DOXYGEN_CONFIG_FILE)
 
-rapport: rapport/rapport.tex rapport/*.tex
-	pdflatex rapport/rapport.tex
+rapport.pdf: rapport/rapport.tex rapport/*.tex
+	cd rapport/ && pdflatex rapport.tex && cd ..
+
+rapport: rapport.pdf
 
 clean:
 	rm -rf */*.o $(EXEC) $(DOC_DIR) $(TAR_NAME)
 
-archive: doc rapport
+archive: doc rapport.pdf
 	tar -czf $(TAR_NAME) source rapport $(FILES) $(DOC_DIR)
