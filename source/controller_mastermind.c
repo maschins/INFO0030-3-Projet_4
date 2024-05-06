@@ -804,6 +804,10 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
          }
       }
 
+      char new_label[MAX_PSEUDO_LENGTH];
+      sprintf(new_label, "Score: %d", 9 - get_current_index(cm->mm));
+      set_score_label_text(get_mastermind_score_label(cm->vm), new_label);
+
       if(!get_in_game(cm->mm))
          init_end_game_window(cm, get_current_index(cm->mm) >= 0);
    }
