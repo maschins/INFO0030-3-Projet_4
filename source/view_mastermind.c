@@ -517,11 +517,10 @@ void update_last_combination_images(ViewMastermind *vm, ModelMastermind *mm) {
 
    unsigned int index = get_current_index(mm);
 
-   for(unsigned int i = 0; i < get_nb_pawns(mm); i++){
+   for(unsigned int i = 0; i < get_nb_pawns(mm); i++)
       apply_pixbufs_to_button(vm->historyCombinations[index][i],
                               vm->colorImagePixbufs[get_pawn_last_combination(
                                       mm, i)], vm->bigButtonSize);
-   }
 }
 
 
