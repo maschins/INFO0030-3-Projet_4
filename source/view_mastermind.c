@@ -12,6 +12,7 @@
 
 #include <gtk-2.0/gtk/gtk.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "view_mastermind.h"
 
@@ -239,7 +240,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
       return NULL;
    }
 
-   const char *SCORE_LABEL = "Score :";
+   const char *SCORE_LABEL = "Score : 0";
    vm->scoreLabel = gtk_label_new(SCORE_LABEL);
    if(vm->scoreLabel == NULL){
       free(vm);
@@ -688,4 +689,10 @@ get_mastermind_history_feedback_button(ViewMastermind *vm, unsigned int i,
 GtkWidget *get_mastermind_score_label(ViewMastermind *vm) {
    assert(vm != NULL);
    return vm->scoreLabel;
+}
+
+void set_score_label_text(GtkWidget *label, char *string) {
+   assert(label != NULL);
+
+   gtk_label_set_text(GTK_LABEL(label), string);
 }

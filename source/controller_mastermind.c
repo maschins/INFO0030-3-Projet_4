@@ -444,9 +444,9 @@ void init_mastermind(ControllerMastermind *cm) {
       gtk_box_pack_start(GTK_BOX(colorSelectionHBox), cm->colorSelectionButtons[i], TRUE, TRUE, 0);
    }
 
-   //GtkWidget *scoreAlignment = gtk_alignment_new(0.5, 0.5, 0, 0);
-   //gtk_box_pack_start(GTK_BOX(scoreHBox), scoreAlignment, TRUE, TRUE, 0);
-   //gtk_container_add(GTK_CONTAINER(scoreAlignment), get_mastermind_score_label(cm->vm));
+   GtkWidget *scoreAlignment = gtk_alignment_new(0.5, 0.5, 0, 0);
+   gtk_box_pack_start(GTK_BOX(scoreHBox), scoreAlignment, TRUE, TRUE, 0);
+   gtk_container_add(GTK_CONTAINER(scoreAlignment), get_mastermind_score_label(cm->vm));
    gtk_container_add(GTK_CONTAINER(aboutsWindow), aboutsMainVBox);
 
    gtk_container_add(GTK_CONTAINER(mainVBox), cm->menuBar->bar);
@@ -580,22 +580,19 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
    ControllerMainMenu *cmm = (ControllerMainMenu *) data;
 
    ModelMastermind *mm = create_model_mastermind(cmm->mmm);
-   if(mm == NULL) {
-      printf("mm NULL");
+   if(mm == NULL)
       gtk_main_quit();
-   }
+
 
    ViewMastermind *vm = create_view_mastermind(mm);
-   if(vm == NULL) {
-      printf("vm NULL");
+   if(vm == NULL)
       gtk_main_quit();
-   }
+
 
    ControllerMastermind *cm = create_controller_mastermind(mm, vm, cmm);
-   if(cm == NULL) {
-      printf("cm NULL");
+   if(cm == NULL)
       gtk_main_quit();
-   }
+
 
    gtk_widget_hide(get_main_menu_window(cmm->vmm));
 
@@ -714,6 +711,11 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
 
             reset_proposition(cm->mm);
             reset_proposition_buttons(cm);
+
+            char new_label[MAX_PSEUDO_LENGTH];
+            sprintf(new_label, "Score: %d", 9-get_current_index(cm->mm));
+            printf("label: %s\n", new_label);
+            set_score_label_text(get_mastermind_score_label(cm->vm), new_label);
          }
       } 
       

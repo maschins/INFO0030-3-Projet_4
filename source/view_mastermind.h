@@ -158,4 +158,6 @@ GtkWidget *get_mastermind_history_feedback_button(ViewMastermind *vm, unsigned i
 
 GtkWidget *get_mastermind_score_label(ViewMastermind *vm);
 
+void set_score_label_text(GtkWidget *label, char *string);
+
 #endif //__VIEW_MASTERMIND__
