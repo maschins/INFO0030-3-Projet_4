@@ -18,48 +18,49 @@
 
 
 struct view_main_menu_t {
-    ModelMainMenu *mmm;
-    GtkWidget *window;
-    GtkWidget *mainVBox;
-    GtkWidget *pseudoHBox;
-    GtkWidget *nbPawnsHBox;
-    GtkWidget *logo;
-    GtkWidget *pseudoLabel;
-    GtkWidget *errorLabel;
-    GtkWidget *nbPawnsLabel;
+   ModelMainMenu *mmm;      /*!< Main menu model */
+   GtkWidget *window;       /*!< Window widget */
+   GtkWidget *mainVBox;     /*!< Main vertical box */
+   GtkWidget *pseudoHBox;   /*!< Pseudo stuff horizontal box */
+   GtkWidget *nbPawnsHBox;  /*!< Number of pawns horizontal box */
+   GtkWidget *logo;         /*!< logo widget */
+   GtkWidget *pseudoLabel;  /*!< Pseudo label */
+   GtkWidget *errorLabel;   /*!< Pseudo error or correctly save label */
+   GtkWidget *nbPawnsLabel; /*!< Number of pawns label */
 };
 
 
-struct view_mastermind_t {
-    ModelMastermind *mm;
-    unsigned int smallButtonSize;
-    unsigned int bigButtonSize;
-    unsigned int colorButtonSize;
-    unsigned int propositionButtonSize;
-    GdkPixbuf *winImage;
-    GdkPixbuf *looseImage;
-    GtkWidget *endGameWindow;
-    GtkWidget *windowAbouts;
-    GtkWidget *windowScore;
-    GtkWidget *aboutsMainVBox;
-    GtkWidget *scoreMainVBox;
-    GtkWidget *aboutsLabel;
-    GtkWidget *scoresTitleLabel;
-    GtkWidget *scoresLabels[MAX_SCORE_DISPLAYED];
-    GtkWidget *window;
-    GtkWidget *mainVBox;
-    GtkWidget *historyTable;
-    GtkWidget *feedbackZoneHBox;
-    GtkWidget *propositionHBox;
-    GtkWidget *propositionControlHBox;
-    GtkWidget *colorSelectionHBox;
-    GtkWidget *scoreHBox;
-    GdkPixbuf **colorImagePixbufs;
-    GdkPixbuf **feedbackImagePixbufs;
-    GtkWidget ***historyCombinations;
-    GtkWidget ***historyFeedbacks;
-    GtkWidget *scoreLabel;
-};
+typedef struct view_mastermind_t {
+   ModelMastermind *mm;                           /*!< Mastermind model */             
+   unsigned int smallButtonSize;                  /*!< Small button size */
+   unsigned int bigButtonSize;                    /*!< Big button size */
+   unsigned int colorButtonSize;                  /*!< Color button size */
+   unsigned int propositionButtonSize;            /*!< Proposition button size */
+   GdkPixbuf *winImage;                           /*!< Win image pixbuf */
+   GdkPixbuf *looseImage;                         /*!< Lose image pixbuf */
+   GtkWidget *endGameWindow;                      /*!< End game window widget */
+   GtkWidget *windowAbouts;                       /*!< Abouts window widget */
+   GtkWidget *windowScore;                        /*!< Score window widget */
+   GtkWidget *aboutsMainVBox;                     /*!< Main vertical box for abouts window */
+   GtkWidget *scoreMainVBox;                      /*!< Main vertical box for score window */
+   GtkWidget *aboutsLabel;                        /*!< Label for abouts window */
+   GtkWidget *scoresTitleLabel;                   /*!< Title label for score window */
+   GtkWidget *scoresLabels[MAX_SCORE_DISPLAYED];  /*!< Scores labels */
+   GtkWidget *window;                             /*!< Main window */
+   GtkWidget *mainVBox;                           /*!< Main vertical box */
+   GtkWidget *historyTable;                       /*!< Table for displaying history */
+   GtkWidget *feedbackZoneHBox;                   /*!< Horizontal box for feedback zone */
+   GtkWidget *propositionHBox;                    /*!< Horizontal box for proposition */
+   GtkWidget *propositionControlHBox;             /*!< Horizontal box for proposition control */
+   GtkWidget *colorSelectionHBox;                 /*!< Horizontal box for color selection */
+   GtkWidget *scoreHBox;                          /*!< Horizontal box for display score */
+   GdkPixbuf **colorImagePixbufs;                 /*!< Array of color image pixbufs */
+   GdkPixbuf **feedbackImagePixbufs;              /*!< Array of feedback image pixbufs */
+   GtkWidget ***historyCombinations;              /*!< 2D array for history combinations */
+   GtkWidget ***historyFeedbacks;                 /*!< 2D array for history feedbacks */
+   GtkWidget *scoreLabel;                        /*!< Score label */
+} ViewMastermind;
+
 
 
 ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
