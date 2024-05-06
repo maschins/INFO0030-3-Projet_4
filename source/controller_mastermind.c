@@ -4,42 +4,42 @@
 #include "controller_mastermind.h"
 
 struct controller_main_menu_t {
-    ModelMainMenu *mmm;
-    ViewMainMenu *vmm;
-    GtkWidget *pseudoEntry;
-    GtkWidget *saveButton;
-    GtkWidget *guesserButton;
-    GtkWidget *proposerButton;
-    GtkWidget *nbPawnsSlider;
-    GtkWidget *playButton;
-    GtkWidget *quitButton;
+   ModelMainMenu *mmm;
+   ViewMainMenu *vmm;
+   GtkWidget *pseudoEntry;
+   GtkWidget *saveButton;
+   GtkWidget *guesserButton;
+   GtkWidget *proposerButton;
+   GtkWidget *nbPawnsSlider;
+   GtkWidget *playButton;
+   GtkWidget *quitButton;
 };
 
 
 struct menu_bar_t {
-    GtkWidget *bar;
-    GtkWidget *menuGame;
-    GtkWidget *menuHelp;
-    GtkWidget *itemGame;
-    GtkWidget *itemHelp;
-    GtkWidget *itemMainMenu;
-    GtkWidget *itemScore;
-    GtkWidget *itemQuit;
-    GtkWidget *itemAbouts;
+   GtkWidget *bar;
+   GtkWidget *menuGame;
+   GtkWidget *menuHelp;
+   GtkWidget *itemGame;
+   GtkWidget *itemHelp;
+   GtkWidget *itemMainMenu;
+   GtkWidget *itemScore;
+   GtkWidget *itemQuit;
+   GtkWidget *itemAbouts;
 };
 
 
 struct controller_mastermind_t {
-    ControllerMainMenu *cmm;
-    ModelMastermind *mm;
-    ViewMastermind *vm;
-    GtkWidget *aboutsOkayButton;
-    MenuBar *menuBar;
-    GtkWidget *applyButton;
-    GtkWidget *resetButton;
-    GtkWidget **colorSelectionButtons;
-    GtkWidget **propositionButtons;
-    GtkWidget **feedbackButtons;
+   ControllerMainMenu *cmm;
+   ModelMastermind *mm;
+   ViewMastermind *vm;
+   GtkWidget *aboutsOkayButton;
+   MenuBar *menuBar;
+   GtkWidget *applyButton;
+   GtkWidget *resetButton;
+   GtkWidget **colorSelectionButtons;
+   GtkWidget **propositionButtons;
+   GtkWidget **feedbackButtons;
 };
 
 /**
@@ -514,6 +514,23 @@ void init_feedback_zone_mastermind(ControllerMastermind *cm) {
 }
 
 
+void init_end_game_window(ControllerMastermind *cm, bool win) {
+   assert(cm != NULL);
+
+   GtkWidget *window = get_mastermind_end_game_window(cm->vm);
+   GtkWidget *image;
+
+   if(win)
+      image = gtk_image_new_from_pixbuf(get_mastermind_win_image(cm->vm));
+
+   else
+      image = gtk_image_new_from_pixbuf(get_mastermind_loose_image(cm->vm));
+
+   gtk_container_add(GTK_CONTAINER(window), image);
+   gtk_widget_show_all(window);
+}
+
+
 void show_window(GtkWidget *button, gpointer data) {
    assert(button != NULL && data != NULL);
 
@@ -703,7 +720,6 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
 
    ControllerMastermind *cm = (ControllerMastermind *) data;
 
-
    if(get_in_game(cm->mm)){
       if(get_role(cm->mm) == GUESSER){
          if(verify_proposition(cm->mm)){
@@ -743,6 +759,13 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
             reset_feedback_buttons(cm);
          }
       }
+   }
+
+   else{
+      if(get_current_index(cm->mm) < NB_COMBINATIONS)
+         init_end_game_window(cm, true);
+      else
+         init_end_game_window(cm, false);
    }
 }
 

@@ -5,43 +5,46 @@
 
 
 struct view_main_menu_t {
-    ModelMainMenu *mmm;
-    GtkWidget *window;
-    GtkWidget *mainVBox;
-    GtkWidget *pseudoHBox;
-    GtkWidget *welcomeHBox;
-    GtkWidget *nbPawnsHBox;
-    GtkWidget *logo;
-    GtkWidget *welcomeLabel;
-    GtkWidget *currentPseudoLabel;
-    GtkWidget *pseudoLabel;
-    GtkWidget *errorLabel;
-    GtkWidget *nbPawnsLabel;
+   ModelMainMenu *mmm;
+   GtkWidget *window;
+   GtkWidget *mainVBox;
+   GtkWidget *pseudoHBox;
+   GtkWidget *welcomeHBox;
+   GtkWidget *nbPawnsHBox;
+   GtkWidget *logo;
+   GtkWidget *welcomeLabel;
+   GtkWidget *currentPseudoLabel;
+   GtkWidget *pseudoLabel;
+   GtkWidget *errorLabel;
+   GtkWidget *nbPawnsLabel;
 };
 
 
 struct view_mastermind_t {
-    ModelMastermind *mm;
-    unsigned int smallButtonSize;
-    unsigned int bigButtonSize;
-    unsigned int colorButtonSize;
-    unsigned int propositionButtonSize;
-    GtkWidget *windowAbouts;
-    GtkWidget *aboutsMainVBox;
-    GtkWidget *aboutsLabel;
-    GtkWidget *window;
-    GtkWidget *mainVBox;
-    GtkWidget *historyTable;
-    GtkWidget *feedbackZoneHBox;
-    GtkWidget *propositionHBox;
-    GtkWidget *propositionControlHBox;
-    GtkWidget *colorSelectionHBox;
-    GtkWidget *scoreHBox;
-    GdkPixbuf **colorImagePixbufs;
-    GdkPixbuf **feedbackImagePixbufs;
-    GtkWidget ***historyCombinations;
-    GtkWidget ***historyFeedbacks;
-    GtkWidget *scoreLabel;
+   ModelMastermind *mm;
+   unsigned int smallButtonSize;
+   unsigned int bigButtonSize;
+   unsigned int colorButtonSize;
+   unsigned int propositionButtonSize;
+   GdkPixbuf *winImage;
+   GdkPixbuf *looseImage;
+   GtkWidget *endGameWindow;
+   GtkWidget *windowAbouts;
+   GtkWidget *aboutsMainVBox;
+   GtkWidget *aboutsLabel;
+   GtkWidget *window;
+   GtkWidget *mainVBox;
+   GtkWidget *historyTable;
+   GtkWidget *feedbackZoneHBox;
+   GtkWidget *propositionHBox;
+   GtkWidget *propositionControlHBox;
+   GtkWidget *colorSelectionHBox;
+   GtkWidget *scoreHBox;
+   GdkPixbuf **colorImagePixbufs;
+   GdkPixbuf **feedbackImagePixbufs;
+   GtkWidget ***historyCombinations;
+   GtkWidget ***historyFeedbacks;
+   GtkWidget *scoreLabel;
 };
 
 
@@ -157,9 +160,28 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
 
    vm->bigButtonSize = MASTERMIND_WINDOW_SIZE * 60;
    vm->smallButtonSize = MASTERMIND_WINDOW_SIZE * 30;
-   vm->colorButtonSize = nbPawns * (vm->bigButtonSize + vm->smallButtonSize) /
-                         (NB_PAWN_COLORS - 1);
+   vm->colorButtonSize = nbPawns * (vm->bigButtonSize + vm->smallButtonSize) / (NB_PAWN_COLORS - 1);
    vm->propositionButtonSize = vm->bigButtonSize + vm->smallButtonSize;
+
+   const char *WIN_FILE_NAME = "./images/win.png";
+   vm->winImage = gdk_pixbuf_new_from_file(WIN_FILE_NAME, NULL);
+   if(vm->winImage == NULL){
+      free(vm);
+      return NULL;
+   }
+
+   const char *LOOSE_FILE_NAME = "./images/loose.png";
+   vm->looseImage = gdk_pixbuf_new_from_file(LOOSE_FILE_NAME, NULL);
+   if(vm->looseImage == NULL){
+      free(vm);
+      return NULL;
+   }
+
+   vm->endGameWindow = create_window(END_GAME_WINDOW_LABEL, -1, -1);
+   if(vm->windowAbouts == NULL){
+      free(vm);
+      return NULL;
+   }
 
    vm->windowAbouts = create_window(ABOUTS_WINDOW_LABEL, -1, -1);
    if(vm->windowAbouts == NULL){
@@ -594,6 +616,24 @@ unsigned int get_mastermind_proposition_button_size(ViewMastermind *vm) {
 unsigned int get_mastermind_color_button_size(ViewMastermind *vm) {
    assert(vm != NULL);
    return vm->colorButtonSize;
+}
+
+
+GtkWidget *get_mastermind_end_game_window(ViewMastermind *vm) {
+   assert(vm != NULL);
+   return vm->endGameWindow;
+}
+
+
+GdkPixbuf *get_mastermind_win_image(ViewMastermind *vm) {
+   assert(vm != NULL);
+   return vm->winImage;
+}
+
+
+GdkPixbuf *get_mastermind_loose_image(ViewMastermind *vm) {
+   assert(vm != NULL);
+   return vm->looseImage;
 }
 
 

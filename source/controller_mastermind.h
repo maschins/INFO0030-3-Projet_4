@@ -141,6 +141,8 @@ void init_main_menu(ControllerMainMenu *cmm);
 
 void init_mastermind(ControllerMastermind *cm);
 
+void init_end_game_window(ControllerMastermind *cm, bool win);
+
 void show_window(GtkWidget *button, gpointer data);
 
 void hide_window(GtkWidget *button, gpointer data);
