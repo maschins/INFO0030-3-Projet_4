@@ -73,8 +73,7 @@ struct saved_scores_t {
 
 /**
  * \fn static Combination *create_combination(unsigned int nbPawns)
- * \brief Allocates memory for Combination structure and returns a pointer to
- * Combination.
+ * \brief Allocates memory for Combination structure and returns a pointer to Combination.
  * 
  * \param nbPawns Number of pawns of a combination. 
  * 
@@ -107,8 +106,7 @@ static void destroy_combination(Combination *combination);
  * to History.
  * 
  * \param nbPawns Number of pawns of a combination.
- * \param nbCombinations Number of combinations that the player can propose
- * during the game.
+ * \param nbCombinations Number of combinations that the player can propose during the game.
  * 
  * \post The memory for a History structure is allocated.
  * 
@@ -116,8 +114,7 @@ static void destroy_combination(Combination *combination);
  *         NULL in case of error.
  * 
  * */
-static History *
-create_history(unsigned int nbPawns, unsigned int nbCombinations);
+static History *create_history(unsigned int nbPawns, unsigned int nbCombinations);
 
 
 /**
@@ -132,15 +129,13 @@ create_history(unsigned int nbPawns, unsigned int nbCombinations);
  * */
 static void destroy_history(History *history);
 
+static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns);
+
 /**
  * \fn static void update_score(ModelMastermind *mm)
  * \brief updates the score
  */
 static void update_score(ModelMastermind *mm);
-
-
-static Combination **
-create_configs(unsigned int nbConfigs, unsigned int nbPawns);
 
 
 static Combination *create_combination(unsigned int nbPawns) {
@@ -173,8 +168,7 @@ static void destroy_combination(Combination *combination) {
 }
 
 
-static History *
-create_history(unsigned int nbPawns, unsigned int nbCombinations) {
+static History *create_history(unsigned int nbPawns, unsigned int nbCombinations) {
    History *history = malloc(sizeof(History));
    if(history == NULL)
       return NULL;
@@ -205,12 +199,87 @@ static void destroy_history(History *history) {
    if(history != NULL){
       if(history->combinations != NULL){
          for(unsigned int i = 0; i < history->nbCombinations; i++)
-            if(history->combinations[i] != NULL)
-               destroy_combination(history->combinations[i]);
+            destroy_combination(history->combinations[i]);
 
          free(history->combinations);
       }
       free(history);
+   }
+}
+
+
+static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
+   Combination **configs = malloc(nbConfigs * sizeof(Combination *));
+   if(configs == NULL)
+      return NULL;
+
+   for(unsigned int i = 0; i < nbConfigs; i++){
+      configs[i] = create_combination(nbPawns);
+      if(configs[i] == NULL){
+         for(unsigned int j = 0; j < i; ++j)
+            destroy_combination(configs[i]);
+
+         free(configs);
+         return NULL;
+      }
+
+      unsigned int factor = i;
+      for(unsigned int j = 0; j < nbPawns; j++){
+         configs[i]->pawns[nbPawns - j - 1] = factor % (NB_PAWN_COLORS - 1);
+         factor /= (NB_PAWN_COLORS - 1);
+      }
+   }
+
+   return configs;
+}
+
+
+static void update_score(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   printf("Update score\n");
+   bool alreadySavedPlayer = false;
+
+   for(unsigned i = 0; i < mm->save->length && !alreadySavedPlayer; i++){
+      if(!strcmp(mm->save->savedScores[i]->pseudo, mm->savedPseudo)){
+         printf("Player found in save, pseudo: %s score: %u index: %u\n",mm->save->savedScores[i]->pseudo,
+                mm->save->savedScores[i]->score, i);
+         mm->save->savedScores[i]->score += 1;
+         printf("Player found in save, pseudo: %s score: %u index: %u\n",
+                mm->save->savedScores[i]->pseudo,
+                mm->save->savedScores[i]->score, i);
+         alreadySavedPlayer = true;
+      }
+   }
+
+   if(alreadySavedPlayer == false){
+      mm->save->length += 1;
+      Score **tmp = realloc(mm->save->savedScores,
+                            mm->save->length * sizeof(Score *));
+      if(tmp == NULL){
+         for(unsigned j = 0; j < mm->save->length-1; j++){
+            free(mm->save->savedScores[j]);
+         }
+         free(mm->save->savedScores);
+         free(mm->save);
+      }
+
+      else{
+         mm->save->savedScores = tmp;
+         mm->save->savedScores[mm->save->length-1] = malloc(sizeof (Score));
+         if(mm->save->savedScores[mm->save->length-1] == NULL) {
+            for(unsigned j = 0; j < mm->save->length-2; j++){
+               free(mm->save->savedScores[j]);
+            }
+            free(mm->save->savedScores);
+            free(mm->save);
+         }
+         else{
+            strcpy(mm->save->savedScores[mm->save->length - 1]->pseudo,
+                   mm->savedPseudo);
+            mm->save->savedScores[mm->save->length - 1]->score = 1;
+         }
+      }
    }
 }
 
@@ -220,7 +289,7 @@ ModelMainMenu *create_model_main_menu(void) {
    if(mmm == NULL)
       return NULL;
 
-   strcpy(mmm->pseudo, "Guest");
+   strcpy(mmm->pseudo, DEFAULT_PSEUDO);
    mmm->validPseudo = false;
    mmm->role = GUESSER;
    mmm->nbPawns = DEFAULT_NB_PAWNS;
@@ -297,12 +366,12 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
 
    mm->save = load_scores(SAVED_SCORES_PATH);
    if(mm->save == NULL){
-       free(mm->solution);
-       free(mm->proposition);
-       destroy_history(mm->history);
-       //TODO create destroyer for configs
-       free(mm);
-       return NULL;
+      free(mm->solution);
+      free(mm->proposition);
+      destroy_history(mm->history);
+      //TODO create destroyer for configs
+      free(mm);
+      return NULL;
    }
 
    return mm;
@@ -320,6 +389,91 @@ void destroy_model_mastermind(ModelMastermind *mm) {
       destroy_history(mm->history);
       free(mm);
    }
+}
+
+
+SavedScores *load_scores(const char *filePath) {
+   assert(filePath != NULL);
+
+   SavedScores *save = malloc(sizeof(SavedScores));
+   if(save == NULL)
+      return NULL;
+
+   if(access(filePath, F_OK) == 0){
+      printf("Previous save found\n");
+      FILE *pFile = fopen(filePath, "r");
+      if(pFile == NULL)
+         return NULL;
+
+      if(!fscanf(pFile, "%u\n", &save->length)){
+         free(save);
+         fclose(pFile);
+         return NULL;
+      }
+
+      save->savedScores = malloc(save->length * sizeof(Score *));
+      if(save->savedScores == NULL){
+         free(save);
+         fclose(pFile);
+         return NULL;
+      }
+
+      for(unsigned i = 0; save->length > i; i++){
+         save->savedScores[i] = malloc(sizeof(Score));
+         if(save->savedScores[i] == NULL){
+            for(unsigned j = 0; j < i; j++)
+               free(save->savedScores[j]);
+
+            free(save->savedScores);
+            free(save);
+            fclose(pFile);
+            return NULL;
+         }
+         if(!fscanf(pFile, "%s %u\n", save->savedScores[i]->pseudo, &save->savedScores[i]->score)){
+            for(unsigned j = 0; j < i; j++)
+               free(save->savedScores[j]);
+            
+            free(save);
+            fclose(pFile);
+            return NULL;
+         }
+      }
+   } 
+   
+   else{
+      save->length = 0;
+      printf("No previous save\n");
+      save->savedScores = malloc(sizeof(Score *));
+      if(save->savedScores == NULL){
+         free(save);
+         return NULL;
+      }
+   }
+
+   printf("load_score finished\n");
+   return save;
+}
+
+
+int write_scores(SavedScores *scores, const char *filePath) {
+   assert(scores != NULL && filePath != NULL);
+
+   printf("Attend to write scores\n");
+
+   FILE *pFile = fopen(filePath, "w");
+   if(pFile == NULL)
+      return -1; // File name is ill-formed
+
+   fprintf(pFile, "%u\n", scores->length);
+
+   for(unsigned i = 0; i < scores->length; i++){
+      printf("%s %u\n", scores->savedScores[i]->pseudo, scores->savedScores[i]->score);
+      fprintf(pFile, "%s %u\n", scores->savedScores[i]->pseudo, scores->savedScores[i]->score);
+   }
+
+   destroy_saved_scores(scores);
+
+   return 0;
 }
 
 
@@ -362,10 +516,8 @@ void reset_feedback(ModelMastermind *mm) {
 }
 
 
-void
-determine_feedback_proposition(ModelMastermind *mm, Combination *proposition,
-                               PAWN_COLOR *solution) {
-   assert(proposition != NULL && solution != NULL);
+void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution) {
+   assert(mm != NULL && proposition != NULL && solution != NULL);
 
    unsigned int nbColorsInProposition[NB_PAWN_COLORS];
    unsigned int nbColorsInSolution[NB_PAWN_COLORS];
@@ -376,9 +528,10 @@ determine_feedback_proposition(ModelMastermind *mm, Combination *proposition,
    }
 
    for(unsigned int i = 0; i < mm->history->nbPawns; i++){
-      if(proposition->pawns[i] == solution[i]){
+      if(proposition->pawns[i] == solution[i])
          proposition->nbCorrect++;
-      } else{
+       
+      else{
          nbColorsInProposition[proposition->pawns[i]]++;
          nbColorsInSolution[solution[i]]++;
       }
@@ -400,6 +553,60 @@ void update_current_combination_index(ModelMastermind *mm) {
 }
 
 
+void update_last_combination_feedback(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   unsigned int nbCorrect = 0;
+   unsigned int nbMisplaced = 0;
+
+   for(unsigned int i = 0; i < mm->history->nbPawns; i++){
+      if(mm->feedback[i] == FB_BLACK)
+         nbCorrect += 1;
+
+      if(mm->feedback[i] == FB_WHITE)
+         nbMisplaced += 1;
+   }
+
+   mm->history->combinations[mm->history->currentIndex]->nbCorrect = nbCorrect;
+   mm->history->combinations[mm->history->currentIndex]->nbMisplaced = nbMisplaced;
+}
+
+
+void find_next_proposition(ModelMastermind *mm) {
+   assert(mm != NULL);
+
+   if(mm->history->currentIndex == NB_COMBINATIONS - 1)
+      for(unsigned int j = 0; j < mm->history->nbPawns; j++)
+         mm->proposition->pawns[j] = mm->configs[0]->pawns[j];
+
+   else{
+      int nextCombiIndex = -1;
+      for(unsigned int i = mm->lastConfigIndex;
+          nextCombiIndex == -1 && i < mm->nbConfigs; i++){
+         determine_feedback_proposition(mm, mm->configs[i],
+                                        mm->history->combinations[
+                                                mm->history->currentIndex +
+                                                1]->pawns);
+
+         if(mm->configs[i]->nbCorrect ==
+            mm->history->combinations[mm->history->currentIndex +
+                                      1]->nbCorrect &&
+            mm->configs[i]->nbMisplaced ==
+            mm->history->combinations[mm->history->currentIndex +
+                                      1]->nbMisplaced)
+            nextCombiIndex = i;
+      }
+
+      if(nextCombiIndex != -1){
+         for(unsigned int j = 0; j < mm->history->nbPawns; j++)
+            mm->proposition->pawns[j] = mm->configs[nextCombiIndex]->pawns[j];
+
+         mm->lastConfigIndex = nextCombiIndex + 1;
+      }
+   }
+}
+
+
 void verify_end_game(ModelMastermind *mm) {
    assert(mm != NULL);
 
@@ -408,6 +615,12 @@ void verify_end_game(ModelMastermind *mm) {
       mm->inGame = false;
 
    update_score(mm);
+}
+
+
+char *get_main_menu_pseudo(ModelMainMenu *mmm) {
+   assert(mmm != NULL);
+   return mmm->pseudo;
 }
 
 
@@ -488,8 +701,7 @@ Combination *get_last_combination(ModelMastermind *mm) {
 }
 
 
-PAWN_COLOR
-get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
+PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
    assert(mm != NULL && pawnIndex < mm->history->nbPawns);
 
    return mm->history->combinations[mm->history->currentIndex]->pawns[pawnIndex];
@@ -525,12 +737,6 @@ void set_proposition_in_history(ModelMastermind *mm) {
 
    for(unsigned int i = 0; i < mm->history->nbPawns; i++)
       mm->history->combinations[mm->history->currentIndex]->pawns[i] = mm->proposition->pawns[i];
-}
-
-
-char *get_main_menu_pseudo(ModelMainMenu *mmm) {
-   assert(mmm != NULL);
-   return mmm->pseudo;
 }
 
 
@@ -579,25 +785,6 @@ void set_feedback_pawn(ModelMastermind *mm, unsigned int index) {
 }
 
 
-void update_last_combination_feedback(ModelMastermind *mm) {
-   assert(mm != NULL);
-
-   unsigned int nbCorrect = 0;
-   unsigned int nbMisplaced = 0;
-
-   for(unsigned int i = 0; i < mm->history->nbPawns; i++){
-      if(mm->feedback[i] == FB_BLACK)
-         nbCorrect += 1;
-
-      if(mm->feedback[i] == FB_WHITE)
-         nbMisplaced += 1;
-   }
-
-   mm->history->combinations[mm->history->currentIndex]->nbCorrect = nbCorrect;
-   mm->history->combinations[mm->history->currentIndex]->nbMisplaced = nbMisplaced;
-}
-
-
 void set_valid_solution_true(ModelMastermind *mm) {
    assert(mm != NULL);
 
@@ -610,91 +797,6 @@ SavedScores *get_saved_scores(ModelMastermind *mm) {
    return mm->save;
 }
 
-SavedScores *load_scores(const char *filePath) {
-   assert(filePath != NULL);
-
-   SavedScores *save = malloc(sizeof(SavedScores));
-   if(save == NULL)
-      return NULL;
-
-   if(access(filePath, F_OK) == 0){
-      printf("Previous save found\n");
-      FILE *pFile = fopen(filePath, "r");
-      if(pFile == NULL){
-         return NULL; // File name is ill-formed
-      }
-
-      if(!fscanf(pFile, "%u\n", &save->length)){
-         free(save);
-         fclose(pFile);
-         return NULL;//File content ill-formed
-      }
-
-      save->savedScores = malloc(save->length * sizeof(Score *));
-      if(save->savedScores == NULL){
-         free(save);
-         fclose(pFile);
-         return NULL;
-      }
-
-      for(unsigned i = 0; save->length > i; i++){
-         save->savedScores[i] = malloc(sizeof(Score));
-         if(save->savedScores[i] == NULL){
-            for(unsigned j = 0; j < i; j++){
-               free(save->savedScores[j]);
-            }
-            free(save->savedScores);
-            free(save);
-            fclose(pFile);
-            return NULL;
-         }
-         if(!fscanf(pFile, "%s %u\n", save->savedScores[i]->pseudo,
-                    &save->savedScores[i]->score)){
-            for(unsigned j = 0; j < i; j++){
-               free(save->savedScores[j]);
-            }
-            free(save);
-            fclose(pFile);
-            return NULL;
-         }
-      }
-   } else{
-      save->length = 0;
-      printf("No previous save\n");
-      save->savedScores = malloc(sizeof(Score *));
-      if(save->savedScores == NULL){
-         free(save);
-         return NULL;
-      }
-   }
-
-   printf("load_score finished\n");
-   return save;
-}
-
-int write_scores(SavedScores *scores, const char *filePath) {
-   assert(scores != NULL && filePath != NULL);
-
-   printf("Attend to write scores\n");
-
-   FILE *pFile = fopen(filePath, "w");
-   if(pFile == NULL){
-      return -1; // File name is ill-formed
-   }
-
-   fprintf(pFile, "%u\n", scores->length);
-
-   for(unsigned i = 0; i < scores->length; i++){
-      printf("%s %u\n", scores->savedScores[i]->pseudo,
-             scores->savedScores[i]->score);
-      fprintf(pFile, "%s %u\n", scores->savedScores[i]->pseudo,
-              scores->savedScores[i]->score);
-   }
-
-   destroy_saved_scores(scores);
-
-   return 0;
-}
 
 void destroy_saved_scores(SavedScores *scores) {
    for(unsigned j = 0; j < scores->length; j++){
@@ -703,112 +805,5 @@ void destroy_saved_scores(SavedScores *scores) {
    free(scores);
 }
 
-static Combination **
-create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
-   Combination **configs = malloc(nbConfigs * sizeof(Combination *));
-   if(configs == NULL)
-      return NULL;
-
-   for(unsigned int i = 0; i < nbConfigs; i++){
-      configs[i] = create_combination(nbPawns);
-      if(configs[i] == NULL){
-         for(unsigned int j = 0; j < i; ++j)
-            destroy_combination(configs[i]);
-
-         free(configs);
-         return NULL;
-      }
-
-      unsigned int factor = i;
-      for(unsigned int j = 0; j < nbPawns; j++){
-         configs[i]->pawns[nbPawns - j - 1] = factor % (NB_PAWN_COLORS - 1);
-         factor /= (NB_PAWN_COLORS - 1);
-      }
-   }
-
-   return configs;
-}
 
 
-void find_next_proposition(ModelMastermind *mm) {
-   assert(mm != NULL);
-
-   if(mm->history->currentIndex == NB_COMBINATIONS - 1)
-      for(unsigned int j = 0; j < mm->history->nbPawns; j++)
-         mm->proposition->pawns[j] = mm->configs[0]->pawns[j];
-
-   else{
-      int nextCombiIndex = -1;
-      for(unsigned int i = mm->lastConfigIndex;
-          nextCombiIndex == -1 && i < mm->nbConfigs; i++){
-         determine_feedback_proposition(mm, mm->configs[i],
-                                        mm->history->combinations[
-                                                mm->history->currentIndex +
-                                                1]->pawns);
-
-         if(mm->configs[i]->nbCorrect ==
-            mm->history->combinations[mm->history->currentIndex +
-                                      1]->nbCorrect &&
-            mm->configs[i]->nbMisplaced ==
-            mm->history->combinations[mm->history->currentIndex +
-                                      1]->nbMisplaced)
-            nextCombiIndex = i;
-      }
-
-      if(nextCombiIndex != -1){
-         for(unsigned int j = 0; j < mm->history->nbPawns; j++)
-            mm->proposition->pawns[j] = mm->configs[nextCombiIndex]->pawns[j];
-
-         mm->lastConfigIndex = nextCombiIndex + 1;
-      }
-   }
-}
-
-static void update_score(ModelMastermind *mm) {
-   assert(mm != NULL);
-
-   printf("Update score\n");
-   bool alreadySavedPlayer = false;
-
-   for(unsigned i = 0; i < mm->save->length && !alreadySavedPlayer; i++){
-      if(!strcmp(mm->save->savedScores[i]->pseudo, mm->savedPseudo)){
-         printf("Player found in save, pseudo: %s score: %u index: %u\n",mm->save->savedScores[i]->pseudo,
-                mm->save->savedScores[i]->score, i);
-         mm->save->savedScores[i]->score += 1;
-         printf("Player found in save, pseudo: %s score: %u index: %u\n",
-                mm->save->savedScores[i]->pseudo,
-                mm->save->savedScores[i]->score, i);
-         alreadySavedPlayer = true;
-      }
-   }
-
-   if(alreadySavedPlayer == false){
-      mm->save->length += 1;
-      Score **tmp = realloc(mm->save->savedScores,
-                            mm->save->length * sizeof(Score *));
-      if(tmp == NULL){
-         for(unsigned j = 0; j < mm->save->length-1; j++){
-            free(mm->save->savedScores[j]);
-         }
-         free(mm->save->savedScores);
-         free(mm->save);
-      }
-
-      else{
-         mm->save->savedScores = tmp;
-         mm->save->savedScores[mm->save->length-1] = malloc(sizeof (Score));
-         if(mm->save->savedScores[mm->save->length-1] == NULL) {
-            for(unsigned j = 0; j < mm->save->length-2; j++){
-               free(mm->save->savedScores[j]);
-            }
-            free(mm->save->savedScores);
-            free(mm->save);
-         }
-         else{
-            strcpy(mm->save->savedScores[mm->save->length - 1]->pseudo,
-                   mm->savedPseudo);
-            mm->save->savedScores[mm->save->length - 1]->score = 1;
-         }
-      }
-   }
-}

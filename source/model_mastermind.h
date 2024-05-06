@@ -21,6 +21,11 @@
 #define SAVED_SCORES_PATH "./source/scores.txt"
 
 /**
+ * \brief Default player pseudo.
+ * */
+#define DEFAULT_PSEUDO "Guest"
+
+/**
  * \brief Max pseudo length.
  * */
 #define MAX_PSEUDO_LENGTH 50
@@ -129,96 +134,58 @@ typedef struct score_t Score;
  * */
 typedef struct saved_scores_t SavedScores;
 
-ModelMainMenu *create_model_main_menu(void);
-
-void destroy_model_main_menu(ModelMainMenu *mmm);
-
-ModelMastermind *create_model_mastermind(ModelMainMenu *mmm);
-
-void destroy_model_mastermind(ModelMastermind *mm);
-
-void generate_random_solution(ModelMastermind *mm);
-
-bool verify_proposition(ModelMastermind *mm);
-
-void reset_proposition(ModelMastermind *mm);
-
-void reset_feedback(ModelMastermind *mm);
-
-void
-determine_feedback_proposition(ModelMastermind *mm, Combination *proposition,
-                               PAWN_COLOR *solution);
-
-void update_current_combination_index(ModelMastermind *mm);
-
-void verify_end_game(ModelMastermind *mm);
-
-PAWN_COLOR get_selected_color(ModelMastermind *mm);
-
-ROLE get_role(ModelMastermind *mm);
-
-Combination *get_proposition(ModelMastermind *mm);
-
-FEEDBACK_COLOR get_feedback_pawn(ModelMastermind *mm, unsigned int index);
-
-char *get_pseudo(ModelMastermind *mm);
-
-unsigned int get_nb_pawns(ModelMastermind *mm);
-
-unsigned int get_nb_combinations(ModelMastermind *mm);
-
-bool get_in_game(ModelMastermind *mm);
-
-PAWN_COLOR *get_solution(ModelMastermind *mm);
-
-bool get_valid_solution(ModelMastermind *mm);
-
-int get_current_index(ModelMastermind *mm);
-
-unsigned int get_nb_correct_last_combination(ModelMastermind *mm);
-
-unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
-
-Combination *get_last_combination(ModelMastermind *mm);
-
-PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
 
 /**
- * \fn SavedScores *get_saved_scores(ModelMastermind *mm)
- * \brief gets the saved scores in the ModelMastermind
+ * \fn ModelMainMenu *create_model_main_menu(void)
+ * \brief Creates ModelMainMenu structure with default values.
  *
- * \param mm a pointer on the ModelMMastermind structure
+ * \post memory is allocated and the structure is initialized.
+ *
+ * \return A pointer to ModelMainMenu structure,
+ *         NULL if memory allocation failed.
+ */
+ModelMainMenu *create_model_main_menu(void);
+
+
+/**
+ * \fn void destroy_model_main_menu(ModelMainMenu *mmm)
+ * \brief Free memory allocated for ModelMainMenu structure.
+ *
+ * \param mmm A valid pointer to ModelMainMenu structure.
+ *
+ * \pre mmm != NULL
+ * \post Memory allocated for ModelMainMenu structure is freed.
+ */
+void destroy_model_main_menu(ModelMainMenu *mmm);
+
+
+/**
+ * \fn ModelMastermind *create_model_mastermind(ModelMainMenu *mmm);
+ * \brief Creates ModelMastermind structure with menu values and default values.
+ *
+ * \param mmm Pointer to the ModelMainMenu structure containing the main menu settings.
+ *
+ * \pre mmm != NULL
+ * \post Memory is allocated and sctructure is initialized.
+ *
+ * \return A pointer to ModelMastermind structure, 
+ *         NULL if memory allocation fails.
+ */
+ModelMastermind *create_model_mastermind(ModelMainMenu *mmm);
+
+
+/**
+ * \fn void destroy_model_mastermind(ModelMastermind *mm)
+ * \brief Free memory allocated for ModelMastermind structure.
+ *
+ * \param mm A valid pointer to ModelMastermind structure.
  *
  * \pre mm != NULL
- * \post Scores are returned
- *
- * \return score field for mm
+ * \post Memory allocated for ModelMastermind structure is freed.
+ * 
  */
-SavedScores *get_saved_scores(ModelMastermind *mm);
+void destroy_model_mastermind(ModelMastermind *mm);
 
-void set_proposition_in_history(ModelMastermind *mm);
-
-char *get_main_menu_pseudo(ModelMainMenu *mmm);
-
-void set_role(ModelMainMenu *mmm, ROLE role);
-
-void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns);
-
-void set_pseudo(ModelMainMenu *mmm, char *pseudo);
-
-void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor);
-
-void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
-
-void set_feedback_pawn(ModelMastermind *mm, unsigned int index);
-
-void set_proposition_as_solution(ModelMastermind *mm);
-
-void update_last_combination_feedback(ModelMastermind *mm);
-
-void set_valid_solution_true(ModelMastermind *mm);
-
-void find_next_proposition(ModelMastermind *mm);
 
 /**
  * \fn SavedScores *load_scores(const char *filePath)
@@ -263,6 +230,382 @@ int write_scores(SavedScores *scores, const char *filePath);
  * \post scores is destroyed and memory has been freed
  */
 void destroy_saved_scores(SavedScores *scores);
+
+
+/**
+ * \fn void generate_random_solution(ModelMastermind *mm)
+ * \brief Generates a random solution for the model.
+ *
+ * \param mm a valid pointer to ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post Model solution is randomly generated.
+ */
+void generate_random_solution(ModelMastermind *mm);
+
+
+/**
+ * \fn bool verify_proposition(ModelMastermind *mm);
+ * \brief Verify if the current proposition is valid.
+ *
+ * \param mm a valid pointer to ModelMastermind.
+ *
+ * \pre mm != NULL
+ * \post model proposition is verified.
+ * 
+ * \return true if proposition is valid
+ *         false if its not.
+ */
+bool verify_proposition(ModelMastermind *mm);
+
+
+/**
+ * \fn void reset_proposition(ModelMastermind *mm)
+ * \brief Reset the current proposition.
+ *
+ * \param mm a valid pointer to ModelMastermind.
+ *
+ * \pre mm != NULL
+ * \post model proposition is reset.
+ */
+void reset_proposition(ModelMastermind *mm);
+
+
+/**
+ * \fn reset_feedback(ModelMastermind *mm)
+ * \brief Reset the current feedback.
+ *
+ * \param mm a valid pointer to ModelMastermind.
+ *
+ * \pre mm != NULL
+ * \post model feedback is reset.
+ */
+void reset_feedback(ModelMastermind *mm);
+
+
+/**
+ * \fn void  determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution)
+ * \brief determines the feedback of a proposition in relation to a solution.
+ *
+ * \param mm A valid pointer to the ModelMastermind structure.
+ * \param proposition a valid proposition
+ * \param solution a valid solution.
+ *
+ * \pre mm != NULL, proposition != NULL, solution != NULL.
+ * \post The proposition feedback is set.
+ */
+void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution);
+
+
+/**
+ * \fn void update_current_combination_index(ModelMastermind *mm);
+ * \brief updates the current history index.
+ *
+ * \param mm A valid pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The current history index is decreased.
+ */
+void update_current_combination_index(ModelMastermind *mm);
+
+
+/**
+ * \fn void update_last_combination_feedback(ModelMastermind *mm)
+ * \brief Updates the feedback of the last combination in the hisotry.
+ *
+ * \param mm A pointer to ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The feedback of the last combination is updated.
+ */
+void update_last_combination_feedback(ModelMastermind *mm);
+
+
+/**
+ * \fn void find_next_proposition(ModelMastermind *mm)
+ * \brief Finds the next proposition the computer will propose.
+ *
+ * \param mm A pointer to the ModelMastermind.
+ *
+ * \pre mm != NULL
+ * \post The next proposition is found and set in the model.
+ */
+void find_next_proposition(ModelMastermind *mm);
+
+
+/**
+ * \fn void verify_end_game(ModelMastermind *mm)
+ * \brief Verify the game state and updates it.
+ *
+ * \param mm A valid pointer to the ModelMastermind.
+ *
+ * \pre mm != NULL
+ * \post The game state is updated.
+ */
+void verify_end_game(ModelMastermind *mm);
+
+
+/**
+ * \fn char *get_main_menu_pseudo(ModelMainMenu *mmm)
+ * \brief Gets the peudo from the main menu
+ *
+ * \param mmm A pointer to the ModelMainMenu.
+ *
+ * \pre mmm != NULL
+ * \post The pseudo from main menu is returned.
+ *
+ * \return The pseudo from the main menu.
+ */
+char *get_main_menu_pseudo(ModelMainMenu *mmm);
+
+
+/**
+ * \fn PAWN_COLOR get_selected_color(ModelMastermind *mm)
+ * \brief gets the currently selected pawn color
+ *
+ * \param mm A valid pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The currently selected pawn color is returned.
+ *
+ * \return The currently selected pawn color.
+ */
+PAWN_COLOR get_selected_color(ModelMastermind *mm);
+
+
+/**
+ * \fn ROLE get_role(ModelMastermind *mm)
+ * \brief Gets the current player's role (guesser or proposer).
+ *
+ * \param mm A valid pointer to the ModelMastermind.
+ *
+ * \pre mm != NULL
+ * \post the player's role is returned.
+ *
+ * \return The player's role.
+ */
+ROLE get_role(ModelMastermind *mm);
+
+
+/**
+ * \fn char *get_pseudo(ModelMastermind *mm)
+ * \brief gets the player pseudo in ModelMastermind.
+ *
+ * \param mm A pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The pseudo from the model is returned.
+ *
+ * \return The player pseudo.
+ */
+char *get_pseudo(ModelMastermind *mm);
+
+
+/**
+ * \fn bool get_in_game(ModelMastermind *mm)
+ * \brief Gets the game state.
+ *
+ * \param mm A pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The game state is returned.
+ *
+ * \return true if the game continue
+ *         false if not.
+ */
+bool get_in_game(ModelMastermind *mm);
+
+
+/**
+ * \fn bool get_valid_solution(ModelMastermind *mm)
+ * \brief get the validity of the solution.
+ *
+ * \param mm A pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The solution validity is returned.
+ *
+ * \return true if solution is valid,
+ *         false if the solution is not valid
+ */
+bool get_valid_solution(ModelMastermind *mm);
+
+
+/**
+ * \fn Combination *get_proposition(ModelMastermind *mm)
+ * \brief gets the current proposition in the game.
+ *
+ * \param mm A valid pointer to the ModelMastermind structure
+ *
+ * \pre mm != NULL
+ * \post The current proposition is returned.
+ *
+ * \return A pointer to the current propsition.
+ */
+Combination *get_proposition(ModelMastermind *mm);
+
+
+/**
+ * \fn PAWN_COLOR *get_solution(ModelMastermind *mm)
+ * \brief Gets the actual game solution
+ *
+ * \param mm A pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The game solution is returned.
+ *
+ * \return The solution from the ModelMastermind.
+ */
+PAWN_COLOR *get_solution(ModelMastermind *mm);
+
+
+/**
+ * \fn unsigned int get_nb_pawns(ModelMastermind *mm)
+ * \brief Gets the number of pawns of a combination
+ *
+ * \param mm A pointer to the ModelMastermid.
+ *
+ * \pre mmm != NULL
+ * \post The number of pawns of a combination is returned.
+ *
+ * \return the number of pawns of combination.
+ */
+unsigned int get_nb_pawns(ModelMastermind *mm);
+
+
+/**
+ * \fn unsigned int get_nb_combinations(ModelMastermind *mm)
+ * \brief gets the number of combinations of the game
+ *
+ * \param mm A pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The number of combinations of the game is returned
+ *
+ * \return The number of combinations.
+ */
+unsigned int get_nb_combinations(ModelMastermind *mm);
+
+
+/**
+ * \fn int get_current_index(ModelMastermind *mm)
+ * \brief Gets the current index of the history.
+ *
+ * \param mm A valid pointer to the ModelMastermind structure
+ *
+ * \pre mm != NULL
+ * \post The current index of the history is returned.
+ *
+ * \return The current index of the history.
+ */
+int get_current_index(ModelMastermind *mm);
+
+
+/**
+ * \fn Combination *get_last_combination(ModelMastermind *mm)
+ * \brief Get the last combination proposed in the game.
+ *
+ * \param mm A valid pointer to the ModelMastermind 
+ *
+ * \pre mm != NULL
+ * \post The last combination proposed in the game is returned.
+ *
+ * \return A pointer to the last combination proposd in the game.
+ */
+Combination *get_last_combination(ModelMastermind *mm);
+
+
+/**
+ * \fn PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex)
+ * \brief Gets the pawn color at the specified index in the last combination.
+ *
+ * \param mm A valid pointer to the ModelMastermind structure.
+ * \param pawnIndex The index of the pawn in the last combination.
+ *
+ * \pre mm != NULL
+ * \post The pawn color at the specified index in the last combination is returned.
+ *
+ * \return The pawn color at the specified index in the last combination.
+ */
+PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
+
+
+/**
+ * \fn unsigned int get_nb_correct_last_combination(ModelMastermind *mm)
+ * \brief Gets the number of correct pawns in the last combinatin.
+ *
+ * \param mm A valid pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The number of corect pawns in the last combination is returned.
+ *
+ * \return The number of correct pawns in the last combination.
+ */
+unsigned int get_nb_correct_last_combination(ModelMastermind *mm);
+
+
+/**
+ * \fn unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm)
+ * \brief Gets the number of misplaced pawns in the last combination
+ *
+ * \param mm A valid pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post The number of misplaced pawns in the last combination is returned.
+ *
+ * \return The number of misplaced pawns in the last combination.
+ */
+unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
+
+
+/**
+ * \fn FEEDBACK_COLOR get_feedback_pawn(ModelMastermind *mm, unsigned int index)
+ * \brief Gets the feedback pawn color at the specified index.
+ *
+ * \param mm a valid pointer to the Modelmastermind structure.
+ * \param index The index of the feedback pawn color.
+ *
+ * \pre mm != NULL
+ * \post The feedback pawn color at the specified index is returned.
+ *
+ * \return The feedback pawn color at the specified index.
+ */
+FEEDBACK_COLOR get_feedback_pawn(ModelMastermind *mm, unsigned int index);
+
+
+/**
+ * \fn SavedScores *get_saved_scores(ModelMastermind *mm)
+ * \brief Gets the saved scores in the ModelMastermind.
+ *
+ * \param mm A pointer to the ModelMastermind structure.
+ *
+ * \pre mm != NULL
+ * \post Scores are returned
+ *
+ * \return The saved scores in the ModelMastermind.
+ */
+SavedScores *get_saved_scores(ModelMastermind *mm);
+
+
+void set_proposition_in_history(ModelMastermind *mm);
+
+void set_role(ModelMainMenu *mmm, ROLE role);
+
+void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns);
+
+void set_pseudo(ModelMainMenu *mmm, char *pseudo);
+
+void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor);
+
+void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
+
+void set_feedback_pawn(ModelMastermind *mm, unsigned int index);
+
+void set_proposition_as_solution(ModelMastermind *mm);
+
+
+void set_valid_solution_true(ModelMastermind *mm);
+
 
 /**
  * \fn void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition)
