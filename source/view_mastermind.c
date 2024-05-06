@@ -46,7 +46,7 @@ typedef struct view_mastermind_t {
    GtkWidget *aboutsLabel;                        /*!< Label for abouts window */
    GtkWidget *scoresTitleLabel;                   /*!< Title label for score window */
    GtkWidget *scoresLabels[MAX_SCORE_DISPLAYED];  /*!< Scores labels */
-   GtkWidget *window;                             /*!< Main window */
+   GtkWidget *window;                             /*!< Main window widget */
    GtkWidget *mainVBox;                           /*!< Main vertical box */
    GtkWidget *historyTable;                       /*!< Table for displaying history */
    GtkWidget *feedbackZoneHBox;                   /*!< Horizontal box for feedback zone */
@@ -59,7 +59,7 @@ typedef struct view_mastermind_t {
    GtkWidget ***historyCombinations;              /*!< 2D array for history combinations */
    GtkWidget ***historyFeedbacks;                 /*!< 2D array for history feedbacks */
    GtkWidget *scoreLabel;                        /*!< Score label */
-} ViewMastermind;
+};
 
 
 
