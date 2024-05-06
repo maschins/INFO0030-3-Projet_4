@@ -262,6 +262,9 @@ void destroy_controller_mastermind(ControllerMastermind *cm) {
       if(cm->propositionButtons != NULL)
          free(cm->propositionButtons);
 
+      if(cm->feedbackButtons != NULL)
+         free(cm->feedbackButtons);
+
       free(cm);
    }
 }
