@@ -563,7 +563,9 @@ void update_last_combination_feedback(ModelMastermind *mm) {
 void find_next_proposition(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   if(mm->history->currentIndex == NB_COMBINATIONS - 1)
+   int nbCombi = mm->history->nbCombinations - 1;
+
+   if(mm->history->currentIndex == nbCombi)
       for(unsigned int j = 0; j < mm->history->nbPawns; j++)
          mm->proposition->pawns[j] = mm->configs[0]->pawns[j];
 
