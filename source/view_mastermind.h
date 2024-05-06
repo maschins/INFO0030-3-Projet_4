@@ -46,6 +46,11 @@
 #define ABOUTS_WINDOW_LABEL "Abouts"
 
 /**
+ * \brief Scores window label
+ */
+#define SCORES_WINDOW_LABEL "Scores"
+
+/**
  * \brief End game window label
  */
 #define END_GAME_WINDOW_LABEL "End game"
@@ -135,6 +140,14 @@ GtkWidget *get_mastermind_abouts_window(ViewMastermind *vm);
 GtkWidget *get_abouts_main_vbox(ViewMastermind *vm);
 
 GtkWidget *get_mastermind_abouts_label(ViewMastermind *vm);
+
+GtkWidget *get_mastermind_score_window(ViewMastermind *vm);
+
+GtkWidget *get_mastermind_scores_title_label(ViewMastermind *vm);
+
+GtkWidget **get_mastermind_players_scores_label(ViewMastermind *vm);
+
+GtkWidget *get_score_main_vbox(ViewMastermind *vm);
 
 GtkWidget *get_mastermind_window(ViewMastermind *vm);
 

@@ -47,6 +47,7 @@ struct controller_mastermind_t {
    ModelMastermind *mm;
    ViewMastermind *vm;
    GtkWidget *aboutsOkayButton;
+   GtkWidget *scoreOkayButton;
    MenuBar *menuBar;
    GtkWidget *applyButton;
    GtkWidget *resetButton;
@@ -161,6 +162,12 @@ create_controller_mastermind(ModelMastermind *mm, ViewMastermind *vm,
    const char *OKAY_BUTTON_LABEL = "Okay";
    cm->aboutsOkayButton = gtk_button_new_with_label(OKAY_BUTTON_LABEL);
    if(cm->aboutsOkayButton == NULL){
+      free(cm);
+      return NULL;
+   }
+
+   cm->scoreOkayButton = gtk_button_new_with_label(OKAY_BUTTON_LABEL);
+   if(cm->scoreOkayButton == NULL){
       free(cm);
       return NULL;
    }
@@ -406,6 +413,9 @@ void init_mastermind(ControllerMastermind *cm) {
    GtkWidget *aboutsWindow = get_mastermind_abouts_window(cm->vm);
    GtkWidget *aboutsMainVBox = get_abouts_main_vbox(cm->vm);
 
+   GtkWidget *scoreWindow = get_mastermind_score_window(cm->vm);
+   GtkWidget *scoreMainVBox = get_score_main_vbox(cm->vm);
+
    GtkWidget *window = get_mastermind_window(cm->vm);
    GtkWidget *mainVBox = get_mastermind_main_vbox(cm->vm);
    GtkWidget *historyTable = get_mastermind_history_table(cm->vm);
@@ -416,6 +426,20 @@ void init_mastermind(ControllerMastermind *cm) {
 
    gtk_box_pack_start(GTK_BOX(aboutsMainVBox), get_mastermind_abouts_label(cm->vm), TRUE, TRUE, 10);
    gtk_box_pack_start(GTK_BOX(aboutsMainVBox), cm->aboutsOkayButton, FALSE, FALSE, 10);
+
+   gtk_box_pack_start(GTK_BOX(scoreMainVBox), get_mastermind_scores_title_label
+   (cm->vm), TRUE, TRUE, 10);
+
+   unsigned size = (get_saved_scores_length(cm->mm) < MAX_SCORE_DISPLAYED) ?
+           get_saved_scores_length(cm->mm) : MAX_SCORE_DISPLAYED;
+
+   for(unsigned i = 0; i < size; i++){
+      gtk_box_pack_start(GTK_BOX(scoreMainVBox),
+                         get_mastermind_players_scores_label
+              (cm->vm)[i], TRUE, TRUE, 10);
+   }
+   gtk_box_pack_start(GTK_BOX(scoreMainVBox), cm->scoreOkayButton, FALSE,
+                      FALSE, 10);
 
    unsigned int nbCombi = get_nb_combinations(cm->mm);
    unsigned int nbPawns = get_nb_pawns(cm->mm);
@@ -448,6 +472,7 @@ void init_mastermind(ControllerMastermind *cm) {
    gtk_box_pack_start(GTK_BOX(scoreHBox), scoreAlignment, TRUE, TRUE, 0);
    gtk_container_add(GTK_CONTAINER(scoreAlignment), get_mastermind_score_label(cm->vm));
    gtk_container_add(GTK_CONTAINER(aboutsWindow), aboutsMainVBox);
+   gtk_container_add(GTK_CONTAINER(scoreWindow), scoreMainVBox);
 
    gtk_container_add(GTK_CONTAINER(mainVBox), cm->menuBar->bar);
    gtk_container_add(GTK_CONTAINER(mainVBox), historyTable);
@@ -459,10 +484,14 @@ void init_mastermind(ControllerMastermind *cm) {
 
    // Connect signals
    g_signal_connect(G_OBJECT(cm->aboutsOkayButton), "clicked", G_CALLBACK(hide_window), aboutsWindow);
+   g_signal_connect(G_OBJECT(cm->scoreOkayButton), "clicked", G_CALLBACK
+   (hide_window), scoreWindow);
 
    g_signal_connect(G_OBJECT(cm->menuBar->itemMainMenu), "activate", G_CALLBACK(on_main_menu_clicked), cm);
    g_signal_connect(G_OBJECT(cm->menuBar->itemQuit), "activate", G_CALLBACK(handle_quit), cm);
    g_signal_connect(G_OBJECT(cm->menuBar->itemAbouts), "activate", G_CALLBACK(show_window), aboutsWindow);
+   g_signal_connect(G_OBJECT(cm->menuBar->itemScore), "activate", G_CALLBACK
+   (show_window), scoreWindow);
    g_signal_connect(G_OBJECT(cm->applyButton), "clicked", G_CALLBACK(on_apply_clicked), cm);
    g_signal_connect(G_OBJECT(cm->resetButton), "clicked", G_CALLBACK(on_reset_clicked), cm);
    g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(handle_quit), cm);

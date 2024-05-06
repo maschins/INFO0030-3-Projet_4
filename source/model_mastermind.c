@@ -137,6 +137,21 @@ static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns
  */
 static void update_score(ModelMastermind *mm);
 
+/**
+ * \fn static int compare_scores(const void *a, const void *b)
+ * \brief comparison between scores used for qsort
+ *
+ * \param a pointer on the first Score element
+ * \param b pointer on the second Score element
+ *
+ * \pre a != NULL, b != NULL
+ * \post returns expected value depending on a and b
+ *
+ * \return 1 if a->score > b->score
+ *         -1 if a->score < b->score
+ *         0 if a->score = b->score
+ */
+static int compare_scores(const void *a, const void *b);
 
 static Combination *create_combination(unsigned int nbPawns) {
    Combination *combination = malloc(sizeof(Combination));
@@ -504,7 +519,7 @@ void reset_feedback(ModelMastermind *mm) {
 }
 
 
-void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution) {
+void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, const PAWN_COLOR *solution) {
    assert(mm != NULL && proposition != NULL && solution != NULL);
 
    unsigned int nbColorsInProposition[NB_PAWN_COLORS];
@@ -787,8 +802,65 @@ SavedScores *get_saved_scores(ModelMastermind *mm) {
    return mm->save;
 }
 
+unsigned get_saved_scores_length(ModelMastermind *mm) {
+   assert(mm != NULL);
+   return mm->save->length;
+}
+
+char **get_scores_strings(SavedScores *scores) {
+   assert(scores != NULL);
+
+   qsort(scores->savedScores, scores->length, sizeof(Score), compare_scores);
+
+   unsigned size = (scores->length < MAX_SCORE_DISPLAYED) ? scores->length :
+           MAX_SCORE_DISPLAYED;
+
+   char **strings = malloc(size * sizeof(char *));
+   if (strings == NULL) {
+      fprintf(stderr, "Memory allocation failed for scores strings\n");
+      exit(1);
+   }
+
+   for (unsigned i = 0; i < size; i++) {
+      strings[i] = malloc((MAX_PSEUDO_LENGTH + 20) * sizeof(char));
+      if (strings[i] == NULL) {
+         fprintf(stderr, "Memory allocation failed for a score string\n");
+         exit(1);
+      }
+      sprintf(strings[i], "%u. %s   %u", i+1, scores->savedScores[i]->pseudo,
+              scores->savedScores[i]->score);
+   }
+
+   return strings;
+}
+
+void free_scores_strings(char **strings, unsigned length) {
+   assert(strings != NULL);
+
+   for (unsigned i = 0; i < length; i++) {
+      free(strings[i]);
+   }
+
+   free(strings);
+}
+
+static int compare_scores(const void *a, const void *b) {
+   assert(a != NULL && b != NULL);
+
+   const Score *pScore1 = (const Score *)a;
+   const Score *pScore2 = (const Score *)b;
+
+   if (pScore1->score < pScore2->score)
+      return 1;
+   else if (pScore1->score > pScore2->score)
+      return -1;
+   else
+      return 0;
+}
 
 void destroy_saved_scores(SavedScores *scores) {
+   assert(scores != NULL);
+
    for(unsigned j = 0; j < scores->length; j++){
       free(scores->savedScores[j]);
    }

@@ -56,6 +56,11 @@
 #define NB_COMBINATIONS 10
 
 /**
+ * \brief Maximum scores displayed in the scores window
+ */
+#define MAX_SCORE_DISPLAYED 10
+
+/**
  * \brief Defines the different pawn colors.
 */
 typedef enum {
@@ -294,7 +299,7 @@ void reset_feedback(ModelMastermind *mm);
  * \pre mm != NULL, proposition != NULL, solution != NULL.
  * \post The proposition feedback is set.
  */
-void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, PAWN_COLOR *solution);
+void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, const PAWN_COLOR *solution);
 
 
 /**
@@ -586,6 +591,43 @@ FEEDBACK_COLOR get_feedback_pawn(ModelMastermind *mm, unsigned int index);
  */
 SavedScores *get_saved_scores(ModelMastermind *mm);
 
+/**
+ * \fn unsigned get_saved_scores_length(ModelMastermind *mm)
+ * \brief Gets the saved score length in the ModelMastermind
+ *
+ * \param mm A pointer on the ModelMastermind structure
+ *
+ * \pre mm != NULL
+ * \post The length of the saved score in The mastermind is returned
+ *
+ * \return The length field in the save field of ModelMastermind
+ */
+unsigned get_saved_scores_length(ModelMastermind *mm);
+
+/**
+ * \fn char **get_scores_strings(SavedScores *scores)
+ * \brief Returns the strings that needs to be in the labels of the scores
+ *
+ * \param scores A pointer on the SavedScores structure
+ *
+ * \pre scores != NULL
+ * \post the array of string is returned
+ *
+ * \return An array of strings with the ranking pseudo and score
+ */
+char **get_scores_strings(SavedScores *scores);
+
+/**
+ * \fn void free_scores_strings(char **strings, unsigned length)
+ * \brief destroy the 2D array of strings
+ *
+ * \param strings the array that needs to be freed
+ * \param length the length of the array
+ *
+ * \pre strings != NULL
+ * \post strings is freed
+ */
+void free_scores_strings(char **strings, unsigned length);
 
 void set_proposition_in_history(ModelMastermind *mm);
 
