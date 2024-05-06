@@ -47,9 +47,9 @@ int main(int argc, char **argv) {
    gtk_main();
 
    // Free memory
-   // destroy_controller_main_menu(cmm);
-   // destroy_view_main_menu(vmm);
-   // destroy_model_main_menu(mm);
+   destroy_controller_main_menu(cmm);
+   destroy_view_main_menu(vmm);
+   destroy_model_main_menu(mm);
 
    return EXIT_SUCCESS;
 }
