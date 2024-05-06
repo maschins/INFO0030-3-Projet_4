@@ -156,7 +156,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
    }
 
    vm->endGameWindow = create_window(END_GAME_WINDOW_LABEL, -1, -1);
-   if(vm->windowAbouts == NULL){
+   if(vm->endGameWindow == NULL){
       free(vm);
       return NULL;
    }

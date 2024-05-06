@@ -295,15 +295,15 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
       return NULL;
    }
 
-   mm->save = load_scores(SAVED_SCORES_PATH);
-   if(mm->save == NULL){
-      free(mm->solution);
-      free(mm->proposition);
-      destroy_history(mm->history);
-      //TODO create destroyer for configs
-      free(mm);
-      return NULL;
-   }
+   // mm->save = load_scores(SAVED_SCORES_PATH);
+   // if(mm->save == NULL){
+   //    free(mm->solution);
+   //    free(mm->proposition);
+   //    destroy_history(mm->history);
+   //    //TODO create destroyer for configs
+   //    free(mm);
+   //    return NULL;
+   // }
 
    return mm;
 }

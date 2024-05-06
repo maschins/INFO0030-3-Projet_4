@@ -590,7 +590,7 @@ void on_main_menu_clicked(GtkWidget *button, gpointer data) {
 
    ControllerMastermind *cm = (ControllerMastermind *) data;
 
-   write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
+   //write_scores(get_saved_scores(cm->mm), SAVED_SCORES_PATH);
 
    hide_window(button, get_mastermind_window(cm->vm));
    show_window(button, get_main_menu_window(cm->cmm->vmm));
@@ -687,9 +687,7 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
    if(get_in_game(cm->mm)){
       if(get_role(cm->mm) == GUESSER){
          if(verify_proposition(cm->mm)){
-
-            determine_feedback_proposition(cm->mm, get_proposition(cm->mm),
-                                           get_solution(cm->mm));
+            determine_feedback_proposition(cm->mm, get_proposition(cm->mm), get_solution(cm->mm));
             set_proposition_in_history(cm->mm);
             verify_end_game(cm->mm);
 
