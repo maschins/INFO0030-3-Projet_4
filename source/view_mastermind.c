@@ -222,7 +222,7 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm) {
 
    char **SCORES_LABELS = get_scores_strings(get_saved_scores(vm->mm));
    unsigned size = (get_saved_scores_length(vm->mm) < MAX_SCORE_DISPLAYED)
-   ? get_saved_scores_length(vm->mm) : MAX_SCORE_DISPLAYED;
+                   ? get_saved_scores_length(vm->mm) : MAX_SCORE_DISPLAYED;
 
    for(unsigned i = 0; i < size; i++){
       vm->scoresLabels[i] = gtk_label_new(SCORES_LABELS[i]);
@@ -607,18 +607,6 @@ GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm) {
 GtkWidget *get_main_menu_error_label(ViewMainMenu *vmm) {
    assert(vmm != NULL);
    return vmm->errorLabel;
-}
-
-
-unsigned int get_mastermind_big_button_size(ViewMastermind *vm) {
-   assert(vm != NULL);
-   return vm->bigButtonSize;
-}
-
-
-unsigned int get_mastermind_small_button_size(ViewMastermind *vm) {
-   assert(vm != NULL);
-   return vm->smallButtonSize;
 }
 
 

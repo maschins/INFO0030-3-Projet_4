@@ -299,7 +299,9 @@ void reset_feedback(ModelMastermind *mm);
  * \pre mm != NULL, proposition != NULL, solution != NULL.
  * \post The proposition feedback is set.
  */
-void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, const PAWN_COLOR *solution);
+void
+determine_feedback_proposition(ModelMastermind *mm, Combination *proposition,
+                               const PAWN_COLOR *solution);
 
 
 /**
@@ -351,20 +353,6 @@ void verify_end_game(ModelMastermind *mm);
 
 
 /**
- * \fn char *get_main_menu_pseudo(ModelMainMenu *mmm)
- * \brief Gets the peudo from the main menu
- *
- * \param mmm A pointer to the ModelMainMenu.
- *
- * \pre mmm != NULL
- * \post The pseudo from main menu is returned.
- *
- * \return The pseudo from the main menu.
- */
-char *get_main_menu_pseudo(ModelMainMenu *mmm);
-
-
-/**
  * \fn PAWN_COLOR get_selected_color(ModelMastermind *mm)
  * \brief gets the currently selected pawn color
  *
@@ -390,20 +378,6 @@ PAWN_COLOR get_selected_color(ModelMastermind *mm);
  * \return The player's role.
  */
 ROLE get_role(ModelMastermind *mm);
-
-
-/**
- * \fn char *get_pseudo(ModelMastermind *mm)
- * \brief gets the player pseudo in ModelMastermind.
- *
- * \param mm A pointer to the ModelMastermind structure.
- *
- * \pre mm != NULL
- * \post The pseudo from the model is returned.
- *
- * \return The player pseudo.
- */
-char *get_pseudo(ModelMastermind *mm);
 
 
 /**
@@ -507,20 +481,6 @@ int get_current_index(ModelMastermind *mm);
 
 
 /**
- * \fn Combination *get_last_combination(ModelMastermind *mm)
- * \brief Get the last combination proposed in the game.
- *
- * \param mm A valid pointer to the ModelMastermind 
- *
- * \pre mm != NULL
- * \post The last combination proposed in the game is returned.
- *
- * \return A pointer to the last combination proposd in the game.
- */
-Combination *get_last_combination(ModelMastermind *mm);
-
-
-/**
  * \fn PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex)
  * \brief Gets the pawn color at the specified index in the last combination.
  *
@@ -532,7 +492,8 @@ Combination *get_last_combination(ModelMastermind *mm);
  *
  * \return The pawn color at the specified index in the last combination.
  */
-PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
+PAWN_COLOR
+get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
 
 
 /**
@@ -647,18 +608,5 @@ void set_proposition_as_solution(ModelMastermind *mm);
 
 
 void set_valid_solution_true(ModelMastermind *mm);
-
-
-/**
- * \fn void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition)
- * \brief set the current proposition to a given one
- *
- * \param mm pointer to the Model Structure
- * \param proposition new proposition to set
- *
- * \pre mm != NULL, proposition != NULL
- * \post the new proposition is correctly set
- */
-void set_propositions(ModelMastermind *mm, const PAWN_COLOR *proposition);
 
 #endif //__MODEL_MASTERMIND__

@@ -22,52 +22,52 @@
 #include "model_mastermind.h"
 
 struct combination_t {
-   unsigned int nbCorrect;   /*!< Number of correctly placed pawns with correct color in the combination */
-   unsigned int nbMisplaced; /*!< Number of wrongly placed pawns with correct color in the combination */
-   PAWN_COLOR *pawns;        /*!< Combination of pawns */
+    unsigned int nbCorrect;   /*!< Number of correctly placed pawns with correct color in the combination */
+    unsigned int nbMisplaced; /*!< Number of wrongly placed pawns with correct color in the combination */
+    PAWN_COLOR *pawns;        /*!< Combination of pawns */
 };
 
 
 struct history_t {
-   unsigned int nbPawns;         /*!< Number of pawns of a combination */
-   unsigned int nbCombinations;  /*!< Number of combinations in the histroy */
-   int currentIndex;             /*!< Index of the last combination in the history */
-   Combination **combinations;   /*!< History of combinations proposed by the guesser */
+    unsigned int nbPawns;         /*!< Number of pawns of a combination */
+    unsigned int nbCombinations;  /*!< Number of combinations in the histroy */
+    int currentIndex;             /*!< Index of the last combination in the history */
+    Combination **combinations;   /*!< History of combinations proposed by the guesser */
 };
 
 
 struct model_mastermind_t {
-   ROLE role;                             /*!< Player role */
-   char savedPseudo[MAX_PSEUDO_LENGTH];   /*!< Player pseudo */
-   bool inGame;                           /*!< State of the game */
-   PAWN_COLOR selectedColor;              /*!< Selected color */
-   Combination *proposition;              /*!< Guesser proposition */
-   bool validSolution;                    /*!< Validity of the solution */
-   PAWN_COLOR *solution;                  /*!< Proposer combination */
-   History *history;                      /*!< Combinations settings and history */
-   FEEDBACK_COLOR *feedback;              /*!< Player feedback given to computer */ 
-   unsigned int nbConfigs;                /*!< Total of possible combinations */
-   unsigned int lastConfigIndex;          /*!< Index of last combination proposed by the compute */
-   Combination **configs;                 /*!< All the possible configurations */
-   SavedScores *save;                     /*!< Structure containing the previously saved scores */
+    ROLE role;                             /*!< Player role */
+    char savedPseudo[MAX_PSEUDO_LENGTH];   /*!< Player pseudo */
+    bool inGame;                           /*!< State of the game */
+    PAWN_COLOR selectedColor;              /*!< Selected color */
+    Combination *proposition;              /*!< Guesser proposition */
+    bool validSolution;                    /*!< Validity of the solution */
+    PAWN_COLOR *solution;                  /*!< Proposer combination */
+    History *history;                      /*!< Combinations settings and history */
+    FEEDBACK_COLOR *feedback;              /*!< Player feedback given to computer */
+    unsigned int nbConfigs;                /*!< Total of possible combinations */
+    unsigned int lastConfigIndex;          /*!< Index of last combination proposed by the compute */
+    Combination **configs;                 /*!< All the possible configurations */
+    SavedScores *save;                     /*!< Structure containing the previously saved scores */
 };
 
 
 struct model_main_menu_t {
-   char pseudo[MAX_PSEUDO_LENGTH];  /*!< Saved player pseudo */
-   bool validPseudo;                /*!< State of pseudo validity */
-   ROLE role;                       /*!< Player role */
-   unsigned int nbPawns;            /*!< Number of pawns selected */
+    char pseudo[MAX_PSEUDO_LENGTH];  /*!< Saved player pseudo */
+    bool validPseudo;                /*!< State of pseudo validity */
+    ROLE role;                       /*!< Player role */
+    unsigned int nbPawns;            /*!< Number of pawns selected */
 };
 
 struct score_t {
-   char pseudo[MAX_PSEUDO_LENGTH]; /*!< Saved player pseudo */
-   unsigned score;                 /*!< Score of saved player */
+    char pseudo[MAX_PSEUDO_LENGTH]; /*!< Saved player pseudo */
+    unsigned score;                 /*!< Score of saved player */
 };
 
 struct saved_scores_t {
-   unsigned length;                /*!< Number of scores saved */
-   Score **savedScores;            /*!< Saved score from players */
+    unsigned length;                /*!< Number of scores saved */
+    Score **savedScores;            /*!< Saved score from players */
 };
 
 
@@ -114,7 +114,8 @@ static void destroy_combination(Combination *combination);
  *         NULL in case of error.
  * 
  * */
-static History *create_history(unsigned int nbPawns, unsigned int nbCombinations);
+static History *
+create_history(unsigned int nbPawns, unsigned int nbCombinations);
 
 
 /**
@@ -129,7 +130,8 @@ static History *create_history(unsigned int nbPawns, unsigned int nbCombinations
  * */
 static void destroy_history(History *history);
 
-static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns);
+static Combination **
+create_configs(unsigned int nbConfigs, unsigned int nbPawns);
 
 /**
  * \fn static void update_score(ModelMastermind *mm)
@@ -199,7 +201,8 @@ static void destroy_combination(Combination *combination) {
 }
 
 
-static History *create_history(unsigned int nbPawns, unsigned int nbCombinations) {
+static History *
+create_history(unsigned int nbPawns, unsigned int nbCombinations) {
    History *history = malloc(sizeof(History));
    if(history == NULL)
       return NULL;
@@ -239,7 +242,8 @@ static void destroy_history(History *history) {
 }
 
 
-static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
+static Combination **
+create_configs(unsigned int nbConfigs, unsigned int nbPawns) {
    Combination **configs = malloc(nbConfigs * sizeof(Combination *));
    if(configs == NULL)
       return NULL;
@@ -282,24 +286,21 @@ static void update_score(ModelMastermind *mm) {
       Score **tmp = realloc(mm->save->savedScores,
                             mm->save->length * sizeof(Score *));
       if(tmp == NULL){
-         for(unsigned j = 0; j < mm->save->length-1; j++){
+         for(unsigned j = 0; j < mm->save->length - 1; j++){
             free(mm->save->savedScores[j]);
          }
          free(mm->save->savedScores);
          free(mm->save);
-      }
-
-      else{
+      } else{
          mm->save->savedScores = tmp;
-         mm->save->savedScores[mm->save->length-1] = malloc(sizeof (Score));
-         if(mm->save->savedScores[mm->save->length-1] == NULL) {
-            for(unsigned j = 0; j < mm->save->length-2; j++){
+         mm->save->savedScores[mm->save->length - 1] = malloc(sizeof(Score));
+         if(mm->save->savedScores[mm->save->length - 1] == NULL){
+            for(unsigned j = 0; j < mm->save->length - 2; j++){
                free(mm->save->savedScores[j]);
             }
             free(mm->save->savedScores);
             free(mm->save);
-         }
-         else{
+         } else{
             strcpy(mm->save->savedScores[mm->save->length - 1]->pseudo,
                    mm->savedPseudo);
             mm->save->savedScores[mm->save->length - 1]->score = 1;
@@ -423,7 +424,7 @@ void destroy_model_mastermind(ModelMastermind *mm) {
 static void destroy_configs(Combination **configs, unsigned int nbConfigs) {
    assert(configs != NULL);
 
-   for (unsigned int i = 0; i < nbConfigs; ++i) {
+   for(unsigned int i = 0; i < nbConfigs; ++i){
       destroy_combination(configs[i]);
    }
 
@@ -466,18 +467,17 @@ SavedScores *load_scores(const char *filePath) {
             fclose(pFile);
             return NULL;
          }
-         if(!fscanf(pFile, "%s %u\n", save->savedScores[i]->pseudo, &save->savedScores[i]->score)){
+         if(!fscanf(pFile, "%s %u\n", save->savedScores[i]->pseudo,
+                    &save->savedScores[i]->score)){
             for(unsigned j = 0; j < i; j++)
                free(save->savedScores[j]);
-            
+
             free(save);
             fclose(pFile);
             return NULL;
          }
       }
-   } 
-   
-   else{
+   } else{
       save->length = 0;
       save->savedScores = malloc(sizeof(Score *));
       if(save->savedScores == NULL){
@@ -502,7 +502,8 @@ int write_scores(SavedScores *scores, const char *filePath) {
    fprintf(pFile, "%u\n", scores->length);
 
    for(unsigned i = 0; i < scores->length; i++){
-      fprintf(pFile, "%s %u\n", scores->savedScores[i]->pseudo, scores->savedScores[i]->score);
+      fprintf(pFile, "%s %u\n", scores->savedScores[i]->pseudo,
+              scores->savedScores[i]->score);
    }
 
    fclose(pFile);
@@ -549,7 +550,9 @@ void reset_feedback(ModelMastermind *mm) {
 }
 
 
-void determine_feedback_proposition(ModelMastermind *mm, Combination *proposition, const PAWN_COLOR *solution) {
+void
+determine_feedback_proposition(ModelMastermind *mm, Combination *proposition,
+                               const PAWN_COLOR *solution) {
    assert(mm != NULL && proposition != NULL && solution != NULL);
 
    unsigned int nbColorsInProposition[NB_PAWN_COLORS];
@@ -563,7 +566,7 @@ void determine_feedback_proposition(ModelMastermind *mm, Combination *propositio
    for(unsigned int i = 0; i < mm->history->nbPawns; i++){
       if(proposition->pawns[i] == solution[i])
          proposition->nbCorrect++;
-       
+
       else{
          nbColorsInProposition[proposition->pawns[i]]++;
          nbColorsInSolution[solution[i]]++;
@@ -653,12 +656,6 @@ void verify_end_game(ModelMastermind *mm) {
 }
 
 
-char *get_main_menu_pseudo(ModelMainMenu *mmm) {
-   assert(mmm != NULL);
-   return mmm->pseudo;
-}
-
-
 PAWN_COLOR get_selected_color(ModelMastermind *mm) {
    assert(mm != NULL);
 
@@ -670,13 +667,6 @@ ROLE get_role(ModelMastermind *mm) {
    assert(mm != NULL);
 
    return mm->role;
-}
-
-
-char *get_pseudo(ModelMastermind *mm) {
-   assert(mm != NULL);
-
-   return mm->savedPseudo;
 }
 
 
@@ -729,14 +719,8 @@ int get_current_index(ModelMastermind *mm) {
 }
 
 
-Combination *get_last_combination(ModelMastermind *mm) {
-   assert(mm != NULL);
-
-   return mm->history->combinations[mm->history->currentIndex];
-}
-
-
-PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
+PAWN_COLOR
+get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
    assert(mm != NULL && pawnIndex < mm->history->nbPawns);
 
    return mm->history->combinations[mm->history->currentIndex]->pawns[pawnIndex];
@@ -842,22 +826,22 @@ char **get_scores_strings(SavedScores *scores) {
 
    qsort(scores->savedScores, scores->length, sizeof(Score), compare_scores);
 
-   unsigned size = (scores->length < MAX_SCORE_DISPLAYED) ? scores->length :
-           MAX_SCORE_DISPLAYED;
+   unsigned size = (scores->length < MAX_SCORE_DISPLAYED) ? scores->length
+                                                          : MAX_SCORE_DISPLAYED;
 
    char **strings = malloc(size * sizeof(char *));
-   if (strings == NULL) {
+   if(strings == NULL){
       fprintf(stderr, "Memory allocation failed for scores strings\n");
       exit(1);
    }
 
-   for (unsigned i = 0; i < size; i++) {
+   for(unsigned i = 0; i < size; i++){
       strings[i] = malloc((MAX_PSEUDO_LENGTH + 20) * sizeof(char));
-      if (strings[i] == NULL) {
+      if(strings[i] == NULL){
          fprintf(stderr, "Memory allocation failed for a score string\n");
          exit(1);
       }
-      sprintf(strings[i], "%u. %s   %u", i+1, scores->savedScores[i]->pseudo,
+      sprintf(strings[i], "%u. %s   %u", i + 1, scores->savedScores[i]->pseudo,
               scores->savedScores[i]->score);
    }
 
@@ -867,7 +851,7 @@ char **get_scores_strings(SavedScores *scores) {
 void free_scores_strings(char **strings, unsigned length) {
    assert(strings != NULL);
 
-   for (unsigned i = 0; i < length; i++) {
+   for(unsigned i = 0; i < length; i++){
       free(strings[i]);
    }
 
@@ -877,12 +861,12 @@ void free_scores_strings(char **strings, unsigned length) {
 static int compare_scores(const void *a, const void *b) {
    assert(a != NULL && b != NULL);
 
-   const Score *pScore1 = (const Score *)a;
-   const Score *pScore2 = (const Score *)b;
+   const Score *pScore1 = (const Score *) a;
+   const Score *pScore2 = (const Score *) b;
 
-   if (pScore1->score < pScore2->score)
+   if(pScore1->score < pScore2->score)
       return 1;
-   else if (pScore1->score > pScore2->score)
+   else if(pScore1->score > pScore2->score)
       return -1;
    else
       return 0;

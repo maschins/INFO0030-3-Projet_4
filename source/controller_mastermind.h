@@ -28,11 +28,6 @@
 #define PLAY_BUTTON_LABEL "Play"
 
 /**
- * \brief Label on the settings button
- */
-#define SETTINGS_BUTTON_LABEL "Settings"
-
-/**
  * \brief Label on the quit button
  */
 #define QUIT_BUTTON_LABEL "Quit"
@@ -62,11 +57,6 @@
  * \brief Label on the bar for the main menu button
  */
 #define MENU_GAME_MAIN_MENU_ITEM_LABEL "Main menu"
-
-/**
- * \brief Label on the bar to start a new game
- */
-#define MENU_GAME_NEW_GAME_ITEM_LABEL "New game"
 
 /**
  * \brief Label on the button in the Game item allowing to display the stored

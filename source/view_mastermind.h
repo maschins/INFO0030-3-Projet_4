@@ -73,7 +73,7 @@
 /**
  * Declare the ViewMainMenu opaque type.
  * */
-typedef struct view_main_menu_t ViewMainMenu; 
+typedef struct view_main_menu_t ViewMainMenu;
 
 /**
  * Declare the ViewMastermind opaque type.
@@ -89,13 +89,16 @@ ViewMastermind *create_view_mastermind(ModelMastermind *mm);
 
 void destroy_view_mastermind(ViewMastermind *vm);
 
-GtkWidget *create_window(const char *title, unsigned int width, unsigned int height);
+GtkWidget *
+create_window(const char *title, unsigned int width, unsigned int height);
 
-void apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb, unsigned int size);
+void
+apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb, unsigned int size);
 
 GtkWidget *create_button_with_pixbuf(GdkPixbuf *pb, unsigned int size);
 
-GtkWidget *create_image(const char *imagePath, unsigned int width, unsigned int height);
+GtkWidget *
+create_image(const char *imagePath, unsigned int width, unsigned int height);
 
 void update_last_combination_images(ViewMastermind *vm, ModelMastermind *mm);
 
@@ -121,13 +124,9 @@ GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm);
 
 GtkWidget *get_main_menu_error_label(ViewMainMenu *vmm);
 
-unsigned int get_mastermind_small_button_size(ViewMastermind *vm);
-
 unsigned int get_mastermind_proposition_button_size(ViewMastermind *vm);
 
 unsigned int get_mastermind_color_button_size(ViewMastermind *vm);
-
-unsigned int get_mastermind_big_button_size(ViewMastermind *vm);
 
 GtkWidget *get_mastermind_end_game_window(ViewMastermind *vm);
 
@@ -165,9 +164,13 @@ GtkWidget *get_mastermind_color_selection_hbox(ViewMastermind *vm);
 
 GtkWidget *get_mastermind_score_hbox(ViewMastermind *vm);
 
-GtkWidget *get_mastermind_history_combination_button(ViewMastermind *vm, unsigned int i, unsigned int j);
+GtkWidget *
+get_mastermind_history_combination_button(ViewMastermind *vm, unsigned int i,
+                                          unsigned int j);
 
-GtkWidget *get_mastermind_history_feedback_button(ViewMastermind *vm, unsigned int i, unsigned int j);
+GtkWidget *
+get_mastermind_history_feedback_button(ViewMastermind *vm, unsigned int i,
+                                       unsigned int j);
 
 GtkWidget *get_mastermind_score_label(ViewMastermind *vm);
 
