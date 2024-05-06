@@ -31,7 +31,7 @@ struct view_main_menu_t {
 
 
 typedef struct view_mastermind_t {
-   ModelMastermind *mm;                           /*!< Mastermind model */             
+   ModelMastermind *mm;                           /*!< Mastermind model */
    unsigned int smallButtonSize;                  /*!< Small button size */
    unsigned int bigButtonSize;                    /*!< Big button size */
    unsigned int colorButtonSize;                  /*!< Color button size */
@@ -783,11 +783,4 @@ GtkWidget *get_mastermind_score_label(ViewMastermind *vm) {
    assert(vm != NULL);
 
    return vm->scoreLabel;
-}
-
-
-void set_score_label_text(GtkWidget *label, char *string) {
-   assert(label != NULL);
-
-   gtk_label_set_text(GTK_LABEL(label), string);
 }
