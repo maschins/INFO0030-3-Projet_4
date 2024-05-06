@@ -237,17 +237,11 @@ static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns
 static void update_score(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   printf("Update score\n");
    bool alreadySavedPlayer = false;
 
    for(unsigned i = 0; i < mm->save->length && !alreadySavedPlayer; i++){
       if(!strcmp(mm->save->savedScores[i]->pseudo, mm->savedPseudo)){
-         printf("Player found in save, pseudo: %s score: %u index: %u\n",mm->save->savedScores[i]->pseudo,
-                mm->save->savedScores[i]->score, i);
          mm->save->savedScores[i]->score += 1;
-         printf("Player found in save, pseudo: %s score: %u index: %u\n",
-                mm->save->savedScores[i]->pseudo,
-                mm->save->savedScores[i]->score, i);
          alreadySavedPlayer = true;
       }
    }
@@ -400,7 +394,6 @@ SavedScores *load_scores(const char *filePath) {
       return NULL;
 
    if(access(filePath, F_OK) == 0){
-      printf("Previous save found\n");
       FILE *pFile = fopen(filePath, "r");
       if(pFile == NULL)
          return NULL;
@@ -442,7 +435,6 @@ SavedScores *load_scores(const char *filePath) {
    
    else{
       save->length = 0;
-      printf("No previous save\n");
       save->savedScores = malloc(sizeof(Score *));
       if(save->savedScores == NULL){
          free(save);
@@ -450,15 +442,12 @@ SavedScores *load_scores(const char *filePath) {
       }
    }
 
-   printf("load_score finished\n");
    return save;
 }
 
 
 int write_scores(SavedScores *scores, const char *filePath) {
    assert(scores != NULL && filePath != NULL);
-
-   printf("Attend to write scores\n");
 
    FILE *pFile = fopen(filePath, "w");
    if(pFile == NULL)
@@ -467,7 +456,6 @@ int write_scores(SavedScores *scores, const char *filePath) {
    fprintf(pFile, "%u\n", scores->length);
 
    for(unsigned i = 0; i < scores->length; i++){
-      printf("%s %u\n", scores->savedScores[i]->pseudo, scores->savedScores[i]->score);
       fprintf(pFile, "%s %u\n", scores->savedScores[i]->pseudo, scores->savedScores[i]->score);
    }
 

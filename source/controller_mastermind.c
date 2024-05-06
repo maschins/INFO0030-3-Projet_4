@@ -714,7 +714,6 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
 
             char new_label[MAX_PSEUDO_LENGTH];
             sprintf(new_label, "Score: %d", 9-get_current_index(cm->mm));
-            printf("label: %s\n", new_label);
             set_score_label_text(get_mastermind_score_label(cm->vm), new_label);
          }
       } 
