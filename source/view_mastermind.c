@@ -1,3 +1,15 @@
+/**
+ * \file view_mastermind.c
+ * \brief View file of matsermind game
+ * \authors Fraiponts Thomas, Schins Martin
+ * \version 0.1
+ * \date 06/05/2024
+ * 
+ * INFO0030 : Projet de programmation 4, Mastermind.
+ * MVC pattern view for the mastermind game.
+ * 
+ * */
+
 #include <gtk-2.0/gtk/gtk.h>
 #include <assert.h>
 
@@ -84,7 +96,7 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
    }
 
    // Create logo image.
-   vmm->logo = create_image(LOGO_PATH, LOGO_WIDTH, LOGO_HEIGHT);
+   vmm->logo = create_image(LOGO_PATH, MAIN_MENU_WINDOW_WIDTH, 0.2*MAIN_MENU_WINDOW_HEIGHT);
    if(vmm->logo == NULL){
       free(vmm);
       return NULL;

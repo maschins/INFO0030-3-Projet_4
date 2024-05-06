@@ -3,7 +3,7 @@
  * \brief Model header of mastermind game
  * \authors Fraiponts Thomas, Schins Martin
  * \version 0.1
- * \date 04/05/2024
+ * \date 06/05/2024
  * 
  * INFO0030 : Projet de programmation 4, Mastermind.
  * MVC pattern model header for the mastermind game.

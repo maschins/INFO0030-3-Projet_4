@@ -1,3 +1,15 @@
+/**
+ * \file controller_mastermind.c
+ * \brief Controller file of matsermind game
+ * \authors Fraiponts Thomas, Schins Martin
+ * \version 0.1
+ * \date 06/05/2024
+ * 
+ * INFO0030 : Projet de programmation 4, Mastermind.
+ * MVC pattern controller for the mastermind game.
+ * 
+ * */
+
 #include <gtk-2.0/gtk/gtk.h>
 #include <assert.h>
 #include <stdlib.h>

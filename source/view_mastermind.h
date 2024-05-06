@@ -1,28 +1,80 @@
+/**
+ * \file view_mastermind.h
+ * \brief View header of mastermind game
+ * \authors Fraiponts Thomas, Schins Martin
+ * \version 0.1
+ * \date 06/05/2024
+ * 
+ * INFO0030 : Projet de programmation 4, Mastermind.
+ * MVC pattern view header for the mastermind game.
+ * 
+ * */
+
 #ifndef __VIEW_MASTERMIND__
 #define __VIEW_MASTERMIND__
 
 #include "model_mastermind.h"
 
+/**
+ * \brief Main menu window label
+ */
 #define MAIN_MENU_WINDOW_LABEL "Main menu"
+
+/**
+ * \brief Main menu window width
+ */
 #define MAIN_MENU_WINDOW_WIDTH 400
+
+/**
+ * \brief Main menu window height
+ */
 #define MAIN_MENU_WINDOW_HEIGHT 800
 
+/**
+ * \brief Game window label
+ */
 #define MASTERMIND_WINDOW_LABEL "Mastermind"
+
+/**
+ * \brief Game window size scale (Width & Height are fixed for good game render)
+ */
 #define MASTERMIND_WINDOW_SIZE 0.8
 
+/**
+ * \brief Abouts window label
+ */
 #define ABOUTS_WINDOW_LABEL "Abouts"
 
+/**
+ * \brief End game window label
+ */
 #define END_GAME_WINDOW_LABEL "End game"
+
+/**
+ * \brief End game window width
+ */
 #define END_GAME_WINDOW_WIDTH 200
+
+/**
+ * \brief End game window height
+ */
 #define END_GAME_WINDOW_HEIGHT 150
 
+/**
+ * \brief Main menu logo path
+ */
 #define LOGO_PATH "./images/title.png"
-#define LOGO_WIDTH MAIN_MENU_WINDOW_WIDTH
-#define LOGO_HEIGHT (0.2 * MAIN_MENU_WINDOW_HEIGHT)
 
+/**
+ * Declare the ViewMainMenu opaque type.
+ * */
 typedef struct view_main_menu_t ViewMainMenu; 
 
+/**
+ * Declare the ViewMastermind opaque type.
+ * */
 typedef struct view_mastermind_t ViewMastermind;
+
 
 ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm);
 
