@@ -668,11 +668,14 @@ SavedScores *load_scores(const char *filePath) {
       }
    }
 
+   printf("load_score finished\n");
    return save;
 }
 
 int write_scores(SavedScores *scores, const char *filePath) {
    assert(scores != NULL && filePath != NULL);
+
+   printf("Attend to write scores\n");
 
    FILE *pFile = fopen(filePath, "w");
    if(pFile == NULL){
@@ -764,6 +767,7 @@ void find_next_proposition(ModelMastermind *mm) {
 static void update_score(ModelMastermind *mm) {
    assert(mm != NULL);
 
+   printf("Update score\n");
    bool alreadySavedPlayer = false;
 
    for(unsigned i = 0; i < mm->save->length && !alreadySavedPlayer; i++){

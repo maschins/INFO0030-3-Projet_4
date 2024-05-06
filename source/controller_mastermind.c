@@ -1,6 +1,7 @@
 #include <gtk-2.0/gtk/gtk.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "controller_mastermind.h"
 
 struct controller_main_menu_t {
@@ -567,16 +568,22 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
    ControllerMainMenu *cmm = (ControllerMainMenu *) data;
 
    ModelMastermind *mm = create_model_mastermind(cmm->mmm);
-   if(mm == NULL)
+   if(mm == NULL) {
+      printf("mm NULL");
       handle_quit(button, data);
+   }
 
    ViewMastermind *vm = create_view_mastermind(mm);
-   if(vm == NULL)
+   if(vm == NULL) {
+      printf("vm NULL");
       handle_quit(button, data);
+   }
 
    ControllerMastermind *cm = create_controller_mastermind(mm, vm, cmm);
-   if(cm == NULL)
+   if(cm == NULL) {
+      printf("cm NULL");
       handle_quit(button, data);
+   }
 
    gtk_widget_hide(get_main_menu_window(cmm->vmm));
 
