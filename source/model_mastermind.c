@@ -153,6 +153,22 @@ static void update_score(ModelMastermind *mm);
  */
 static int compare_scores(const void *a, const void *b);
 
+/**
+ * \fn void destroy_configs(Combination **configs, unsigned int nbConfigs)
+ * \brief Destroys an array of combinations and frees the memory allocated for it.
+ *
+ * This function destroys an array of combinations and frees the memory allocated for it,
+ * including the combinations themselves.
+ *
+ * \param configs An array of pointers to Combination structures.
+ * \param nbConfigs The number of configurations in the array.
+ *
+ * \pre configs != NULL, nbConfigs is the correct number of configurations
+ *
+ * \post The memory allocated for the array of combinations and the combinations themselves is freed.
+ */
+static void destroy_configs(Combination **configs, unsigned int nbConfigs);
+
 static Combination *create_combination(unsigned int nbPawns) {
    Combination *combination = malloc(sizeof(Combination));
    if(combination == NULL)
@@ -377,8 +393,8 @@ ModelMastermind *create_model_mastermind(ModelMainMenu *mmm) {
    if(mm->save == NULL){
       free(mm->solution);
       free(mm->proposition);
+      destroy_configs(mm->configs, mm->history->nbPawns);
       destroy_history(mm->history);
-      //TODO create destroyer for configs
       free(mm);
       return NULL;
    }
@@ -395,6 +411,8 @@ void destroy_model_mastermind(ModelMastermind *mm) {
          free(mm->solution);
       if(mm->feedback != NULL)
          free(mm->feedback);
+      if(mm->configs != NULL)
+         destroy_configs(mm->configs, mm->history->nbPawns);
       destroy_history(mm->history);
       if(mm->save != NULL)
          destroy_saved_scores(mm->save);
@@ -402,6 +420,15 @@ void destroy_model_mastermind(ModelMastermind *mm) {
    }
 }
 
+static void destroy_configs(Combination **configs, unsigned int nbConfigs) {
+   assert(configs != NULL);
+
+   for (unsigned int i = 0; i < nbConfigs; ++i) {
+      destroy_combination(configs[i]);
+   }
+
+   free(configs);
+}
 
 SavedScores *load_scores(const char *filePath) {
    assert(filePath != NULL);
