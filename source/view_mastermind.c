@@ -9,11 +9,8 @@ struct view_main_menu_t {
    GtkWidget *window;
    GtkWidget *mainVBox;
    GtkWidget *pseudoHBox;
-   GtkWidget *welcomeHBox;
    GtkWidget *nbPawnsHBox;
    GtkWidget *logo;
-   GtkWidget *welcomeLabel;
-   GtkWidget *currentPseudoLabel;
    GtkWidget *pseudoLabel;
    GtkWidget *errorLabel;
    GtkWidget *nbPawnsLabel;
@@ -80,12 +77,6 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
       return NULL;
    }
 
-   vmm->welcomeHBox = gtk_hbox_new(FALSE, 0);
-   if(vmm->welcomeHBox == NULL){
-      free(vmm);
-      return NULL;
-   }
-
    // Create horizontal box for number of pawns stuff.
    vmm->nbPawnsHBox = gtk_hbox_new(FALSE, 0);
    if(vmm->nbPawnsHBox == NULL){
@@ -96,19 +87,6 @@ ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
    // Create logo image.
    vmm->logo = create_image(LOGO_PATH, LOGO_WIDTH, LOGO_HEIGHT);
    if(vmm->logo == NULL){
-      free(vmm);
-      return NULL;
-   }
-
-   const char *WELCOME_LABEL = "Welcome ";
-   vmm->welcomeLabel = gtk_label_new(WELCOME_LABEL);
-   if(vmm->welcomeLabel == NULL){
-      free(vmm);
-      return NULL;
-   }
-
-   vmm->currentPseudoLabel = gtk_label_new(get_main_menu_pseudo(mmm));
-   if(vmm->currentPseudoLabel == NULL){
       free(vmm);
       return NULL;
    }
@@ -443,8 +421,7 @@ void
 apply_pixbufs_to_button(GtkWidget *button, GdkPixbuf *pb, unsigned int size) {
    assert(button != NULL && pb != NULL);
 
-   GdkPixbuf *resizedPixbuf = gdk_pixbuf_scale_simple(pb, size, size,
-                                                      GDK_INTERP_BILINEAR);
+   GdkPixbuf *resizedPixbuf = gdk_pixbuf_scale_simple(pb, size, size, GDK_INTERP_BILINEAR);
    GtkWidget *image = gtk_image_new_from_pixbuf(resizedPixbuf);
    gtk_button_set_image(GTK_BUTTON(button), image);
 }
@@ -471,8 +448,7 @@ create_image(const char *imagePath, unsigned int width, unsigned int height) {
    if(pb == NULL)
       return NULL;
 
-   GdkPixbuf *resizedPb = gdk_pixbuf_scale_simple(pb, width, height,
-                                                  GDK_INTERP_BILINEAR);
+   GdkPixbuf *resizedPb = gdk_pixbuf_scale_simple(pb, width, height, GDK_INTERP_BILINEAR);
    GtkWidget *image = gtk_image_new_from_pixbuf(resizedPb);
 
    return image;
@@ -486,8 +462,8 @@ void update_last_combination_images(ViewMastermind *vm, ModelMastermind *mm) {
 
    for(unsigned int i = 0; i < get_nb_pawns(mm); i++){
       apply_pixbufs_to_button(vm->historyCombinations[index][i],
-                              vm->colorImagePixbufs[get_pawn_last_combination(
-                                      mm, i)], vm->bigButtonSize);
+                              vm->colorImagePixbufs[get_pawn_last_combination(mm, i)],
+                              vm->bigButtonSize);
    }
 }
 
@@ -547,12 +523,6 @@ GtkWidget *get_main_menu_pseudo_hbox(ViewMainMenu *vmm) {
 }
 
 
-GtkWidget *get_main_menu_welcome_hbox(ViewMainMenu *vmm) {
-   assert(vmm != NULL);
-   return vmm->welcomeHBox;
-}
-
-
 GtkWidget *get_main_menu_nb_pawns_hbox(ViewMainMenu *vmm) {
    assert(vmm != NULL);
    return vmm->nbPawnsHBox;
@@ -574,18 +544,6 @@ GtkWidget *get_main_menu_pseudo_label(ViewMainMenu *vmm) {
 GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm) {
    assert(vmm != NULL);
    return vmm->nbPawnsLabel;
-}
-
-
-GtkWidget *get_main_menu_welcome_label(ViewMainMenu *vmm) {
-   assert(vmm != NULL);
-   return vmm->welcomeLabel;
-}
-
-
-GtkWidget *get_main_menu_current_pseudo_label(ViewMainMenu *vmm) {
-   assert(vmm != NULL);
-   return vmm->currentPseudoLabel;
 }
 
 

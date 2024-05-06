@@ -579,18 +579,17 @@ void on_save_button_clicked(GtkWidget *button, gpointer data) {
 
    if(strlen(pseudo) > MAX_PSEUDO_LENGTH){
       const char *PSEUDO_TOO_LONG_ERROR = "Pseudo is too long (Max 50 char).";
-      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)),
-                         PSEUDO_TOO_LONG_ERROR);
-   } else if(strlen(pseudo) < MIN_PSEUDO_LENGTH){
+      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_TOO_LONG_ERROR);
+   } 
+   
+   else if(strlen(pseudo) < MIN_PSEUDO_LENGTH){
       const char *PSEUDO_TOO_SHORT_ERROR = "Pseudo is too short (Min 5 char).";
-      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)),
-                         PSEUDO_TOO_SHORT_ERROR);
-   } else{
-      gtk_label_set_text(
-              GTK_LABEL(get_main_menu_current_pseudo_label(cmm->vmm)), pseudo);
+      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)),PSEUDO_TOO_SHORT_ERROR);
+   } 
+   
+   else{
       const char *PSEUDO_GOOD = "Pseudo saved !";
-      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)),
-                         PSEUDO_GOOD);
+      gtk_label_set_text(GTK_LABEL(get_main_menu_error_label(cmm->vmm)), PSEUDO_GOOD);
       set_pseudo(cmm->mmm, (char *) pseudo);
    }
 }
@@ -761,8 +760,10 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
       }
    }
 
-   else
+   else{
+      fprintf(stderr, "coucou\n");
       init_end_game_window(cm, (get_current_index(cm->mm) < NB_COMBINATIONS && !get_role(cm->mm)));
+   }
 }
 
 
@@ -779,10 +780,7 @@ void on_feedback_button_clicked(GtkWidget *button, gpointer data) {
 
    if(pawnIndex != -1){
       set_feedback_pawn(cm->mm, pawnIndex);
-      apply_pixbufs_to_button(button, get_feedback_image_pixbuf(cm->vm,
-                                                                get_feedback_pawn(
-                                                                        cm->mm,
-                                                                        pawnIndex)),
+      apply_pixbufs_to_button(button, get_feedback_image_pixbuf(cm->vm, get_feedback_pawn(cm->mm,pawnIndex)),
                               get_mastermind_proposition_button_size(cm->vm));
    }
 }

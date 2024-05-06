@@ -52,8 +52,6 @@ GtkWidget *get_main_menu_main_vbox(ViewMainMenu *vmm);
 
 GtkWidget *get_main_menu_pseudo_hbox(ViewMainMenu *vmm);
 
-GtkWidget *get_main_menu_welcome_hbox(ViewMainMenu *vmm);
-
 GtkWidget *get_main_menu_nb_pawns_hbox(ViewMainMenu *vmm);
 
 GtkWidget *get_main_menu_logo(ViewMainMenu *vmm);
@@ -61,10 +59,6 @@ GtkWidget *get_main_menu_logo(ViewMainMenu *vmm);
 GtkWidget *get_main_menu_pseudo_label(ViewMainMenu *vmm);
 
 GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm);
-
-GtkWidget *get_main_menu_welcome_label(ViewMainMenu *vmm);
-
-GtkWidget *get_main_menu_current_pseudo_label(ViewMainMenu *vmm);
 
 GtkWidget *get_main_menu_error_label(ViewMainMenu *vmm);
 
