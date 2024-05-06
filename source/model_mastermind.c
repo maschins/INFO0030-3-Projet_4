@@ -478,6 +478,7 @@ int write_scores(SavedScores *scores, const char *filePath) {
       fprintf(pFile, "%s %u\n", scores->savedScores[i]->pseudo, scores->savedScores[i]->score);
    }
 
+   fclose(pFile);
    return 0;
 }
 
