@@ -706,25 +706,32 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
       } 
       
       else{
+         if(get_valid_solution(cm->mm)){
+            update_last_combination_feedback(cm->mm);
+            udpate_last_feedback_images(cm->vm, cm->mm);
+            verify_end_game(cm->mm);
+
+            reset_feedback(cm->mm);
+            reset_feedback_buttons(cm);
+
+            update_current_combination_index(cm->mm);
+            
+            find_next_proposition(cm->mm);
+            set_proposition_in_history(cm->mm);
+            update_last_combination_images(cm->vm, cm->mm);
+         }
+
          if(!get_valid_solution(cm->mm)){
             if(verify_proposition(cm->mm)){
                set_proposition_as_solution(cm->mm);
                init_feedback_zone_mastermind(cm);
                set_valid_solution_true(cm->mm);
+
+               // Find first combination.
+               find_next_proposition(cm->mm);
+               set_proposition_in_history(cm->mm);
+               update_last_combination_images(cm->vm, cm->mm);
             }
-         }
-         if(get_valid_solution(cm->mm)){
-            find_next_proposition(cm->mm);
-            set_proposition_in_history(cm->mm);
-            update_last_combination_images(cm->vm, cm->mm);
-
-            update_last_combination_feedback(cm->mm);
-            udpate_last_feedback_images(cm->vm, cm->mm);
-            verify_end_game(cm->mm);
-
-            update_current_combination_index(cm->mm);
-            reset_feedback(cm->mm);
-            reset_feedback_buttons(cm);
          }
       }
 

@@ -43,7 +43,7 @@
 /**
  * \brief Default number of pawns.
  * */
-#define DEFAULT_NB_PAWNS 2
+#define DEFAULT_NB_PAWNS 4
 
 /**
  * \brief Number of combination.
@@ -181,8 +181,7 @@ unsigned int get_nb_misplaced_last_combination(ModelMastermind *mm);
 
 Combination *get_last_combination(ModelMastermind *mm);
 
-PAWN_COLOR
-get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
+PAWN_COLOR get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex);
 
 /**
  * \fn SavedScores *get_saved_scores(ModelMastermind *mm)
