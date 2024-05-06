@@ -590,17 +590,83 @@ char **get_scores_strings(SavedScores *scores);
  */
 void free_scores_strings(char **strings, unsigned length);
 
+
+/**
+ * \fn void set_proposition_in_history(ModelMastermind *mm)
+ * \brief sets the current proposition in the combinations history.
+ *
+ * \param mm A pointer on the ModelMastermind structure
+ *
+ * \pre mm != NULL
+ * \post the proposition is set in the combinations history.
+ */
 void set_proposition_in_history(ModelMastermind *mm);
 
+
+/**
+ * \fn void set_role(ModelMainMenu *mmm, ROLE role)
+ * \brief sets the player role in the main menu model structure.
+ *
+ * \param mmm A pointer on the ModelMainMenu structure
+ * \param role The player role
+ *
+ * \pre mm != NULL
+ * \post the player role is set.
+ */
 void set_role(ModelMainMenu *mmm, ROLE role);
 
+
+/**
+ * \fn void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns)
+ * \brief sets the number of pawns for the game based on the number of pawn slider.
+ *
+ * \param mmm A pointer on the ModelMainMenu structure
+ * \param nbPawns The number of pawns selected with the slider.
+ *
+ * \pre mm != NULL
+ * \post the number of pawns is set.
+ */
 void set_nb_pawns_slider(ModelMainMenu *mmm, unsigned int nbPawns);
 
+
+/**
+ * \fn void set_pseudo(ModelMainMenu *mmm, char *pseudo)
+ * \brief sets the player pseudo in the main menu model.
+ *
+ * \param mmm A pointer on the ModelMainMenu structure
+ * \param pseudo The player pseudo.
+ *
+ * \pre mm != NULL, pseudo != NULL
+ * \post the pseudo is set.
+ */
 void set_pseudo(ModelMainMenu *mmm, char *pseudo);
 
+
+/**
+ * \fn void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor)
+ * \brief Sets the selected color.
+ *
+ * \param mm A pointer on the ModelMastermind structure
+ * \param newColor the new selected color.
+ *
+ * \pre mm != NULL
+ * \post the selected color is set.
+ */
 void set_selected_color(ModelMastermind *mm, PAWN_COLOR newColor);
 
+
+/**
+ * \fn void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i)
+ * \brief Sets the selected color to a proposition pawn.
+ *
+ * \param mm A pointer on the ModelMastermind structure
+ * \param i the proposition pawn index.
+ *
+ * \pre mm != NULL, i < mm->history->nbPawns
+ * \post the color is set to the pawn.
+ */
 void set_proposition_pawn_selected_color(ModelMastermind *mm, unsigned int i);
+
 
 void set_feedback_pawn(ModelMastermind *mm, unsigned int index);
 
