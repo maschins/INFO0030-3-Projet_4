@@ -637,14 +637,17 @@ void on_play_clicked(GtkWidget *button, gpointer data) {
 
 
    ViewMastermind *vm = create_view_mastermind(mm);
-   if(vm == NULL)
+   if(vm == NULL){
+      destroy_model_mastermind(mm);
       gtk_main_quit();
-
+   }
 
    ControllerMastermind *cm = create_controller_mastermind(mm, vm, cmm);
-   if(cm == NULL)
+   if(cm == NULL){
+      destroy_view_mastermind(vm);
+      destroy_model_mastermind(mm);
       gtk_main_quit();
-
+   }
 
    gtk_widget_hide(get_main_menu_window(cmm->vmm));
 

@@ -820,10 +820,12 @@ SavedScores *get_saved_scores(ModelMastermind *mm) {
    return mm->save;
 }
 
+
 unsigned get_saved_scores_length(ModelMastermind *mm) {
    assert(mm != NULL);
    return mm->save->length;
 }
+
 
 char **get_scores_strings(SavedScores *scores) {
    assert(scores != NULL);
@@ -852,15 +854,16 @@ char **get_scores_strings(SavedScores *scores) {
    return strings;
 }
 
+
 void free_scores_strings(char **strings, unsigned length) {
    assert(strings != NULL);
 
-   for(unsigned i = 0; i < length; i++){
+   for(unsigned i = 0; i < length; i++)
       free(strings[i]);
-   }
 
    free(strings);
 }
+
 
 static int compare_scores(const void *a, const void *b) {
    assert(a != NULL && b != NULL);
@@ -876,11 +879,12 @@ static int compare_scores(const void *a, const void *b) {
       return 0;
 }
 
+
 void destroy_saved_scores(SavedScores *scores) {
    assert(scores != NULL);
 
-   for(unsigned j = 0; j < scores->length; j++){
+   for(unsigned j = 0; j < scores->length; j++)
       free(scores->savedScores[j]);
-   }
+
    free(scores);
 }
