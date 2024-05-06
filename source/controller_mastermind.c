@@ -555,21 +555,14 @@ void init_end_game_window(ControllerMastermind *cm, bool win) {
    GtkWidget *window = get_mastermind_end_game_window(cm->vm);
    GdkPixbuf *pb;
 
-   if(win)
-      pb = gdk_pixbuf_scale_simple(get_mastermind_win_image(cm->vm),
-                                   END_GAME_WINDOW_WIDTH,
-                                   END_GAME_WINDOW_HEIGHT, GDK_INTERP_BILINEAR);
+   if((!win && get_role(cm->mm) == PROPOSER && get_nb_correct_last_combination(cm->mm) < get_nb_pawns(cm->mm)) || (win && get_role(cm->mm) == GUESSER))
+      pb = gdk_pixbuf_scale_simple(get_mastermind_win_image(cm->vm), END_GAME_WINDOW_WIDTH, END_GAME_WINDOW_HEIGHT, GDK_INTERP_BILINEAR);
 
    else
-      pb = gdk_pixbuf_scale_simple(get_mastermind_loose_image(cm->vm),
-                                   END_GAME_WINDOW_WIDTH,
-                                   END_GAME_WINDOW_HEIGHT, GDK_INTERP_BILINEAR);
-
-   fprintf(stderr, "%d", win);
+      pb = gdk_pixbuf_scale_simple(get_mastermind_loose_image(cm->vm), END_GAME_WINDOW_WIDTH, END_GAME_WINDOW_HEIGHT, GDK_INTERP_BILINEAR);
 
    gtk_container_add(GTK_CONTAINER(window), gtk_image_new_from_pixbuf(pb));
-   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(hide_window),
-                    window);
+   g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(hide_window), window);
    gtk_widget_show_all(window);
 }
 
@@ -788,12 +781,13 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
 
             reset_feedback(cm->mm);
             reset_feedback_buttons(cm);
-
             update_current_combination_index(cm->mm);
 
-            find_next_proposition(cm->mm);
-            set_proposition_in_history(cm->mm);
-            update_last_combination_images(cm->vm, cm->mm);
+            if(get_in_game(cm->mm)){
+               find_next_proposition(cm->mm);
+               set_proposition_in_history(cm->mm);
+               update_last_combination_images(cm->vm, cm->mm);
+            }
          }
 
          if(!get_valid_solution(cm->mm)){
@@ -808,14 +802,10 @@ void on_apply_clicked(GtkWidget *button, gpointer data) {
                update_last_combination_images(cm->vm, cm->mm);
             }
          }
-         char new_label[MAX_PSEUDO_LENGTH];
-         sprintf(new_label, "Score: %d", 9 - get_current_index(cm->mm));
-         set_score_label_text(get_mastermind_score_label(cm->vm), new_label);
       }
 
       if(!get_in_game(cm->mm))
-         init_end_game_window(cm, (get_current_index(cm->mm) >= 0 &&
-                                   !get_role(cm->mm)));
+         init_end_game_window(cm, get_current_index(cm->mm) >= 0);
    }
 }
 

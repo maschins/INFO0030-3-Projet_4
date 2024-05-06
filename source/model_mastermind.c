@@ -730,7 +730,11 @@ get_pawn_last_combination(ModelMastermind *mm, unsigned int pawnIndex) {
 unsigned int get_nb_correct_last_combination(ModelMastermind *mm) {
    assert(mm != NULL);
 
-   return mm->history->combinations[mm->history->currentIndex]->nbCorrect;
+   int index = mm->history->currentIndex;
+   if(index < 0)
+      index = 0;
+
+   return mm->history->combinations[index]->nbCorrect;
 }
 
 
