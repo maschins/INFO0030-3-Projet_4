@@ -1,5 +1,5 @@
 % !TEX root = ./rapport.tex
-
+\newpage
 \section{Interface graphique}
 
 \subsection{Menu principal}
@@ -21,6 +21,7 @@ La fenêtre du menu principal se décompose en une box verticale principale $(1)
     \item un bouton $Quit$ permettant de quitter le jeu.
 \end{itemize}
 
+\newpage
 \subsection{Jeu}
 
 \begin{figure}[htbp]
@@ -41,6 +42,7 @@ La fenêtre de jeu se décompose en une box verticale principale $(1)$ contenant
         \item $Score$ qui affiche une fenêtre répertoriant les 10 scores les plus élevés enregistrés,
         \item $Quit$ qui quitte complètement le jeu.
     \end{itemize}
+    $Help$ donne accès à $Abouts$ qui ouvre une fenêtre affichant des informations à propos du jeu et de sa création.
     \item $(3)$ une table $Gtk$ organisant les boutons des boîtes $(4)$ et $(5)$. Il s'agit de l'historique de la partie.
     \item $(4)$ une matrice de boutons servant à l'affichage des images des pions de couleur. Ces lignes de boutons représentent les combinaisons proposées.
     \item $(5)$ une matrice de boutons servant à l'affichage des images des pions de feedback. Ces lignes de boutons sont les résultats correspondants aux combinaisons.

@@ -884,6 +884,3 @@ void destroy_saved_scores(SavedScores *scores) {
    }
    free(scores);
 }
-
-
-

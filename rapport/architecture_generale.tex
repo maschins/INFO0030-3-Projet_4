@@ -8,9 +8,35 @@ La fenêtre "Abouts" qui affiche des informations sur le jeu et la fenêtre "End
 
 \subsection{Modèle}
 
-Le type opaque $modelMainMenu$ représente l'ensemble des données du menu principal. Il stocke le pseudo sauvegardé par le joueur, la bone validité de ce pseudo sans laquelle le joueur sera incapable de lancer une partie. Le role de joueur ainsi que le nombre de pions choisit pour la partie.
-\\\\
-De cette manière, l'ensemble des paramètres peuvent être configurés dans un premier temps par l'utilisateur dans le menu. Ces paramètres seront toujours conservés, ce qui permet, par exemple, au joueur de ne pas devoir renseigner à nouveau son pseudo en retournant dans le menu principal. De plus, le modèle du jeu peut être facilement créé et la mémoire allouée pour celui-ci peut être facilement libérer sans devoir se soucier de conserver un accès aux paramètres renseignés par le joueur.
+Les pions de couleurs et les pions de résultat d'une combinaisons sont représentés grâce à des énumérations. Pour connaître le nombre de pions de couleur ou de pions de résultat nous plaçons en tout dernier dans les énumartions $NB\_PAWN\_COLORS$ et $NB\_FB\_COLORS$.
+\begin{lstlisting}[language=C]
+typedef enum{
+    PAWN_BLUE,
+    PAWN_CYAN,
+    PAWN_GREEN,
+    PAWN_ORANGE,
+    PAWN_PURPLE,
+    PAWN_RED,
+    PAWN_YELLOW,
+    PAWN_DEFAULT,
+    NB_PAWN_COLORS
+}PAWN_COLOR;
+\end{lstlisting}
+
+\begin{lstlisting}[language=C]
+typedef enum{
+    FB_BLACK,
+    FB_WHITE,
+    FB_DEFAULT,
+    NB_FB_COLORS
+}FEEDBACK_COLOR;
+\end{lstlisting}
+
+Le type opaque $modelMainMenu$ représente l'ensemble des données du menu principal. Il stocke le pseudo sauvegardé par le joueur, la validité de ce pseudo sans laquelle le joueur sera incapable de lancer une partie. Le role du joueur ainsi que le nombre de pions choisit pour la partie.
+
+\newpage
+
+De cette manière, l'ensemble des paramètres peuvent être configurés dans un premier temps par l'utilisateur dans le menu. Ces paramètres restent conservés tant que le jeu n'est pas complètement quitté, ce qui permet, par exemple, au joueur de ne pas devoir renseigner à nouveau son pseudo en retournant dans le menu principal.
 \begin{lstlisting}[language=C]
 struct model_main_menu_t {
    char pseudo[MAX_PSEUDO_LENGTH];
@@ -29,7 +55,7 @@ struct combination_t {
 };
 \end{lstlisting}
 
-Le type opaque $History$ représente l'historique des combinaisons proposées durant la partie. Les combinaisons sont stockées dans une tableau de $Combination$. $currentIndex$ est l'indice de la dernière combinaison dans le tableau de combinaisions.
+Le type opaque $History$ représente l'historique des combinaisons proposées durant la partie. Les combinaisons sont stockées dans un tableau de $Combination$. $currentIndex$ est l'indice de la dernière combinaison dans le tableau de combinaisons.
 \begin{lstlisting}[language=C]
 struct history_t {
    unsigned int nbPawns;
@@ -56,6 +82,9 @@ struct saved_scores_t {
 \end{lstlisting}
 
 Le type opaque $modelMastermind$ représente l'ensemble des données du jeu. On y copie les paramètres du menu principal tel que le pseudo, le role ainsi que le nombre de pions (plus précisément stocké dans l'historique). On y retrouve également la couleur sélectionnée, le proposition actuelle du joueur, la validité de la solution proposée, la solution de la partie, l'historique des combinaisons, le résultat du joueur vis à vis de la dernière combinaison proposée par l'ordinateur, le nombre de configurations créables, l'ensemble des configurations créables ainsi que le tableau de score.
+
+\newpage
+
 \begin{lstlisting}[language=C]
 struct model_mastermind_t {
    ROLE role;
@@ -76,7 +105,7 @@ struct model_mastermind_t {
 Le coût de cette approche augmente légèrement la complexité, car elle nécessite la définition de plusieurs structures de données. Cependant, elle rend le code plus modulaire et plus facile à gérer, ce qui, dans de nombreux cas, nous a permis d'ajouter et retirer facilement des fonctionnalités.
 
 \subsection{View}
-Les types opaques $viewMainMenu$ et $viewMastermind$ stockent l'ensemble des éléments affichés à l'écran qui ne permettent pas d'interactions avec l'utilisateur (i.e. tables, boxs, labels, boutons uniquement utiles à l'affichage d'une image).
+Les types opaques $viewMainMenu$ et $viewMastermind$ stockent l'ensemble des éléments affichés à l'écran qui ne permettent pas d'interactions avec l'utilisateur (i.e. tables, boxs, labels, boutons uniquement utiles à l'affichage d'une image...).
 
 \begin{lstlisting}[language=C]
 struct view_main_menu_t {
@@ -92,9 +121,9 @@ struct view_main_menu_t {
 };
 \end{lstlisting}
 
-L'ensemble des pixbufs des images sont crées avant le lancement du menu ou du jeu. Dès lors, le programme ne s'interrompt pas soudainement à lorsque que la création du pixbuf d'une image est impossible.  
+L'ensemble des pixbufs des images sont crées avant le lancement du menu ou du jeu. Dès lors, le programme ne s'interrompt pas soudainement en pleine partie lorsque que la création du pixbuf d'une image est impossible.  
 
-Les boutons affichants l'historique des combinaisons ainsi que les boutons affichant l'historique des feedbacks sont quant à eux stockés dans des matrices de boutons.
+Les boutons affichant l'historique des combinaisons ainsi que les boutons affichant l'historique des feedbacks sont quant à eux stockés dans des matrices de boutons.
 
 \begin{lstlisting}[language=C]
 struct view_mastermind_t {
@@ -131,7 +160,7 @@ struct view_mastermind_t {
 
 \subsection{Contrôleur}
 
-Les types opaques $controllerMainMenu$ et $controllerMastermind$ stockent l'ensemble des éléments affichés à l'écran qui permettent une ou plusieurs interactions avec l'utilisateur (i.e. boutons, sliders, boites d'entrée de texte, barre de menu).
+Les types opaques $controllerMainMenu$ et $controllerMastermind$ stockent l'ensemble des éléments affichés à l'écran qui permettent une ou plusieurs interactions avec l'utilisateur (i.e. boutons, sliders, boites d'entrée de texte, barre de menu...).
 
 \begin{lstlisting}[language=C]
 struct controller_main_menu_t {
