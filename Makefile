@@ -31,7 +31,7 @@ run: $(EXEC)
 doc:
 	doxygen $(DOXYGEN_CONFIG_FILE)
 
-rapport: rapport/rapport.tex
+rapport: rapport/rapport.tex rapport/*.tex
 	pdflatex rapport/rapport.tex
 
 clean:
