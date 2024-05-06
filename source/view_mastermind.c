@@ -62,7 +62,6 @@ typedef struct view_mastermind_t {
 };
 
 
-
 ViewMainMenu *create_view_main_menu(ModelMainMenu *mmm) {
    assert(mmm != NULL);
 
@@ -553,174 +552,210 @@ void udpate_last_feedback_images(ViewMastermind *vm, ModelMastermind *mm) {
 
 GdkPixbuf *get_color_image_pixbuf(ViewMastermind *vm, PAWN_COLOR color) {
    assert(vm != NULL);
+
    return vm->colorImagePixbufs[color];
 }
 
 
 GdkPixbuf *get_feedback_image_pixbuf(ViewMastermind *vm, FEEDBACK_COLOR color) {
    assert(vm != NULL);
+
    return vm->feedbackImagePixbufs[color];
 }
 
 
 GtkWidget *get_main_menu_window(ViewMainMenu *vmm) {
    assert(vmm != NULL);
+
    return vmm->window;
 }
 
 
 GtkWidget *get_main_menu_main_vbox(ViewMainMenu *vmm) {
    assert(vmm != NULL);
+
    return vmm->mainVBox;
 }
 
 
 GtkWidget *get_main_menu_pseudo_hbox(ViewMainMenu *vmm) {
    assert(vmm != NULL);
+
    return vmm->pseudoHBox;
 }
 
 
 GtkWidget *get_main_menu_nb_pawns_hbox(ViewMainMenu *vmm) {
    assert(vmm != NULL);
+
    return vmm->nbPawnsHBox;
 }
 
 
 GtkWidget *get_main_menu_logo(ViewMainMenu *vmm) {
    assert(vmm != NULL);
+
    return vmm->logo;
 }
 
 
 GtkWidget *get_main_menu_pseudo_label(ViewMainMenu *vmm) {
    assert(vmm != NULL);
+
    return vmm->pseudoLabel;
 }
 
 
 GtkWidget *get_main_menu_nb_pawns_label(ViewMainMenu *vmm) {
    assert(vmm != NULL);
+
    return vmm->nbPawnsLabel;
 }
 
 
 GtkWidget *get_main_menu_error_label(ViewMainMenu *vmm) {
    assert(vmm != NULL);
+
    return vmm->errorLabel;
 }
 
 
 unsigned int get_mastermind_proposition_button_size(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->propositionButtonSize;
 }
 
 
 unsigned int get_mastermind_color_button_size(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->colorButtonSize;
 }
 
 
 GtkWidget *get_mastermind_end_game_window(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->endGameWindow;
 }
 
 
 GdkPixbuf *get_mastermind_win_image(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->winImage;
 }
 
 
 GdkPixbuf *get_mastermind_loose_image(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->looseImage;
 }
 
 
 GtkWidget *get_mastermind_abouts_window(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->windowAbouts;
 }
 
 
 GtkWidget *get_abouts_main_vbox(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->aboutsMainVBox;
 }
 
 
 GtkWidget *get_mastermind_abouts_label(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->aboutsLabel;
 }
 
+
 GtkWidget *get_mastermind_score_window(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->windowScore;
 }
 
+
 GtkWidget *get_score_main_vbox(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->scoreMainVBox;
 }
 
+
 GtkWidget *get_mastermind_window(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->window;
 }
 
+
 GtkWidget *get_mastermind_scores_title_label(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->scoresTitleLabel;
 }
 
+
 GtkWidget **get_mastermind_players_scores_label(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->scoresLabels;
 }
 
+
 GtkWidget *get_mastermind_main_vbox(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->mainVBox;
 }
 
 
 GtkWidget *get_mastermind_history_table(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->historyTable;
 }
 
 
 GtkWidget *get_mastermind_feedback_zone_hbox(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->feedbackZoneHBox;
 }
 
 
 GtkWidget *get_mastermind_proposition_hbox(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->propositionHBox;
 }
 
 
 GtkWidget *get_mastermind_proposition_control_hbox(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->propositionControlHBox;
 }
 
 
 GtkWidget *get_mastermind_color_selection_hbox(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->colorSelectionHBox;
 }
 
 
 GtkWidget *get_mastermind_score_hbox(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->scoreHBox;
 }
 
@@ -730,6 +765,7 @@ get_mastermind_history_combination_button(ViewMastermind *vm, unsigned int i,
                                           unsigned int j) {
    assert(vm != NULL && i < get_nb_combinations(vm->mm) &&
           j < get_nb_pawns(vm->mm));
+
    return vm->historyCombinations[i][j];
 }
 
@@ -739,14 +775,17 @@ get_mastermind_history_feedback_button(ViewMastermind *vm, unsigned int i,
                                        unsigned int j) {
    assert(vm != NULL && i < get_nb_combinations(vm->mm) &&
           j < get_nb_pawns(vm->mm));
+
    return vm->historyFeedbacks[i][j];
 }
 
 
 GtkWidget *get_mastermind_score_label(ViewMastermind *vm) {
    assert(vm != NULL);
+
    return vm->scoreLabel;
 }
+
 
 void set_score_label_text(GtkWidget *label, char *string) {
    assert(label != NULL);
