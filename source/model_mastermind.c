@@ -130,14 +130,33 @@ create_history(unsigned int nbPawns, unsigned int nbCombinations);
  * */
 static void destroy_history(History *history);
 
-static Combination **
-create_configs(unsigned int nbConfigs, unsigned int nbPawns);
 
 /**
  * \fn static void update_score(ModelMastermind *mm)
- * \brief updates the score
+ * \brief Update the score based on the game's current state.
+ *
+ * \param mm Pointer to the ModelMastermind
+ *
+ * \pre mm != NULL
+ * \post The score of the game is updated.
  */
 static void update_score(ModelMastermind *mm);
+
+
+/**
+ * \fn static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns)
+ * \brief Allocates memory for an array of configurations.
+ *
+ * \param nbConfigs The number of configurations to create.
+ * \param nbPawns The number of pawns in each configuration.
+ *
+ * \post Memory is allocated for the array of configurations.
+ *
+ * \return A pointer to the array of configurations,
+ *         NULL in case of error.
+ */
+static Combination **create_configs(unsigned int nbConfigs, unsigned int nbPawns);
+
 
 /**
  * \fn static int compare_scores(const void *a, const void *b)
@@ -155,6 +174,7 @@ static void update_score(ModelMastermind *mm);
  */
 static int compare_scores(const void *a, const void *b);
 
+
 /**
  * \fn void destroy_configs(Combination **configs, unsigned int nbConfigs)
  * \brief Destroys an array of combinations and frees the memory allocated for it.
@@ -170,6 +190,7 @@ static int compare_scores(const void *a, const void *b);
  * \post The memory allocated for the array of combinations and the combinations themselves is freed.
  */
 static void destroy_configs(Combination **configs, unsigned int nbConfigs);
+
 
 static Combination *create_combination(unsigned int nbPawns) {
    Combination *combination = malloc(sizeof(Combination));
