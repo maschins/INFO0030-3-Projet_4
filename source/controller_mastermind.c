@@ -518,6 +518,10 @@ void init_mastermind(ControllerMastermind *cm) {
    g_signal_connect(G_OBJECT(cm->resetButton), "clicked",
                     G_CALLBACK(on_reset_clicked), cm);
    g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(handle_quit), cm);
+   g_signal_connect(G_OBJECT(aboutsWindow), "destroy", G_CALLBACK(hide_window),
+                    aboutsWindow);
+   g_signal_connect(G_OBJECT(scoreWindow), "destroy", G_CALLBACK(hide_window),
+                    scoreWindow);
 
    gtk_widget_show_all(window);
 }

@@ -37,7 +37,7 @@ rapport.pdf: rapport/rapport.tex rapport/*.tex
 rapport: rapport.pdf
 
 clean:
-	rm -rf */*.o $(EXEC) $(DOC_DIR) $(TAR_NAME)
+	rm -rf */*.o $(EXEC) $(DOC_DIR) $(TAR_NAME) source/*.txt
 
 archive: doc rapport.pdf
 	tar -czf $(TAR_NAME) source/*.c source/*.h rapport $(FILES) $(DOC_DIR)
