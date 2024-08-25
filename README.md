@@ -23,5 +23,5 @@ Reviewer comment: Respect énoncé: Ok.. Exactitude: Ok.. Langage: Il faut véri
 
 ## Known issues
 
-When closing the score menu with the exit button of the window instead of the ok button; it is deleted instead of hide and a segfault happen when trying to open it again. 
-In the mode where you don't guess, the algorithm make attemps that he should know are false
+- When closing the score menu with the exit button of the window instead of the ok button; it is deleted instead of hide and a segfault happen when trying to open it again. 
+- In the mode where you don't guess, the algorithm make attemps that he should know are false
