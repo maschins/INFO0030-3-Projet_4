@@ -13,4 +13,4 @@ A directory for the report, one for the code, and one for the used images
 
 ## Statement
 
-Create a mastermind following the guidelines given in énoncé.pdf
+Create a mastermind following the guidelines given in [Énoncé.pdf](Énoncé.pdf)
