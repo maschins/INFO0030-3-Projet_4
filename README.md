@@ -19,6 +19,7 @@ This project was done in groups of two
 ## Marks
 
 Final note: 19.5/20
+
 Reviewer comment: Respect énoncé: Ok.. Exactitude: Ok.. Langage: Il faut vérifier les retours des fonctions.. Style: Evitez le ALL_CAPS pour les noms des énumérations parce que le ALL_CAPS est habituellement associé aux constantes. Pas d'accolades pour les IFs/FORs qui contiennent une seule ligne de code. Evitez le ALL_CAPS pour une variable example: SCORE_LABELS dans view_mastermind.c.. Demo: Très bien.. Rapport: Très bon rapport.. Apprentissage: Ok.
 
 ## Known issues
